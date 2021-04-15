@@ -25,7 +25,7 @@
                             <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./php/Interface.php">Web Interface</a>
+                            <a class="nav-link" href="./WebInterface.php">Web Interface</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -41,7 +41,7 @@
                     <ul class="animated-hero-bg">
                         <div class="text-wrapper text-center">
                             <div id="blotter-container"></div>
-                            <a href="./php/Interface.php">
+                            <a href="./WebInterface.php">
                             <button class="hero-button">Contribute to Database</button>
                             </a>
                         </div>
