@@ -1,0 +1,30 @@
+/* 
+/// Header - Navbar Styles///
+*/
+
+nav {
+    background-color: rgb(69, 6, 82);
+    height: 4rem;
+    z-index: 1;
+}
+nav.container, main.container, footer.container {
+    width:100%;
+    max-width:none ;
+    padding: 0 auto;
+}
+
+.navbar-brand{
+    color: #ffffff;
+}
+.nav-link {
+    color: #ffffff;
+}
+.nav-link:hover, .navbar-brand:hover {
+    text-decoration: none;
+    cursor: pointer;
+    color: #ff5353;
+}
+
+.index-body {
+    overflow-y: hidden;
+}
