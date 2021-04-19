@@ -32,7 +32,7 @@
                 </div>
         </nav> 
         <!-- BODY CONTENT -->
-        <form class="container" action="./php/twoinsert.php" method="POST" enctype="multipart/form-data">
+        <form class="container" action="./php/insert.php" method="POST" enctype="multipart/form-data">
             <!-- 
                 /////////////////////
                 NEWS SECTION
@@ -251,50 +251,50 @@
                 <!-- Actual Currencies as in the DB --> 
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="Currency" class="form-label">Currency</label>
-                    <select name="Currency" class="form-select" id="Currency" required>
+                    <select name="Currency" class="form-select" id="Currency" required>  
                         <option value="" selected >Choose...</option>
-                        <option value="Ethiopia Birr" >Ethiopia Birr</option>                              
-                        <option value="Indian Rupee" >Indian Rupee</option>                            
-                        <option value="Mauritius Rupee" >Mauritius Rupee</option>                                
-                        <option value="Liberia Dollar" >Liberia Dollar</option>                               
-                        <option value="Malaysia Ringgit" >Malaysia Ringgit</option>                                 
-                        <option value="Nepal Rupee" >Nepal Rupee</option>         
-                        <option value="Pakistan Rupee" >Pakistan Rupee</option>                               
-                        <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham </option>                                          
-                        <option value="Sudan Pound" >Sudan Pound</option>                            
-                        <option value="Zambia Kwacha" >Zambia Kwacha</option>                              
-                        <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                                
-                        <option value="Madagascar Ariary" >Madagascar Ariary</option>                                  
-                        <option value="Angola Kwanza" >Angola Kwanza</option>                              
-                        <option value="Singapore Dollar" >Singapore Dollar</option>                                 
-                        <option value="Denmark Krone" >Denmark Krone</option>                              
-                        <option value="Norway Krone" >Norway Krone</option>                             
+                        <option value="Ethiopia Birr" >Ethiopia Birr</option>
+                        <option value="Angola Kwanza" >Angola Kwanza</option>
+                        <option value="Botswana Pula" >Botswana Pula</option>
+                        <option value="British Pound" >British Pound</option>
                         <option value="Canada Dollar" >Canada Dollar</option>
-                        <option value="Somalia Shilling" >Somalia Shilling</option>
-                        <option value="Egypt Pound" >Egypt Pound</option>
-                        <option value="Kenya Shilling" >Kenya Shilling</option>
-                        <option value="Uganda Shilling" >Uganda Shilling</option>
-                        <option value="Nigeria Naira" >Nigeria Naira</option>
-                        <option value="Ghana Cedi" >Ghana Cedi</option>
-                        <option value="Rwanda Franc" >Rwanda Franc</option>
-                        <option value="Morocco Dirham" >Morocco Dirham</option>
-                        <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
+                        <option value="Central African CFA franc" >Central African CFA franc</option>
                         <option value="Congo Franc" >Congo Franc</option>
-                        <option value="Switzerland Franc" >Switzerland Franc</option>
-                        <option value="Malawi Kwacha" >Malawi Kwacha</option>
-                        <option value="Mozambique Metical" >Mozambique Metical</option>
-                        <option value="Tanzania Shilling" >Tanzania Shilling </option>
+                        <option value="Denmark Krone" >Denmark Krone</option>
+                        <option value="Egypt Pound" >Egypt Pound</option>
+                        <option value="Euro" >Euro</option>
+                        <option value="Ghana Cedi" >Ghana Cedi</option>
+                        <option value="Indian Rupee" >Indian Rupee</option>
                         <option value="Israel Shekel" >Israel Shekel</option>
-                        <option value="Tunisia Dinar" >Tunisia Dinar </option>
-                        <option value="Central African CFA franc" >Central African CFA franc </option>
-                        <option value="West African CFA Franc" >West African CFA Franc </option>
-                        <option value="South African Rand " >South African Rand </option>
-                        <option value="Euro" >Euro </option>
-                        <option value="British Pound" >British Pound </option>
-                        <option value="US Dollar" >US Dollar </option>
-                        <option value="Namibian Dollar" >Namibian Dollar </option>
-                        <option value="Botswana Pula" >Botswana Pula </option>
-                        <option value="Unknown Currency" >Unknown Currency </option>                             
+                        <option value="Kenya Shilling" >Kenya Shilling</option>
+                        <option value="Liberia Dollar" >Liberia Dollar</option>
+                        <option value="Madagascar Ariary" >Madagascar Ariary</option>
+                        <option value="Malawi Kwacha" >Malawi Kwacha</option>
+                        <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
+                        <option value="Mauritius Rupee" >Mauritius Rupee</option>
+                        <option value="Morocco Dirham" >Morocco Dirham</option>
+                        <option value="Mozambique Metical" >Mozambique Metical</option>
+                        <option value="Namibian Dollar" >Namibian Dollar</option>
+                        <option value="Nepal Rupee" >Nepal Rupee</option>
+                        <option value="Nigeria Naira" >Nigeria Naira</option>
+                        <option value="Norway Krone" >Norway Krone</option>
+                        <option value="Pakistan Rupee" >Pakistan Rupee</option>
+                        <option value="Rwanda Franc" >Rwanda Franc</option>
+                        <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
+                        <option value="Singapore Dollar" >Singapore Dollar</option>
+                        <option value="Somalia Shilling" >Somalia Shilling</option>
+                        <option value="South African Rand" >South African Rand</option>
+                        <option value="Sudan Pound" >Sudan Pound</option>
+                        <option value="Switzerland Franc" >Switzerland Franc</option>
+                        <option value="Tanzania Shilling" >Tanzania Shilling</option>
+                        <option value="Tunisia Dinar" >Tunisia Dinar</option>
+                        <option value="Uganda Shilling" >Uganda Shilling</option>
+                        <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
+                        <option value="Unknown Currency" >Unknown Currency</option>
+                        <option value="US Dollar" >US Dollar</option>
+                        <option value="West African CFA franc" >West African CFA franc</option>
+                        <option value="Zambia Kwacha" >Zambia Kwacha</option>
+                        <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
                     </select>
                 </div>
             </div>
