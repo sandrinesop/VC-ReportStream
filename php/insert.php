@@ -71,16 +71,16 @@
         // QUERY THE FIRST TABLE USING THE mysqli_query FUNCTION/METHOD
         $query = mysqli_query($conn, $sql);
 
-        echo ('Form 1 Submitted'.' => '.$query.'<br/>');
+        // echo ('Form 1 Submitted'.' => '.$query.'<br/>');
 
         // **** 2ND CONDITION IF 1ST SUBMISSION IS SUCCESSFULL **** //
         if($query){
             $sql2 = "INSERT INTO portfoliocompanynew( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
             VALUES (uuid(), now(), now(),'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),(select industry.IndustryID FROM industry where industry.Industry = '$Industry'), (select sector.SectorID FROM sector where sector.Sector = '$Sector'))";
             $query2 = mysqli_query($conn, $sql2);
-            echo 'Form 2 Submitted! => '.$query2.'<br/>';
-            echo ('Var Industry'.' => '.$Industry.'<br/>');
-            echo ('Var Sector'.' => '.$Sector.'<br/>');
+            // echo 'Form 2 Submitted! => '.$query2.'<br/>';
+            // echo ('Var Industry'.' => '.$Industry.'<br/>');
+            // echo ('Var Sector'.' => '.$Sector.'<br/>');
         } else {
             echo 'Oops! There was an error submitting Form 2';
         }
@@ -99,7 +99,7 @@
             VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$InvestorHeadquarters'),'$Logo')";
 
             $query3 = mysqli_query($conn, $sql3);
-            echo 'Form 3 Submitted! => '.$query3.'<br/>';
+            // echo 'Form 3 Submitted! => '.$query3.'<br/>';
         }else{
             echo 'Oops! There was an error submitting Form 3';
         }
@@ -109,7 +109,7 @@
             $sql4 = "INSERT INTO fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment)
             VALUES (uuid(), now(), now(), '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
             $query4 = mysqli_query($conn, $sql4);
-            echo 'Form 4 Submitted!'.$query4.'<br/>';
+            // echo 'Form 4 Submitted!'.$query4.'<br/>';
         } else {
             echo 'Oops! There was an error submitting Form 4'.'<br/>';
         }
@@ -119,7 +119,7 @@
             $sql5 = "INSERT INTO userdetail(UserDetailID, CreatedDate, ModifiedDate, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID)
             VALUES (uuid(), now(), now(),'$FirstName', '$LastName', '$ContactNumber1', '$ContactNumber2', '$Email',(select R.RoleTypeID FROM roletype R where R.RoleType = '$RoleType'), (select G.GenderID FROM gender G where G.Gender = '$Gender'), (select RC.RaceID FROM race RC where RC.Race = '$Race') )";
             $query5 = mysqli_query($conn, $sql5);
-            echo 'Form 5 Submitted!=> '.$query5.'<br/>';
+            // echo 'Form 5 Submitted!=> '.$query5.'<br/>';
         } else {
             echo 'Oops! There was an error submitting Form 5'.'<br/>';
         }
@@ -139,9 +139,9 @@
             VALUES (uuid(), now(), now(), '$FundNote')";
             $query8 = mysqli_query($conn, $sql8);
 
-            echo 'Form 6 Submitted!=> '.$query6.'<br/>';
-            echo 'Form 6 Submitted!=> '.$query7.'<br/>';
-            echo 'Form 6 Submitted!=> '.$query8.'<br/>';
+            // echo 'Form 6 Submitted!=> '.$query6.'<br/>';
+            // echo 'Form 6 Submitted!=> '.$query7.'<br/>';
+            // echo 'Form 6 Submitted!=> '.$query8.'<br/>';
         } else {
             echo 'Oops! There was an error submitting Form 6'.'<br/>';
         }
@@ -153,7 +153,7 @@
             $sql9 = "INSERT INTO fundindustry(FundIndustryID, CreatedDate, ModifiedDate, FundID, IndustryID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select I.IndustryID FROM industry I where I.Industry = '$Industry') )";
             $query9 = mysqli_query($conn, $sql9);
-            echo 'Mapping table FundIndustry success! => '.$query9.'<br/>';
+            // echo 'Mapping table FundIndustry success! => '.$query9.'<br/>';
         }else{
             echo 'Oops! There was an error on Mapping table FundIndustry'.'<br/>';
         }
@@ -162,7 +162,7 @@
             $sql10 = "INSERT INTO fundinvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, FundID, InvestmentStageID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$InvestmentStage') )";
             $query10 = mysqli_query($conn, $sql10);
-            echo 'Mapping table FundInvestmentStage success! => '.$query10.'<br/>';
+            // echo 'Mapping table FundInvestmentStage success! => '.$query10.'<br/>';
         }else{
             echo 'Oops! There was an error on Mapping table FundInvestmentStage'.'<br/>';
         }
@@ -171,7 +171,7 @@
             $sql11 = "INSERT INTO fundinvestor(FundInvestorID, CreatedDate, ModifiedDate, FundID, InvestorID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
             $query11 = mysqli_query($conn, $sql11);
-            echo 'Mapping table FundInvestor success! => '.$query11.'<br/>';
+            // echo 'Mapping table FundInvestor success! => '.$query11.'<br/>';
         }else{
             echo 'Oops! There was an error on Mapping table FundInvestor';
         }
@@ -180,7 +180,7 @@
             $sql12 = "INSERT INTO fundnews(FundNewsID, CreatedDate, ModifiedDate, FundID, NewsID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query12 = mysqli_query($conn, $sql12);
-            echo 'Mapping table FundNews success! => '.$query12.'<br/>';
+            // echo 'Mapping table FundNews success! => '.$query12.'<br/>';
         }else{
             echo 'Oops! There was an error on Mapping table FundNews'.'<br/>';
         }
@@ -189,7 +189,7 @@
             $sql13 = "INSERT INTO fundnote(FundNoteID, CreatedDate, ModifiedDate, FundID, NoteID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Note.NoteID FROM Note where Note.Note = '$FundNote'))";
             $query13 = mysqli_query($conn, $sql13);
-            echo 'Mapping table FundNote success! => '.$query13.'<br/>';
+            // echo 'Mapping table FundNote success! => '.$query13.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table FundNote'.'<br/>';
         }
@@ -198,7 +198,7 @@
             $sql14 = "INSERT INTO fundportfoliocompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, FundID, PortfolioCompanyID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'))";
             $query14 = mysqli_query($conn, $sql14);
-            echo 'Mapping table FundPortfolioCompany success! => '.$query14.'<br/>';
+            // echo 'Mapping table FundPortfolioCompany success! => '.$query14.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table FundPortfolioCompany'.'<br/>';
         }
@@ -208,7 +208,7 @@
             $sql15 = "INSERT INTO investornews(InvestorNewsID, CreatedDate, ModifiedDate, InvestorID, NewsID)
             VALUES (uuid(), now(), now(), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query15 = mysqli_query($conn, $sql15);
-            echo 'Mapping table InvestorNews success! => '.$query15.'<br/>';
+            // echo 'Mapping table InvestorNews success! => '.$query15.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table InvestorNews'.'<br/>';
         }
@@ -217,7 +217,7 @@
             $sql16 = "INSERT INTO investornote(InvestorNoteID, CreatedDate, ModifiedDate, InvestorID, NoteID)
             VALUES (uuid(), now(), now(), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Note.NoteID FROM Note where Note.Note = '$InvestorNote'))";
             $query16 = mysqli_query($conn, $sql16);
-            echo 'Mapping table InvestorNote success! => '.$query16.'<br/>';
+            // echo 'Mapping table InvestorNote success! => '.$query16.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table InvestorNote'.'<br/>';
         }
@@ -226,48 +226,52 @@
             $sql17 = "INSERT INTO investorportfoliocompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, InvestorID, PortfolioCompanyID)
             VALUES (uuid(), now(), now(), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'))";
             $query17 = mysqli_query($conn, $sql17);
-            echo 'Mapping table InvestorPortfolioCompany success! => '.$query17.'<br/>';
+            // echo 'Mapping table InvestorPortfolioCompany success! => '.$query17.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table InvestorPortfolioCompany'.'<br/>';
         }
 
         // PortfolioCompany TABLE MAPPINGS //
         if($query2){
-            $sql18 = "INSERT INTO PortfolioCompanyCountry(PortfolioCompanyCountryID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
+            $sql18 = "INSERT INTO portfoliocompanycountry(PortfolioCompanyCountryID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select Country.CountryID FROM Country where Country.Country = '$Headquarters'))";
             $query18 = mysqli_query($conn, $sql18);
-            echo 'Mapping table PortfolioCompanyCountry success! => '.$query18.'<br/>';
+            // echo 'Mapping table PortfolioCompanyCountry success! => '.$query18.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table PortfolioCompanyCountry'.'<br/>';
         }
 
         if($query2){
-            $sql19 = "INSERT INTO PortfolioCompanyNews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate, PortfolioCompanyID, NewsID)
+            $sql19 = "INSERT INTO portfoliocompanynews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate, PortfolioCompanyID, NewsID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query19 = mysqli_query($conn, $sql19);
-            echo 'Mapping table PortfolioCompanyNews success! => '.$query19.'<br/>';
+            // echo 'Mapping table PortfolioCompanyNews success! => '.$query19.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table PortfolioCompanyNews'.'<br/>';
         }
 
         if($query2){
-            $sql20 = "INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, PortfolioCompanyID, SectorID)
+            $sql20 = "INSERT INTO portfoliocompanysector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, PortfolioCompanyID, SectorID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$Sector'))";
             $query20 = mysqli_query($conn, $sql20);
-            echo 'Mapping table PortfolioCompanySector success! => '.$query20.'<br/>';
+            // echo 'Mapping table PortfolioCompanySector success! => '.$query20.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table PortfolioCompanySector'.'<br/>';
         }
 
         if($query2){
-            $sql21 = "INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, PortfolioCompanyID, UserDetailID)
+            $sql21 = "INSERT INTO portfoliocompanyuserdetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, PortfolioCompanyID, UserDetailID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.Email = '$Email'))";
             $query21 = mysqli_query($conn, $sql21);
-            echo 'Mapping table PortfolioCompanyUserDetail success! => '.$query21.'<br/>';
+            // echo 'Mapping table PortfolioCompanyUserDetail success! => '.$query21.'<br/>';
         } else {
             echo 'Oops! There was an error on Mapping table PortfolioCompanyUserDetail'.'<br/>';
         }
 
         $conn->close();
+        echo '<H3>Thanks for contibuting your data to the Deal Database!</H3> '
+        .'<br/>'
+        .'<small>You will be redirected shortly...</small>';
+        header("Refresh:5; url=../index.php");
     };
 ?>
