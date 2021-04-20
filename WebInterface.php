@@ -47,8 +47,8 @@
                     <input type="date" value="" class="form-control" id="NewsDate" name="NewsDate" required>
                 </div>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="NewsLink" class="form-label">News Link</label>
-                    <input type="text" class="form-control" id="NewsLink" name="NewsLink" required>
+                    <label for="NewsURL" class="form-label">News Link</label>
+                    <input type="text" class="form-control" id="NewsURL" name="NewsURL" required>
                 </div>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="NewsNote" class="form-label">News Note</label>
