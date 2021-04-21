@@ -15,14 +15,14 @@
         <!-- Header Content -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
+                <a style="color:#ffffff;" class="navbar-brand " href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
+                            <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./WebInterface.php">New Deal</a>
@@ -35,10 +35,10 @@
             </div>
         </nav> 
         <!-- Main Welcome Screen -->
-        <main class="container text-center">
+        <main class="container text-center index-main">
             <div class="wrapper ">
                 <div>
-                    <a href="#">
+                    <a href="./deals.php">
                         <div class=" Deals centered-nav">
                             <h1>Deals</h1>
                             <div>
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="#">
+                    <a href="./investor.php">
                         <div class=" Investors centered-nav">
                             <h1>Investors</h1>
                             <div>
@@ -56,7 +56,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="#">
+                    <a href="./portfolio-company.php">
                         <div class=" Portfolio centered-nav">
                             <h1>Portfolio Companies</h1>
                             <div>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="#">
+                    <a href="./fund.php">
                         <div class=" Funds centered-nav">
                             <h1>Funds</h1>
                             <div>

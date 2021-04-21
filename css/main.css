@@ -16,15 +16,19 @@ nav.container, main.container, footer.container {
     padding: 0 auto;
 }
 
-.navbar-brand{
+.navbar-brand,
+.nav-link {
     color: #ffffff;
 }
-.nav-link {
-    color: #ffffff;;
-}
-.nav-link:hover, .navbar-brand:hover {
+.navbar-brand,.nav-link:hover{
     text-decoration: none;
     cursor: pointer;
     color: #a8a8a8;
 }
 
+
+/* HTML TABLE STYLE */
+
+th {
+    border:black 1px solid ;
+}
