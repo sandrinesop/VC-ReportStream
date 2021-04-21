@@ -1,0 +1,69 @@
+.wrapper {
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+@media all and (min-width: 600px) {
+    .wrapper {
+        /* height: 90vh; */
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        overflow-y: hidden;
+    }
+}
+@media all and (max-width: 600px) {
+    .wrapper {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+.wrapper div a {
+    text-decoration: none;
+}
+
+.centered-nav {
+    height: 200px;
+    width: 300px;
+    padding: 10px;
+    margin: 1px;
+    vertical-align: middle;
+    line-height: 8em;
+}
+.centered-nav h1 {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.Deals {
+    background-color: #00c900;
+    transition: all .5s;
+}
+.Investors {
+    background-color: #2f470c;
+    transition: all .5s;
+}
+.Portfolio {
+    background-color: #2f470c;
+    transition: all .5s;
+}
+.Funds {
+    background-color: #00c900;
+    transition: all .5s;
+}
+.centered-nav:hover {
+    background-color: rgba(34, 34, 34, 0.685);
+}

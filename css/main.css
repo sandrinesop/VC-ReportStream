@@ -3,10 +3,13 @@
 */
 
 nav {
-    background-color: rgb(69, 6, 82);
-    height: 4rem;
+    background-color: #2f470c;
+    height: 4.5rem;
     z-index: 1;
 }
+/* .navbar {
+    background-color: #2f470c;
+} */
 nav.container, main.container, footer.container {
     width:100%;
     max-width:none ;
@@ -17,14 +20,11 @@ nav.container, main.container, footer.container {
     color: #ffffff;
 }
 .nav-link {
-    color: #ffffff;
+    color: #ffffff;;
 }
 .nav-link:hover, .navbar-brand:hover {
     text-decoration: none;
     cursor: pointer;
-    color: #ff5353;
+    color: #a8a8a8;
 }
 
-.index-body {
-    overflow-y: hidden;
-}

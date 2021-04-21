@@ -10,10 +10,10 @@
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
-        <nav class="navbar navbar-expand-lg align-middle" style="z-index: 1;">
+        <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="./index.php"><img style=" width: 40px;" class="home-ico" src="./resources/icons8-server-64.png" alt=""> VC Deal Database </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Deal Database </a>
+                    <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
@@ -22,7 +22,7 @@
                                 <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./WebInterface.php">Web Interface</a>
+                                <a class="nav-link" href="./WebInterface.php">New Deal</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Contact</a>
