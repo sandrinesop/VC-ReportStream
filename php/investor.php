@@ -10,7 +10,8 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>African VC Database | Form</title>
+        <link rel="shortcut icon" href="../resources/DCA_Icon.png" type="image/x-icon">
+        <title>VC Reportstream | Investor</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../css/main.css">
     </head>
@@ -18,7 +19,7 @@
         <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -816,6 +817,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
             </form>
+
+            <?php
+                echo '<p class="container mt-4"><small class="container">Scroll down to see current investors </small> or <a style="text-decoration:none;" href="../index.php"> <button style="width: 140px; border: black 1px solid; padding: 2px; margin-left:5px;" class="container"> Go back to Home</button></a> </p>'
+            ?>
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class="container my-5">
                 <h3>Current Investor Data in the Deals Database </h3>
@@ -870,6 +875,21 @@
             $Logo                   = $_FILES['img']['name'];
             $InvestorNote           = $_POST['InvestorNote'];
             $Description            = $_POST['Description'];
+
+
+            // INVESTOR NOTE INSERT
+
+            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note)
+            VALUES (uuid(), now(), now(), '$InvestorNote')";
+            $query2 = mysqli_query($conn, $sql2);
+
+            if($query2){
+                // echo 'Form 3 Submitted! => '.$query3.'<br/>';
+            } else {
+                echo 'Oops! There was an error submitting Investor Note'.'<br/>';
+            }
+
+
             // create var m
             $m = "img/".$_FILES['img']['name'];
 
@@ -885,11 +905,10 @@
             if($query3){
             // echo 'Form 3 Submitted! => '.$query3.'<br/>';
         }else{
-            echo 'Oops! There was an error submitting Form 3';
+            echo 'Oops! There was an error submitting Investor table data';
         }
+        
         $conn->close();
-        echo '<H3 class="container">Thanks for contibuting your data to the Deal Database!</H3> '
-        .'<br/>'
-        .'<p class="container"> Refresh your new record shortly...</p>';
+        
     }
 ?>
