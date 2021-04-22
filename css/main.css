@@ -6,6 +6,7 @@ nav {
     background-color: #2f470c;
     height: 4.5rem;
     z-index: 1;
+    color: #ffffff;
 }
 /* .navbar {
     background-color: #2f470c;
@@ -19,11 +20,15 @@ nav.container, main.container, footer.container {
 .navbar-brand,
 .nav-link {
     color: #ffffff;
-}
-.navbar-brand,.nav-link:hover{
+    font-size: 1.1rem;
+    transition: all .3s;
+} 
+
+.navbar-brand:hover ,.nav-link:hover{
     text-decoration: none;
     cursor: pointer;
     color: #a8a8a8;
+    transform: scale(.98);
 }
 
 

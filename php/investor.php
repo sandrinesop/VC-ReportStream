@@ -1,10 +1,9 @@
 <?php 
-    include_once('./php/connect.php');
+    include_once('./connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT CreatedDate, InvestorName, Website, ImpactTag, YearFounded, Logo FROM investor";
     $result = mysqli_query($conn, $sql);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,23 +12,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>African VC Database | Form</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="../css/main.css">
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
+                            <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./WebInterface.php">New Deal</a>
+                            <a class="nav-link" href="../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -40,7 +39,7 @@
         </nav>
         <!-- BODY CONTENT -->
         <main>
-            <form class="container" action="./php/insert.php" method="POST" enctype="multipart/form-data">
+            <form class="container" method="POST" enctype="multipart/form-data">
                 <!-- 
                     /////////////////////
                     INVESTOR SECTION
@@ -49,7 +48,7 @@
 
                 <div class="row">
                     <h2 class="investor-h2">
-                        Investor Section
+                        Create New Investor
                     </h2>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="InvestorName" class="form-label">Investor Name</label>
@@ -857,3 +856,40 @@
         <script src="./js/scripts.js"></script>
     </body>
 </html>
+
+
+<?php 
+
+    if ( isset($_POST['submit']))
+        {
+            $InvestorName           = $_POST['InvestorName'];
+            $InvestorWebsite        = $_POST['InvestorWebsite'];
+            $ImpactTag              = $_POST['ImpactTag'];
+            $YearFounded            = $_POST['YearFounded'];
+            $InvestorHeadquarters   = $_POST['InvestorHeadquarters'];
+            $Logo                   = $_FILES['img']['name'];
+            $InvestorNote           = $_POST['InvestorNote'];
+            $Description            = $_POST['Description'];
+            // create var m
+            $m = "img/".$_FILES['img']['name'];
+
+            // Use move_uploaded_file function to move files
+            move_uploaded_file($_FILES['img']['tmp_name'], $m);
+
+            // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
+            // echo "Uploaded Successfully"; 
+            $sql3 ="INSERT INTO investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
+            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$InvestorHeadquarters'),'$Logo')";
+
+            $query3 = mysqli_query($conn, $sql3);
+            if($query3){
+            // echo 'Form 3 Submitted! => '.$query3.'<br/>';
+        }else{
+            echo 'Oops! There was an error submitting Form 3';
+        }
+        $conn->close();
+        echo '<H3 class="container">Thanks for contibuting your data to the Deal Database!</H3> '
+        .'<br/>'
+        .'<p class="container"> Refresh your new record shortly...</p>';
+    }
+?>

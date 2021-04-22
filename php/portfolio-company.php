@@ -1,3 +1,9 @@
+<?php 
+    include_once('./connect.php');
+    // QUERY DATABASE FROM DATA
+    $sql=" SELECT CreatedDate, PortfolioCompanyName, PortfolioCompanyWebsite, TotalInvestmentValue, Stake, Details, YearFounded FROM portfoliocompanynew";
+    $result = mysqli_query($conn, $sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -6,23 +12,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>African VC Database | Form</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="../css/main.css">
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> DCA Deal Database </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
+                            <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./WebInterface.php">New Deal</a>
+                            <a class="nav-link" href="../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -40,7 +46,7 @@
             -->
             <div class="row">
                 <h2 class="Portfolio-h2">
-                    Portfolio Company Section
+                    Create A New Portfolio Company
                 </h2> 
                 <!-- 
                     //////// Portfolio Company Detail ////////
@@ -308,6 +314,40 @@
             </div>
             <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
         </form>
+        <!-- ==== LIST OF Funds ==== -->
+        <div class="container my-5">
+                <h3>Current Portfolio Companies Data in the Deals Database </h3>
+                <table align="center" border="1px" style="width:100%; line-height:30px;">
+                    <!-- <tr>
+                        <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
+                    </tr> -->
+                    <t>
+                        <th>Created Date</th>    
+                        <th>Portfolio Company Name</th>
+                        <th>Portfolio Company Website</th>
+                        <th>TotalInvestment Value</th>
+                        <th>Stake</th>
+                        <th>Details</th>
+                        <th>Year Founded</th>
+                    </t>
+                    <?php
+                        while($rows = mysqli_fetch_assoc($result))
+                        {
+                    ?>
+                        <tr>
+                            <td> <?php echo $rows['CreatedDate'] ?></td>        
+                            <td> <?php echo $rows['PortfolioCompanyName'] ?></td>
+                            <td> <?php echo $rows['PortfolioCompanyWebsite'] ?></td>
+                            <td> <?php echo $rows['TotalInvestmentValue'] ?></td>
+                            <td> <?php echo $rows['Stake'] ?></td>
+                            <td> <?php echo $rows['Details'] ?></td>
+                            <td> <?php echo $rows['YearFounded'] ?></td>
+                        </tr>
+                    <?php 
+                        }
+                    ?>
+                </table>
+        </div>
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
