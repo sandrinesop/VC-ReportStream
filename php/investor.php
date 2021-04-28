@@ -1,4 +1,4 @@
-<?php 
+<?php  
     include_once('./connect.php');
     if ( isset($_POST['submit']))
         {
@@ -45,7 +45,7 @@
 <?php 
     include_once('./connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT CreatedDate, InvestorName, Website, ImpactTag, YearFounded, Logo FROM investor";
+    $sql=" SELECT * FROM investor";
     $result = mysqli_query($conn, $sql);
 ?>
 
@@ -84,9 +84,9 @@
             </div>
         </nav>
         <!-- BODY CONTENT -->
-        <main>
+        <main class="container ">
             <!-- ==== LIST OF INVESTORS ==== -->
-            <div class="container my-5">
+            <div class=" my-5">
                 <div class="my-2">
                     <div class="row">
                         <!-- CREATE NEW INVESTOR MODAL -->
@@ -882,34 +882,44 @@
                         </span>
                     </div>
                 </div>
-                <table align="center" border="1px" style="width:100%; line-height:30px;">
-                    <!-- <tr>
-                        <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
-                    </tr> -->
-                    <t>
-                        <th >Created Date</th>
-                        <th>Investor Name</th>
-                        <th>Website</th>
-                        <th>ImpactTag </th>
-                        <th>Year Founded</th>
-                        <th>Logo</th>
-                    </t>
-                    <?php
-                        while($rows = mysqli_fetch_assoc($result))
-                        {
-                    ?>
-                        <tr>
-                            <td> <?php echo $rows['CreatedDate'] ?></td>
-                            <td> <?php echo $rows['InvestorName'] ?></td>
-                            <td> <?php echo $rows['Website'] ?></td>
-                            <td> <?php echo $rows['ImpactTag'] ?></td>
-                            <td> <?php echo $rows['YearFounded'] ?></td>
-                            <td> <?php echo $rows['Logo'] ?></td>
-                        </tr>
-                    <?php 
-                        }
-                    ?>
-                </table>
+                <div class="table-responsive" style="overflow-x:auto;">
+                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
+                        <!-- <tr>
+                            <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
+                        </tr> -->
+                        <t>
+                            <th>Investor ID </th>
+                            <th>Created Date</th>
+                            <th>Modified Date</th>
+                            <th>Investor Name</th>
+                            <th>Website</th>
+                            <th>Description</th>
+                            <th>ImpactTag </th>
+                            <th>Year Founded</th>
+                            <th>Headquarters</th>
+                            <th>Logo</th>
+                        </t>
+                        <?php
+                            while($rows = mysqli_fetch_assoc($result))
+                            {
+                        ?>
+                            <tr>
+                                <td> <?php echo $rows['InvestorID'] ?></td>
+                                <td> <?php echo $rows['CreatedDate'] ?></td>
+                                <td> <?php echo $rows['ModifiedDate'] ?></td>
+                                <td> <?php echo $rows['InvestorName'] ?></td>
+                                <td> <?php echo $rows['Website'] ?></td>
+                                <td> <?php echo $rows['Description'] ?></td>
+                                <td> <?php echo $rows['ImpactTag'] ?></td>
+                                <td> <?php echo $rows['YearFounded'] ?></td>
+                                <td> <?php echo $rows['Headquarters'] ?></td>
+                                <td> <?php echo $rows['Logo'] ?></td>
+                            </tr>
+                        <?php 
+                            }
+                        ?>
+                    </table>
+                </div>
             </div>
         </main>
         <!-- Scripts -->

@@ -1,7 +1,36 @@
 <?php 
     include_once('./connect.php');
+    if ( isset($_POST['submit']))
+    {
+        // FUND TABLE
+
+        $FundName               = $_POST['FundName'];
+        $CommittedCapitalOfFund = $_POST['CommittedCapitalOfFund'];
+        $CommittedCapital       = $_POST['CommittedCapital'];
+        $MinimumInvestment      = $_POST['MinimumInvestment'];
+        $MaximumInvestment      = $_POST['MaximumInvestment'];
+        $FundNote               = $_POST['FundNote'];
+        $Currency               = $_POST['Currency'];
+        
+        $sql = "INSERT INTO fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
+        VALUES (uuid(), now(), now(), '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
+        
+        $query = mysqli_query($conn, $sql);
+
+        if($query){
+            $sql2 = "INSERT INTO note(NoteID, CreatedDate, ModifiedDate, Note) 
+        VALUES (uuid(), now(), now(), '$FundNote')";
+            header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error submitting form. Please try again later.';
+        }
+    }
+?>
+
+<?php 
+    include_once('./connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT CreatedDate, FundName, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment FROM fund";
+    $sql=" SELECT * FROM fund";
     $result = mysqli_query($conn, $sql);
 ?>
 <!DOCTYPE html>
@@ -39,96 +68,178 @@
             </div>
         </nav> 
         <!-- BODY CONTENT -->
-        <form class="container" action="./php/insert.php" method="POST" enctype="multipart/form-data">
-            <!-- 
-                /////////////////////
-                FUND SECTION
-                /////////////////////
-             -->
-             <div class="row">
-                <h2 class="fund-h2">
-                    Create New Fund
-                </h2>
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label for="FundName" class="form-label">Fund Name</label>
-                        <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
-                </div>  
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label for="CommittedCapitalOfFund" class="form-label"> Committed Capital Of Fund</label>
-                    <input type="text" class="form-control" id="CommittedCapitalOfFund" name="CommittedCapitalOfFund" >
-                </div> 
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label for="CommittedCapital" class="form-label"> Committed Capital</label>
-                    <input type="number" class="form-control" id="CommittedCapital" name="CommittedCapital" required>
-                </div>  
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label for="MinimumInvestment" class="form-label"> Minimum Investment</label>
-                    <input type="number" class="form-control" id="MinimumInvestment" name="MinimumInvestment" required>
-                </div> 
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label for="MaximumInvestment" class="form-label"> Maximum Investment</label>
-                    <input type="number" class="form-control" id="MaximumInvestment" name="MaximumInvestment" required>
+        <main class="container ">
+            <!-- ==== LIST OF PORTFOLIO COMPANIES ==== -->
+            <div class=" my-5">
+                <div class="my-2">
+                    <div class="row">
+                        <!-- CREATE NEW PORTFOLIO COMPANY MODAL -->
+                        <span class="col-1">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Fund <img src="../resources/icons/New.svg" alt="">
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Create New Fund</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="container" method="POST" enctype="multipart/form-data">
+                                                <div class="row">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="FundName" class="form-label">Fund Name</label>
+                                                            <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
+                                                    </div>
+                                                    <!-- Actual Currencies as in the DB --> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="Currency" class="form-label">Currency</label>
+                                                        <select name="Currency" class="form-select" id="Currency" required>  
+                                                            <option value="" selected >Choose...</option>
+                                                            <option value="Ethiopia Birr" >Ethiopia Birr</option>
+                                                            <option value="Angola Kwanza" >Angola Kwanza</option>
+                                                            <option value="Botswana Pula" >Botswana Pula</option>
+                                                            <option value="British Pound" >British Pound</option>
+                                                            <option value="Canada Dollar" >Canada Dollar</option>
+                                                            <option value="Central African CFA franc" >Central African CFA franc</option>
+                                                            <option value="Congo Franc" >Congo Franc</option>
+                                                            <option value="Denmark Krone" >Denmark Krone</option>
+                                                            <option value="Egypt Pound" >Egypt Pound</option>
+                                                            <option value="Euro" >Euro</option>
+                                                            <option value="Ghana Cedi" >Ghana Cedi</option>
+                                                            <option value="Indian Rupee" >Indian Rupee</option>
+                                                            <option value="Israel Shekel" >Israel Shekel</option>
+                                                            <option value="Kenya Shilling" >Kenya Shilling</option>
+                                                            <option value="Liberia Dollar" >Liberia Dollar</option>
+                                                            <option value="Madagascar Ariary" >Madagascar Ariary</option>
+                                                            <option value="Malawi Kwacha" >Malawi Kwacha</option>
+                                                            <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
+                                                            <option value="Mauritius Rupee" >Mauritius Rupee</option>
+                                                            <option value="Morocco Dirham" >Morocco Dirham</option>
+                                                            <option value="Mozambique Metical" >Mozambique Metical</option>
+                                                            <option value="Namibian Dollar" >Namibian Dollar</option>
+                                                            <option value="Nepal Rupee" >Nepal Rupee</option>
+                                                            <option value="Nigeria Naira" >Nigeria Naira</option>
+                                                            <option value="Norway Krone" >Norway Krone</option>
+                                                            <option value="Pakistan Rupee" >Pakistan Rupee</option>
+                                                            <option value="Rwanda Franc" >Rwanda Franc</option>
+                                                            <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
+                                                            <option value="Singapore Dollar" >Singapore Dollar</option>
+                                                            <option value="Somalia Shilling" >Somalia Shilling</option>
+                                                            <option value="South African Rand" >South African Rand</option>
+                                                            <option value="Sudan Pound" >Sudan Pound</option>
+                                                            <option value="Switzerland Franc" >Switzerland Franc</option>
+                                                            <option value="Tanzania Shilling" >Tanzania Shilling</option>
+                                                            <option value="Tunisia Dinar" >Tunisia Dinar</option>
+                                                            <option value="Uganda Shilling" >Uganda Shilling</option>
+                                                            <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
+                                                            <option value="Unknown Currency" >Unknown Currency</option>
+                                                            <option value="US Dollar" >US Dollar</option>
+                                                            <option value="West African CFA franc" >West African CFA franc</option>
+                                                            <option value="Zambia Kwacha" >Zambia Kwacha</option>
+                                                            <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
+                                                        </select>
+                                                    </div>  
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="CommittedCapitalOfFund" class="form-label"> Committed Capital Of Fund</label>
+                                                        <input type="text" class="form-control" id="CommittedCapitalOfFund" name="CommittedCapitalOfFund" >
+                                                    </div> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="CommittedCapital" class="form-label"> Committed Capital</label>
+                                                        <input type="number" class="form-control" id="CommittedCapital" name="CommittedCapital" required>
+                                                    </div>  
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="MinimumInvestment" class="form-label"> Minimum Investment</label>
+                                                        <input type="number" class="form-control" id="MinimumInvestment" name="MinimumInvestment" required>
+                                                    </div> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="MaximumInvestment" class="form-label"> Maximum Investment</label>
+                                                        <input type="number" class="form-control" id="MaximumInvestment" name="MaximumInvestment" required>
+                                                    </div>
+                                                    <!-- Investment Stage -->
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="InvestmentStage" class="form-label">Investment Stage </label>
+                                                        <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
+                                                            <option value=""selected >Choose...</option>
+                                                            <option value="Pre-Seed">Pre-Seed</option>
+                                                            <option value="Seed">Seed</option>
+                                                            <option value="Pre-Series A">Pre-Series A</option>
+                                                            <option value="Series A">Series A</option>
+                                                            <option value="Pre-Series B">Pre-Series B</option>
+                                                            <option value="Series B">Series B</option>
+                                                            <option value="Pre-Series C">Pre-Series C</option>
+                                                            <option value="Series C">Series C</option>
+                                                            <option value="Pre-Series D">Pre-Series D</option>
+                                                            <option value="Series D">Series D</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="IndustryPreference" class="form-label">Industry Preference</label>
+                                                        <textarea class="form-control IndustryPreference" aria-label="With textarea" id=" IndustryPreference" name=" IndustryPreference"></textarea>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="FundNote" class="form-label">Fund Note</label>
+                                                        <textarea class="form-control FundNote" aria-label="With textarea" id=" FundNote" name="FundNote"></textarea>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
+                        <!-- EXPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <form action="./FundExport.php" method="POST">
+                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                            </form>
+                        </span>
+                    </div>
                 </div>
-                <!-- Investment Stage -->
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="InvestmentStage" class="form-label">Investment Stage </label>
-                    <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
-                        <option value=""selected >Choose...</option>
-                        <option value="Pre-Seed">Pre-Seed</option>
-                        <option value="Seed">Seed</option>
-                        <option value="Pre-Series A">Pre-Series A</option>
-                        <option value="Series A">Series A</option>
-                        <option value="Pre-Series B">Pre-Series B</option>
-                        <option value="Series B">Series B</option>
-                        <option value="Pre-Series C">Pre-Series C</option>
-                        <option value="Series C">Series C</option>
-                        <option value="Pre-Series D">Pre-Series D</option>
-                        <option value="Series D">Series D</option>
-                    </select>
-                </div>
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="IndustryPreference" class="form-label">Industry Preference</label>
-                    <textarea class="form-control IndustryPreference" aria-label="With textarea" id=" IndustryPreference" name=" IndustryPreference"></textarea>
-                </div>
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="FundNote" class="form-label">Fund Note</label>
-                    <textarea class="form-control FundNote" aria-label="With textarea" id=" FundNote" name="FundNote"></textarea>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
-        </form>
-        <!-- ==== LIST OF Funds ==== -->
-        <div class="container my-5">
-                <h3>Current Fund Data in the Deals Database </h3>
-                <table align="center" border="1px" style="width:100%; line-height:30px;">
-                    <!-- <tr>
-                        <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
-                    </tr> -->
-                    <t>
-                        <th >Created Date</th>    
-                        <th>Fund Name</th>
-                        <th>Committed Capital Of Fund</th>
-                        <th>Committed Capital </th>
-                        <th>Minimum Investment</th>
-                        <th>Maximum Investment</th>
-                    </t>
-                    <?php
-                        while($rows = mysqli_fetch_assoc($result))
-                        {
-                    ?>
+                <!-- TABLE OF ALL PORTFOLIO COMPANIES -->
+                <div class="table-responsive" style="overflow-x:auto;">
+                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
+                        <t>
+                            <th >Fund ID</th>
+                            <th >Created Date</th>
+                            <th >Modified Date</th>
+                            <th>Fund Name</th>
+                            <th>Currency ID</th>
+                            <th>Committed Capital Of Fund</th>
+                            <th>Committed Capital </th>
+                            <th>Minimum Investment</th>
+                            <th>Maximum Investment</th>
+                        </t>
+                        <?php
+                            while($rows = mysqli_fetch_assoc($result))
+                            {
+                        ?>
                         <tr>
+                            <td> <?php echo $rows['FundID'] ?></td>
                             <td> <?php echo $rows['CreatedDate'] ?></td>
+                            <td> <?php echo $rows['ModifiedDate'] ?></td>
                             <td> <?php echo $rows['FundName'] ?></td>
+                            <td> <?php echo $rows['CurrencyID'] ?></td>
                             <td> <?php echo $rows['CommittedCapitalOfFund'] ?></td>
                             <td> <?php echo $rows['CommittedCapital'] ?></td>
                             <td> <?php echo $rows['MinimumInvestment'] ?></td>
                             <td> <?php echo $rows['MaximumInvestment'] ?></td>
                         </tr>
-                    <?php 
-                        }
-                    ?>
-                </table>
-        </div>
+                        <?php 
+                            }
+                        ?>
+                    </table>
+                </div> 
+            </div>
+        </main>
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
