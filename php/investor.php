@@ -823,7 +823,10 @@
             ?>
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class="container my-5">
-                <h3>Current Investor Data in the Deals Database </h3>
+                <!-- <h3>Current Investor Data in the Deals Database </h3> -->
+                <form action="./InvestorExport.php" method="POST">
+                    <input type="submit" name="export" value="Export CSV">
+                </form>
                 <table align="center" border="1px" style="width:100%; line-height:30px;">
                     <!-- <tr>
                         <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
