@@ -37,3 +37,11 @@ nav.container, main.container, footer.container {
 th {
     border:black 1px solid ;
 }
+
+/* BUTTON STYLES */
+
+.new-button {
+    border: 1px solid #2f470c;
+    border-radius: 15px;
+    padding: 5px 10px;
+}
