@@ -1,11 +1,10 @@
-
 <?php 
     include_once('./connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT * FROM investor";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
-    $result = mysqli_query($conn, $sql) or die ( mysqli_error());
+    $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
     // INVESTOR INSERTS
@@ -888,9 +887,6 @@
                 </div>
                 <div class="table-responsive" style="overflow-x:auto;">
                     <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
-                        <!-- <tr>
-                            <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
-                        </tr> -->
                         <t>
                             <th>Edit </th>
                             <th>Delete </th>
@@ -911,7 +907,7 @@
                         ?>
                             <tr>
                                 <td> <a href="./Edit.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
-                                <td> <a href="./Delete.php?id=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
+                                <td> <a href="./Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
                                 <td> <?php echo $rows['InvestorID'] ?></td>
                                 <td> <?php echo $rows['CreatedDate'] ?></td>
                                 <td> <?php echo $rows['ModifiedDate'] ?></td>

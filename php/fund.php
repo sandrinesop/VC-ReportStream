@@ -31,7 +31,7 @@
     include_once('./connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT * FROM fund";
-    $result = mysqli_query($conn, $sql);
+    $result = $conn->query($sql) or die($conn->error);
 ?>
 <!DOCTYPE html>
 <html lang="en">
