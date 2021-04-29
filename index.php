@@ -39,7 +39,7 @@
         <main class="container text-center index-main">
             <div class="wrapper ">
                 <div>
-                    <a href="./php/deals.php">
+                    <a href="./php/tabs/deals.php">
                         <div class=" Deals centered-nav">
                             <h1>Deals</h1>
                             <div>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/investor.php">
+                    <a href="./php/tabs/investor.php">
                         <div class=" Investors centered-nav">
                             <h1>Investors</h1>
                             <div>
@@ -57,7 +57,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="./php/portfolio-company.php">
+                    <a href="./php/tabs/portfolio-company.php">
                         <div class=" Portfolio centered-nav">
                             <h1>Portfolio Companies</h1>
                             <div>
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/fund.php">
+                    <a href="./php/tabs/fund.php">
                         <div class=" Funds centered-nav">
                             <h1>Funds</h1>
                             <div>

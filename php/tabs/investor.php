@@ -1,11 +1,15 @@
 <?php 
-    include_once('./connect.php');
+    include_once('../connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT * FROM investor";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
+
+    $sql2=" SELECT * FROM country";
+    $result2 = $conn->query($sql2) or die($conn->error);
+    $row2 = mysqli_fetch_assoc($result2);
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
@@ -14,7 +18,7 @@
             $InvestorWebsite        = $_POST['InvestorWebsite'];
             $ImpactTag              = $_POST['ImpactTag'];
             $YearFounded            = $_POST['YearFounded'];
-            $InvestorHeadquarters   = $_POST['InvestorHeadquarters'];
+            $Headquarters           = $_POST['Headquarters'];
             $Logo                   = $_FILES['img']['name'];
             $InvestorNote           = $_POST['InvestorNote'];
             $Description            = $_POST['Description'];
@@ -32,7 +36,7 @@
             }
 
             // INVESTOR TABLE INSERT
-            $m = "img/".$_FILES['img']['name'];
+            $m = "../img/".$_FILES['img']['name'];
 
             // Use move_uploaded_file function to move files
             move_uploaded_file($_FILES['img']['tmp_name'], $m);
@@ -40,7 +44,7 @@
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
             // echo "Uploaded Successfully"; 
             $sql3 ="INSERT INTO investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
-            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$InvestorHeadquarters'),'$Logo')";
+            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
 
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -58,16 +62,16 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="../resources/DCA_Icon.png" type="image/x-icon">
+        <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Investor</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <link rel="stylesheet" href="../css/main.css">
+        <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 80px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -77,7 +81,7 @@
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../WebInterface.php">New Deal</a>
+                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -96,7 +100,7 @@
                         <span class="col-2">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                New Investor <img src="../resources/icons/New.svg" alt="">
+                                New Investor <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -789,9 +793,9 @@
                                                         <input type="text" class="form-control" id="YearFounded" name="YearFounded">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorHeadquarters" class="form-label">Headquarters</label>
+                                                        <label for="Headquarters" class="form-label">Headquarters</label>
                                                         <!-- <input type="text" class="form-control" id="Headquarters" name="Headquarters" required> -->
-                                                        <select id="InvestorHeadquarters" name="InvestorHeadquarters" class="form-select">
+                                                        <select id="Headquarters" name="Headquarters" class="form-select">
                                                             <option>choose...</option>
                                                             <option value="Unknown">Unknown</option>
                                                             <option value="Finland">Finland</option>
@@ -879,7 +883,7 @@
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
-                            <form action="./InvestorExport.php" method="POST">
+                            <form action="../InvestorExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>
@@ -906,8 +910,8 @@
                             {
                         ?>
                             <tr>
-                                <td> <a href="./Edit.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
-                                <td> <a href="./Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
+                                <td> <a href="../crud/Edit.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
+                                <td> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
                                 <td> <?php echo $rows['InvestorID'] ?></td>
                                 <td> <?php echo $rows['CreatedDate'] ?></td>
                                 <td> <?php echo $rows['ModifiedDate'] ?></td>
@@ -930,6 +934,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-        <script src="./js/scripts.js"></script>
+        <script src="../../js/scripts.js"></script>
     </body>
 </html>

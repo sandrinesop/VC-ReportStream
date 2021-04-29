@@ -1,5 +1,9 @@
 <?php 
-    include_once('./connect.php');
+    include_once('../connect.php');
+    // QUERY DATABASE FROM DATA
+    $sql=" SELECT * FROM portfoliocompanynew";
+    $result = $conn->query($sql) or die($conn->error);
+    
     if ( isset($_POST['submit']))
     {
         // DEFINED VAR FOR THE SECOND TABLE
@@ -25,12 +29,8 @@
             echo 'Oops! There was an error submitting form. Please try again later.';
         }
     }
-?>
-<?php 
-    include_once('./connect.php');
-    // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM portfoliocompanynew";
-    $result = $conn->query($sql) or die($conn->error);
+
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,13 +41,13 @@
         <link rel="shortcut icon" href="../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Portfolio Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <link rel="stylesheet" href="../css/main.css">
+        <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../index.php"><img style=" width: 80px;" class="home-ico" src="../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 80px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -57,7 +57,7 @@
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../WebInterface.php">New Deal</a>
+                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -76,7 +76,7 @@
                         <span class="col-3">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                Portfolio Company <img src="../resources/icons/New.svg" alt="">
+                                Portfolio Company <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -297,7 +297,7 @@
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
-                            <form action="./PCExport.php" method="POST">
+                            <form action="../PCExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>
@@ -351,6 +351,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-        <script src="../js/scripts.js"></script>
+        <script src="../../js/scripts.js"></script>
     </body>
 </html>
