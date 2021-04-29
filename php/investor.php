@@ -1,5 +1,14 @@
-<?php  
+
+<?php 
     include_once('./connect.php');
+    // QUERY DATABASE FROM DATA
+    $sql=" SELECT * FROM investor";
+    // $result = mysqli_query($conn, $sql);
+    // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
+    $result = mysqli_query($conn, $sql) or die ( mysqli_error());
+    $row = mysqli_fetch_assoc($result);
+
+    // INVESTOR INSERTS
     if ( isset($_POST['submit']))
         {
             $InvestorName           = $_POST['InvestorName'];
@@ -23,6 +32,7 @@
                 echo 'Oops! There was an error submitting Investor Note'.'<br/>';
             }
 
+            // INVESTOR TABLE INSERT
             $m = "img/".$_FILES['img']['name'];
 
             // Use move_uploaded_file function to move files
@@ -41,12 +51,6 @@
             echo 'Oops! There was an error submitting Investor table data';
         }
     }
-?>
-<?php 
-    include_once('./connect.php');
-    // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM investor";
-    $result = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -888,6 +892,8 @@
                             <th colspan="100px" style="text-align:center;"> <h5>Current Investor Data in the Deals Database </h5></th>
                         </tr> -->
                         <t>
+                            <th>Edit </th>
+                            <th>Delete </th>
                             <th>Investor ID </th>
                             <th>Created Date</th>
                             <th>Modified Date</th>
@@ -904,6 +910,8 @@
                             {
                         ?>
                             <tr>
+                                <td> <a href="./Edit.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
+                                <td> <a href="./Delete.php?id=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
                                 <td> <?php echo $rows['InvestorID'] ?></td>
                                 <td> <?php echo $rows['CreatedDate'] ?></td>
                                 <td> <?php echo $rows['ModifiedDate'] ?></td>
