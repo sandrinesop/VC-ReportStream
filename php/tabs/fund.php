@@ -1,7 +1,7 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM fund";
+    $sql=" SELECT * FROM Fund";
     $result = $conn->query($sql) or die($conn->error);
 
     if ( isset($_POST['submit']))
@@ -16,13 +16,13 @@
         $FundNote               = $_POST['FundNote'];
         $Currency               = $_POST['Currency'];
         
-        $sql = "INSERT INTO fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
+        $sql = "INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
         VALUES (uuid(), now(), now(), '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
         
         $query = mysqli_query($conn, $sql);
 
         if($query){
-            $sql2 = "INSERT INTO note(NoteID, CreatedDate, ModifiedDate, Note) 
+            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note) 
         VALUES (uuid(), now(), now(), '$FundNote')";
             header( "refresh: 3; url= fund.php" );
         } else {
@@ -206,6 +206,8 @@
                 <div class="table-responsive" style="overflow-x:auto;">
                     <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
                         <t>
+                            <th>Edit </th>
+                            <th>Delete </th>
                             <th >Fund ID</th>
                             <th >Created Date</th>
                             <th >Modified Date</th>
@@ -221,6 +223,8 @@
                             {
                         ?>
                         <tr>
+                            <td> <a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">Edit</a></td>
+                            <td> <a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?>">Delete</a></td>
                             <td> <?php echo $rows['FundID'] ?></td>
                             <td> <?php echo $rows['CreatedDate'] ?></td>
                             <td> <?php echo $rows['ModifiedDate'] ?></td>

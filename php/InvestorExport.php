@@ -8,7 +8,7 @@
 
         $output = fopen("php://output","w");
         fputcsv($output, array('CreatedDate','InvestorName','Website','ImpactTag','YearFounded','Logo'));
-        $query = "SELECT CreatedDate, InvestorName, Website, ImpactTag, YearFounded, Logo FROM investor ORDER BY InvestorName DESC";
+        $query = "SELECT * FROM Investor ORDER BY InvestorName DESC";
         $result = mysqli_query($conn, $query);
 
         while( $row = mysqli_fetch_assoc($result))

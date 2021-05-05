@@ -1,7 +1,7 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM portfoliocompanynew";
+    $sql=" SELECT * FROM PortfolioCompany";
     $result = $conn->query($sql) or die($conn->error);
     
     if ( isset($_POST['submit']))
@@ -9,7 +9,7 @@
         // DEFINED VAR FOR THE SECOND TABLE
         // PORTFOLIO COMPANY TABLE
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
-        $PortfolioCompanyWebsite = $_POST['PortfolioCompanyWebsite'];
+        $PortfolioCompanyWebsite = $_POST['Website'];
         $Details                 = $_POST['Details'];
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
@@ -20,8 +20,8 @@
         $Currency                = $_POST['Currency'];
 
         // PORTFOLIO COMPANY NOTE INSERT
-        $sql = "INSERT INTO portfoliocompanynew( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
-            VALUES (uuid(), now(), now(),'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),(select industry.IndustryID FROM industry where industry.Industry = '$Industry'), (select sector.SectorID FROM sector where sector.Sector = '$Sector'))";
+        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
+            VALUES (uuid(), now(), now(),'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),(select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select sector.SectorID FROM sector where sector.Sector = '$Sector'))";
             $query = mysqli_query($conn, $sql);
         if($query){
             header( "refresh: 3; url= portfolio-company.php" );
@@ -29,8 +29,6 @@
             echo 'Oops! There was an error submitting form. Please try again later.';
         }
     }
-
-    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -305,8 +303,10 @@
                 </div>
                 <!-- TABLE OF ALL PORTFOLIO COMPANIES -->
                 <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px;line-height: 30px;">
+                    <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 30px;">
                         <t>
+                            <th>Edit </th>
+                            <th>Delete </th>
                             <th scope="col" >Portfolio Company ID</th> 
                             <th scope="col" >Created Date</th> 
                             <th scope="col" >Modified Date</th>   
@@ -318,27 +318,29 @@
                             <th scope="col" >Details</th>
                             <th scope="col" >Year Founded</th>
                             <th scope="col" >Headquarters</th>
-                            <th scope="col" >Industry ID</th>
-                            <th scope="col" >Sector ID</th>
+                            <!-- <th scope="col" >Industry ID</th>
+                            <th scope="col" >Sector ID</th> -->
                         </t>
                         <?php
                             while($rows = mysqli_fetch_assoc($result))
                             {
                         ?>
                             <tr>
+                                <td> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Edit</a></td>
+                                <td> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Delete</a></td>
                                 <td> <?php echo $rows['PortfolioCompanyID'] ?></td>
                                 <td> <?php echo $rows['CreatedDate'] ?></td>
                                 <td> <?php echo $rows['ModifiedDate'] ?></td>        
                                 <td> <?php echo $rows['PortfolioCompanyName'] ?></td>
                                 <td> <?php echo $rows['CurrencyID'] ?></td>
-                                <td> <?php echo $rows['PortfolioCompanyWebsite'] ?></td>
+                                <td> <?php echo $rows['Website'] ?></td>
                                 <td> <?php echo $rows['TotalInvestmentValue'] ?></td>
                                 <td> <?php echo $rows['Stake'] ?></td>
                                 <td> <?php echo $rows['Details'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
                                 <td> <?php echo $rows['Headquarters'] ?></td>
-                                <td> <?php echo $rows['IndustryID'] ?></td>
-                                <td> <?php echo $rows['SectorID'] ?></td>
+                                <!-- <td> <?php echo $rows['IndustryID'] ?></td>
+                                <td> <?php echo $rows['SectorID'] ?></td> -->
                             </tr>
                         <?php 
                             }

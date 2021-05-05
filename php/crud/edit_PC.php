@@ -1,9 +1,8 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $InvestorID =$_REQUEST['InvestorID'];
-    $sql=" SELECT *  FROM Investor where InvestorID = '$InvestorID'"; 
-    // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
+    $PortfolioCompanyID =$_REQUEST['PortfolioCompanyID'];
+    $sql=" SELECT *  FROM PortfolioCompany where PortfolioCompanyID = '$PortfolioCompanyID'"; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
@@ -14,26 +13,32 @@
     // echo 'Headquaters =>'.$row2['Country'];
     // $country = $row2['Country'];
 
+    $tempCurrency = $row['CurrencyID'];
+    $sql3 = " Select Currency from Currency where CurrencyID = '$tempCurrency' ";
+    $result3 = mysqli_query($conn, $sql3) or die($conn->error);
+    $row3 = mysqli_fetch_assoc($result3);
+
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
-        $InvestorID     =$_REQUEST['InvestorID'];
-        $ModifiedDate   =$_REQUEST['ModifiedDate'];
-        $InvestorName   =$_REQUEST['InvestorName'];
-        $Website        =$_REQUEST['Website'];
-        $Description    =$_REQUEST['Description'];
-        $ImpactTag      =$_REQUEST['ImpactTag'];
-        $YearFounded    =$_REQUEST['YearFounded'];
-        $Headquarters   =$_REQUEST['Headquarters']; 
-        $Logo           =$_REQUEST['Logo'];
+        $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
+        $Currency                = $_REQUEST['Currency'];
+        $Website                 = $_REQUEST['Website'];
+        $TotalInvestmentValue    = $_REQUEST['TotalInvestmentValue'];
+        $Stake                   = $_REQUEST['Stake'];
+        $Details                 = $_REQUEST['Details'];
+        $YearFounded             = $_REQUEST['YearFounded'];
+        $Headquarters            = $_REQUEST['Headquarters'];
+        $Logo                    = $_REQUEST['Logo'];
 
 
-        $update="update Investor set ModifiedDate='".$ModifiedDate."',InvestorName='".$InvestorName."', Website='".$Website."',DescriptionID='".$Description."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters='".$Headquarters."', Logo='".$Logo."' where InvestorID='".$InvestorID."'";
+        $update="update PortfolioCompany set ModifiedDate='uuid()',PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID='".$Currency."', Website='".$Website."', TotalInvestmentValue='".$TotalInvestmentValue."', Stake='".$Stake."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters='".$Headquarters."', Logo='".$Logo."'";
+
         mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/investor.php'>View Updated Record</a>";
+        <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 3;url= ../tabs/investor.php" );
+        header( "refresh: 3;url= ../tabs//portfolio-company.php" );
     }else {
 ?>
 <!DOCTYPE html>
@@ -73,16 +78,18 @@
         <main  class="my-5 ">
             <form name="form" method="post" action="" class="form container"> 
                 <input type="hidden" name="new" value="1" />
-                <input name="InvestorID" type="hidden" value="<?php echo $row['InvestorID'];?>" />
+                <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['PortfolioCompanyID'];?>" />
                 <p><input class="form-control col" type="text" name="ModifiedDate" required value="<?php echo $row['ModifiedDate'];?>" /></p>
-                <p><input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName" required value="<?php echo $row['InvestorName'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Website" placeholder="Enter Website" required value="<?php echo $row['Website'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Description" placeholder="Enter Description" required value="<?php echo $row['DescriptionID'];?>" /></p>
-                <p><input class="form-control col" type="text" name="ImpactTag" placeholder="Enter ImpactTag" required value="<?php echo $row['ImpactTag'];?>" /></p>
-                <p><input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded" required value="<?php echo $row['YearFounded'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Headquarters" placeholder="Enter Headquarters" required value="<?php echo $row2['Country'];?>" /></p>
+                <p><input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>" /></p>
+                <p><input class="form-control col" type="text" name="Website" placeholder="Enter Website"  value="<?php echo $row['Website'];?>" /></p>
+                <p><textarea class="form-control col" type="text" name="Details" placeholder="Enter Details"   > <?php echo $row['Details'];?></textarea></p>
+                <p><input class="form-control col" type="text" name="Currency" placeholder="Enter Currency"  value="<?php echo $row3['Currency'];?>" /></p>
+                <p><input class="form-control col" type="text" name="TotalInvestmentValue" placeholder="Enter TotalInvestmentValue"  value="<?php echo $row['TotalInvestmentValue'];?>" /></p>
+                <p><input class="form-control col" type="text" name="Stake" placeholder="Enter Stake"  value="<?php echo $row['Stake'];?>" /></p>
+                <p><input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" /></p>
+                <p><input class="form-control col" type="text" name="Headquarters" placeholder="Enter Headquarters"  value="<?php echo $row2['Country'];?>" /></p>
                 <!-- <?php echo $country;?> -->
-                <p><input class="form-control col" type="text" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p>
+                <p><input class="form-control col" type="file" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p>
 
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>

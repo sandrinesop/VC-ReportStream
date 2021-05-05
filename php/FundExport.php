@@ -8,7 +8,7 @@
 
         $output = fopen("php://output","w");
         fputcsv($output, array('FundID', 'CreatedDate', 'ModifiedDate', 'FundName', 'CurrencyID', 'CommittedCapitalOfFund', 'CommittedCapital', 'MinimumInvestment', 'MaximumInvestment'));
-        $query = "SELECT * FROM fund ORDER BY CreatedDate DESC";
+        $query = "SELECT * FROM Fund ORDER BY CreatedDate DESC";
         $result = mysqli_query($conn, $query);
 
         while( $row = mysqli_fetch_assoc($result))

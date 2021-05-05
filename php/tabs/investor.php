@@ -1,15 +1,22 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM investor";
+    $sql=" SELECT * FROM Investor";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
-    $sql2=" SELECT * FROM country";
-    $result2 = $conn->query($sql2) or die($conn->error);
+    // echo 'Headquaters1 =>'.$row['Headquarters'];
+    
+
+    $tempHeadquarter = $row['Headquarters'];
+    $sql2 = " Select Country from Country where CountryID = '$tempHeadquarter'";
+    $result2 = mysqli_query($conn, $sql2) or die($conn->error);
     $row2 = mysqli_fetch_assoc($result2);
+    
+    // echo 'Headquaters here =>'.$row2['Country'];
+    // $country = $row2['Country'];
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
@@ -43,8 +50,8 @@
 
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
             // echo "Uploaded Successfully"; 
-            $sql3 ="INSERT INTO investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
-            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
+            $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
+            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
 
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -906,7 +913,7 @@
                             <th>Logo</th>
                         </t>
                         <?php
-                            while($rows = mysqli_fetch_assoc($result))
+                            while(($rows = mysqli_fetch_assoc($result)) || ($row2 = mysqli_fetch_assoc($result2)))
                             {
                         ?>
                             <tr>
@@ -917,10 +924,10 @@
                                 <td> <?php echo $rows['ModifiedDate'] ?></td>
                                 <td> <?php echo $rows['InvestorName'] ?></td>
                                 <td> <?php echo $rows['Website'] ?></td>
-                                <td> <?php echo $rows['Description'] ?></td>
+                                <td> <?php echo $rows['DescriptionID'] ?></td>
                                 <td> <?php echo $rows['ImpactTag'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
-                                <td> <?php echo $rows['Headquarters'] ?></td>
+                                <td> <?php echo $row2['Country']?></td>
                                 <td> <?php echo $rows['Logo'] ?></td>
                             </tr>
                         <?php 

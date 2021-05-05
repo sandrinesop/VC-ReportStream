@@ -65,7 +65,7 @@
 
         // BELOW ARE THE INSERT STATEMENTS TO THE DATABASE TABLES. Also 1ST CONDITION IF 1ST SUBMISSION IS SUCCESSFULL
 
-        $sql = "INSERT INTO news(NewsID, CreatedDate, ModifiedDate, NewsDate, NewsURL) 
+        $sql = "INSERT INTO News(NewsID, CreatedDate, ModifiedDate, NewsDate, NewsURL) 
         VALUES (uuid(), now(), now(),'$NewsDate', '$NewsURL')";
 
         // QUERY THE FIRST TABLE USING THE mysqli_query FUNCTION/METHOD
@@ -75,7 +75,7 @@
 
         // **** 2ND CONDITION IF 1ST SUBMISSION IS SUCCESSFULL **** //
         if($query){
-            $sql2 = "INSERT INTO portfoliocompanynew( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
+            $sql2 = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
             VALUES (uuid(), now(), now(),'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),(select industry.IndustryID FROM industry where industry.Industry = '$Industry'), (select sector.SectorID FROM sector where sector.Sector = '$Sector'))";
             $query2 = mysqli_query($conn, $sql2);
             // echo 'Form 2 Submitted! => '.$query2.'<br/>';
@@ -95,7 +95,7 @@
 
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
             // echo "Uploaded Successfully"; 
-            $sql3 ="INSERT INTO investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
+            $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
             VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$InvestorHeadquarters'),'$Logo')";
 
             $query3 = mysqli_query($conn, $sql3);
@@ -106,7 +106,7 @@
         
         // **** 4TH CONDITION IF 3RD SUBMISSION IS SUCCESSFULL **** //
         if($query3){
-            $sql4 = "INSERT INTO fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment)
+            $sql4 = "INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment)
             VALUES (uuid(), now(), now(), '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
             $query4 = mysqli_query($conn, $sql4);
             // echo 'Form 4 Submitted!'.$query4.'<br/>';
@@ -116,7 +116,7 @@
 
         // **** 5TH CONDITION IF 4RD SUBMISSION IS SUCCESSFULL **** //
         if($query4){
-            $sql5 = "INSERT INTO userdetail(UserDetailID, CreatedDate, ModifiedDate, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID)
+            $sql5 = "INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID)
             VALUES (uuid(), now(), now(),'$FirstName', '$LastName', '$ContactNumber1', '$ContactNumber2', '$Email',(select R.RoleTypeID FROM roletype R where R.RoleType = '$RoleType'), (select G.GenderID FROM gender G where G.Gender = '$Gender'), (select RC.RaceID FROM race RC where RC.Race = '$Race') )";
             $query5 = mysqli_query($conn, $sql5);
             // echo 'Form 5 Submitted!=> '.$query5.'<br/>';
@@ -150,7 +150,7 @@
 
         // FUND TABLE MAPPINGS //
         if($query4){
-            $sql9 = "INSERT INTO fundindustry(FundIndustryID, CreatedDate, ModifiedDate, FundID, IndustryID)
+            $sql9 = "INSERT INTO FundIndustry(FundIndustryID, CreatedDate, ModifiedDate, FundID, IndustryID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select I.IndustryID FROM industry I where I.Industry = '$Industry') )";
             $query9 = mysqli_query($conn, $sql9);
             // echo 'Mapping table FundIndustry success! => '.$query9.'<br/>';
@@ -159,7 +159,7 @@
         }
 
         if($query4){
-            $sql10 = "INSERT INTO fundinvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, FundID, InvestmentStageID)
+            $sql10 = "INSERT INTO FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, FundID, InvestmentStageID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$InvestmentStage') )";
             $query10 = mysqli_query($conn, $sql10);
             // echo 'Mapping table FundInvestmentStage success! => '.$query10.'<br/>';
@@ -168,7 +168,7 @@
         }
 
         if($query4){
-            $sql11 = "INSERT INTO fundinvestor(FundInvestorID, CreatedDate, ModifiedDate, FundID, InvestorID)
+            $sql11 = "INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, FundID, InvestorID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
             $query11 = mysqli_query($conn, $sql11);
             // echo 'Mapping table FundInvestor success! => '.$query11.'<br/>';
@@ -177,7 +177,7 @@
         }
 
         if($query4){
-            $sql12 = "INSERT INTO fundnews(FundNewsID, CreatedDate, ModifiedDate, FundID, NewsID)
+            $sql12 = "INSERT INTO FundNews(FundNewsID, CreatedDate, ModifiedDate, FundID, NewsID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query12 = mysqli_query($conn, $sql12);
             // echo 'Mapping table FundNews success! => '.$query12.'<br/>';
@@ -186,7 +186,7 @@
         }
 
         if($query5){
-            $sql13 = "INSERT INTO fundnote(FundNoteID, CreatedDate, ModifiedDate, FundID, NoteID)
+            $sql13 = "INSERT INTO FundNote(FundNoteID, CreatedDate, ModifiedDate, FundID, NoteID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Note.NoteID FROM Note where Note.Note = '$FundNote'))";
             $query13 = mysqli_query($conn, $sql13);
             // echo 'Mapping table FundNote success! => '.$query13.'<br/>';
@@ -195,7 +195,7 @@
         }
 
         if($query4){
-            $sql14 = "INSERT INTO fundportfoliocompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, FundID, PortfolioCompanyID)
+            $sql14 = "INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, FundID, PortfolioCompanyID)
             VALUES (uuid(), now(), now(), (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'))";
             $query14 = mysqli_query($conn, $sql14);
             // echo 'Mapping table FundPortfolioCompany success! => '.$query14.'<br/>';
@@ -205,7 +205,7 @@
 
         // INVESTOR TABLE MAPPINGS //
         if($query3){
-            $sql15 = "INSERT INTO investornews(InvestorNewsID, CreatedDate, ModifiedDate, InvestorID, NewsID)
+            $sql15 = "INSERT INTO InvestorNews(InvestorNewsID, CreatedDate, ModifiedDate, InvestorID, NewsID)
             VALUES (uuid(), now(), now(), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query15 = mysqli_query($conn, $sql15);
             // echo 'Mapping table InvestorNews success! => '.$query15.'<br/>';
@@ -223,17 +223,17 @@
         }
 
         if($query2){
-            $sql17 = "INSERT INTO investorportfoliocompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, InvestorID, PortfolioCompanyID)
+            $sql17 = "INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, InvestorID, PortfolioCompanyID)
             VALUES (uuid(), now(), now(), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'))";
             $query17 = mysqli_query($conn, $sql17);
-            // echo 'Mapping table InvestorPortfolioCompany success! => '.$query17.'<br/>';
+            // echo 'Mapping table InvestorPortfolioCompInvestorPortfolioCompanyany success! => '.$query17.'<br/>';
         } else {
-            echo 'Oops! There was an error on Mapping table InvestorPortfolioCompany'.'<br/>';
+            echo 'Oops! There was an error on Mapping table '.'<br/>';
         }
 
         // PortfolioCompany TABLE MAPPINGS //
         if($query2){
-            $sql18 = "INSERT INTO portfoliocompanycountry(PortfolioCompanyCountryID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
+            $sql18 = "INSERT INTO PortfolioCompanyCountry(PortfolioCompanyCountryID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select Country.CountryID FROM Country where Country.Country = '$Headquarters'))";
             $query18 = mysqli_query($conn, $sql18);
             // echo 'Mapping table PortfolioCompanyCountry success! => '.$query18.'<br/>';
@@ -242,7 +242,7 @@
         }
 
         if($query2){
-            $sql19 = "INSERT INTO portfoliocompanynews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate, PortfolioCompanyID, NewsID)
+            $sql19 = "INSERT INTO PortfolioCompanyNews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate, PortfolioCompanyID, NewsID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
             $query19 = mysqli_query($conn, $sql19);
             // echo 'Mapping table PortfolioCompanyNews success! => '.$query19.'<br/>';
@@ -251,7 +251,7 @@
         }
 
         if($query2){
-            $sql20 = "INSERT INTO portfoliocompanysector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, PortfolioCompanyID, SectorID)
+            $sql20 = "INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, PortfolioCompanyID, SectorID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$Sector'))";
             $query20 = mysqli_query($conn, $sql20);
             // echo 'Mapping table PortfolioCompanySector success! => '.$query20.'<br/>';
@@ -260,7 +260,7 @@
         }
 
         if($query2){
-            $sql21 = "INSERT INTO portfoliocompanyuserdetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, PortfolioCompanyID, UserDetailID)
+            $sql21 = "INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, PortfolioCompanyID, UserDetailID)
             VALUES (uuid(), now(), now(),(select portfoliocompanynew.PortfolioCompanyID FROM portfoliocompanynew where portfoliocompanynew.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.Email = '$Email'))";
             $query21 = mysqli_query($conn, $sql21);
             // echo 'Mapping table PortfolioCompanyUserDetail success! => '.$query21.'<br/>';

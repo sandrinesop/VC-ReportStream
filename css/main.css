@@ -33,15 +33,22 @@ nav.container, main.container, footer.container {
 
 
 /* HTML TABLE STYLE */
-.table-style{
-    width: 100%;
+.table{
+    table-layout:fixed;
+    border-collapse: collapse;
+    background: #fff;
+ }
+
+td {
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
 }
-th, td {
+/* th, td {
     white-space: Wrap;
     text-align: left;
     padding: 8px;
-    width: max-content;
-  }
+  } */
 
 /* BUTTON STYLES */
 
