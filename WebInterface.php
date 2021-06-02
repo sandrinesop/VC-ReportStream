@@ -41,7 +41,7 @@
                 -->
             <div class="row"> 
                 <h2 class="news-h2">
-                    Deal Flow News
+                    Capture Deal Data
                 </h2>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                     <label for="NewsDate" class="form-label">News Date</label>
@@ -61,13 +61,10 @@
             PORTFOLIO COMPANY SECTION
             /////////////////////
             -->
-            <div class="row">
-                <h2 class="Portfolio-h2">
-                    Portfolio Company Section
-                </h2> 
+            <div class="row"> 
                 <!-- 
                     //////// Portfolio Company Detail ////////
-                    -->
+                -->
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
                     <input type="text" class="form-control" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
@@ -154,36 +151,6 @@
                         INDUSTRY SECTION
                     /////////////////////
                 -->
-                <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="Industry" class="form-label">Industry</label>
-                    <select name="Industry" class="form-select" id="Industry" required>
-                        <option value="" selected >Choose...</option>
-                        <option value="Artificial Intelligence" id="ArtificialIntelligence">Artificial Intelligence</option>                              
-                        <option value="Clothing and Apparel" id="ClothingandApparel">Clothing and Apparel</option> 
-                    </select>
-                </div> -->
-                <!-- Sector Dropdowns -->
-                <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ArtificialIntelligenceDrop">
-                    <label for="Sector" class="form-label">Sector</label>
-                    <select name="Sectors" class="form-select" id="ArtificialIntelligenceSelect" >
-                        <option value="" selected >Choose...</option>
-                        <option value="Artificial Intelligence" >Artificial Intelligence</option>                              
-                        <option value="Intelligent Systems" >Intelligent Systems</option>                            
-                        <option value="Machine Learning" >Machine Learning</option>                                
-                        <option value="Natural Language Processing" >Natural Language Processing</option>                               
-                        <option value="Predictive Analytics" >Predictive Analytics</option>                         
-                    </select>
-                </div>
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ClothingandApparelDrop">
-                    <label for="Sector" class="form-label">Sector</label>
-                    <select name="Sectors" class="form-select"  >
-                        <option value="" selected >Choose...</option>
-                        <option value="Fashion" >Fashion</option>                              
-                        <option value="Laundry and Dry-cleaning" >Laundry and Dry-cleaning</option>                            
-                        <option value="Lingerie" >Lingerie</option>                                
-                        <option value="Shoes" >Shoes</option>
-                    </select>
-                </div> -->
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="Industry" class="form-label">Industry</label>
                     <select id="Industry" name="Industry" class="form-select">
@@ -249,7 +216,6 @@
                     CURRENCY SECTION
                     /////////////////////
                 -->
-                <!-- Actual Currencies as in the DB --> 
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="Currency" class="form-label">Currency</label>
                     <select name="Currency" class="form-select" id="Currency" required>  
@@ -305,9 +271,6 @@
                 /////////////////////
             -->
             <div class="row">
-                <h2 class="investor-h2">
-                    Portfolio Company Contact Person
-                </h2>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                     <label for="FirstName" class="form-label">First Name</label>
                     <input type="text" class="form-control" id="FirstName" name="FirstName" required>
@@ -367,9 +330,6 @@
             -->
 
             <div class="row">
-                <h2 class="investor-h2">
-                    Investor Section
-                </h2>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                     <label for="InvestorName" class="form-label">Investor Name</label>
                     <input list="investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
@@ -1128,13 +1088,6 @@
                 </div>
             </div>
 
-            <!-- 
-                <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                    <label for="MembershipSource" class="form-label">Membership Source</label>
-                    <input type="text" class="form-control" id="MembershipSource" name="MembershipSource" required>
-                </div> 
-            -->
-
             <!-- Will need to capture investor unique currency or will it be the same as the startup they funded in? -->
 
             <!-- 
@@ -1143,9 +1096,6 @@
                 /////////////////////
              -->
              <div class="row">
-                <h2 class="fund-h2">
-                    Fund Section
-                </h2>
                 <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                     <label for="FundName" class="form-label">Fund Name</label>
                         <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>

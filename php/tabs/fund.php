@@ -1,7 +1,18 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM Fund";
+    $sql=" SELECT 
+	fund.FundID, fund.Deleted, fund.DeletedDate, fund.FundName, currency.Currency, fund.CommittedCapitalOfFund, fund.CommittedCapital, fund.MinimumInvestment, fund.MaximumInvestment 
+            FROM 
+                fund 
+            LEFT JOIN 
+                currency 
+            ON 
+                currency.CurrencyID = fund.CurrencyID 
+            WHERE 
+                fund.Deleted = 0
+            LIMIT 100;";
+
     $result = $conn->query($sql) or die($conn->error);
 
     if ( isset($_POST['submit']))
@@ -40,6 +51,8 @@
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Fund </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body class="pb-5">
@@ -206,34 +219,28 @@
                 <div class="table-responsive" style="overflow-x:auto;">
                     <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
                         <t>
-                            <th>Edit </th>
-                            <th>Delete </th>
-                            <th >Fund ID</th>
-                            <th >Created Date</th>
-                            <th >Modified Date</th>
-                            <th>Fund Name</th>
-                            <th>Currency ID</th>
-                            <th>Committed Capital Of Fund</th>
-                            <th>Committed Capital </th>
-                            <th>Minimum Investment</th>
-                            <th>Maximum Investment</th>
+                            <th scope="col">Fund Name</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Committed Capital Of Fund</th>
+                            <th scope="col">Committed Capital </th>
+                            <th scope="col">Minimum Investment</th>
+                            <th scope="col">Maximum Investment</th>
+                            <th scope="col">Edit </th>
+                            <th scope="col">Delete </th>
                         </t>
                         <?php
                             while($rows = mysqli_fetch_assoc($result))
                             {
                         ?>
                         <tr>
-                            <td> <a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">Edit</a></td>
-                            <td> <a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?>">Delete</a></td>
-                            <td> <?php echo $rows['FundID'] ?></td>
-                            <td> <?php echo $rows['CreatedDate'] ?></td>
-                            <td> <?php echo $rows['ModifiedDate'] ?></td>
                             <td> <?php echo $rows['FundName'] ?></td>
-                            <td> <?php echo $rows['CurrencyID'] ?></td>
+                            <td> <?php echo $rows['Currency'] ?></td>
                             <td> <?php echo $rows['CommittedCapitalOfFund'] ?></td>
                             <td> <?php echo $rows['CommittedCapital'] ?></td>
                             <td> <?php echo $rows['MinimumInvestment'] ?></td>
                             <td> <?php echo $rows['MaximumInvestment'] ?></td>
+                            <td> <a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">Edit</a></td>
+                            <td> <a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?>">Delete</a></td>
                         </tr>
                         <?php 
                             }

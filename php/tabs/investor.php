@@ -1,22 +1,30 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM Investor";
-    // $result = mysqli_query($conn, $sql);
-    // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
+    $sql="SELECT  
+            investor.InvestorID, currency.Currency, investor.Deleted, investor.DeletedDate, investor.InvestorName, investor.Website, description.Description, investor.ImpactTag, investor.YearFounded, country.Country, investor.Logo 
+
+        FROM 
+            investor
+        
+        LEFT JOIN 
+            currency 
+        ON 
+            currency.CurrencyID=investor.CurrencyID
+            
+        LEFT JOIN 
+            description 
+        ON 
+            description.DescriptionID=investor.DescriptionID 
+        LEFT JOIN 
+            country 
+        ON 
+            country.CountryID = investor.Headquarters 
+        WHERE 
+            investor.Deleted=0;";
+            
     $result = $conn->query($sql) or die($conn->error);
-    $row = mysqli_fetch_assoc($result);
-
-    // echo 'Headquaters1 =>'.$row['Headquarters'];
-    
-
-    $tempHeadquarter = $row['Headquarters'];
-    $sql2 = " Select Country from Country where CountryID = '$tempHeadquarter'";
-    $result2 = mysqli_query($conn, $sql2) or die($conn->error);
-    $row2 = mysqli_fetch_assoc($result2);
-    
-    // echo 'Headquaters here =>'.$row2['Country'];
-    // $country = $row2['Country'];
+    $row = mysqli_fetch_assoc($result);  
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
@@ -72,6 +80,8 @@
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Investor</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body class="pb-5">
@@ -104,7 +114,7 @@
                 <div class="my-2">
                     <div class="row">
                         <!-- CREATE NEW INVESTOR MODAL -->
-                        <span class="col-2">
+                        <span class="col-6 col-md-4 col-lg-2">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 New Investor <img src="../../resources/icons/New.svg" alt="">
@@ -889,7 +899,7 @@
                             </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col-6 col-md-4 col-lg-2"> 
                             <form action="../InvestorExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
@@ -897,38 +907,34 @@
                     </div>
                 </div>
                 <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
+                    <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 30px; table-layout:fixed; overflow:hidden;">
                         <t>
-                            <th>Edit </th>
-                            <th>Delete </th>
-                            <th>Investor ID </th>
-                            <th>Created Date</th>
-                            <th>Modified Date</th>
-                            <th>Investor Name</th>
-                            <th>Website</th>
-                            <th>Description</th>
-                            <th>ImpactTag </th>
-                            <th>Year Founded</th>
-                            <th>Headquarters</th>
-                            <th>Logo</th>
+                            <th scope="col">Investor Name</th>
+                            <th scope="col" colspan="2">Website</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">ImpactTag </th>
+                            <th scope="col">Year Founded</th>
+                            <th scope="col">Headquarters</th>
+                            <th scope="col">Logo</th>
+                            <th scope="col">Edit </th>
+                            <th scope="col">Delete </th>
                         </t>
                         <?php
-                            while(($rows = mysqli_fetch_assoc($result)) || ($row2 = mysqli_fetch_assoc($result2)))
+                            while($rows = mysqli_fetch_assoc($result) )
                             {
                         ?>
                             <tr>
-                                <td> <a href="../crud/Edit.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
-                                <td> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
-                                <td> <?php echo $rows['InvestorID'] ?></td>
-                                <td> <?php echo $rows['CreatedDate'] ?></td>
-                                <td> <?php echo $rows['ModifiedDate'] ?></td>
                                 <td> <?php echo $rows['InvestorName'] ?></td>
-                                <td> <?php echo $rows['Website'] ?></td>
-                                <td> <?php echo $rows['DescriptionID'] ?></td>
+                                <td colspan="2" style=" white-space: nowrap;overflow-x: hidden; text-overflow: ellipsis; "> <?php echo $rows['Website'] ?></td>
+                                <td> <?php echo $rows['Currency'] ?></td>
+                                <td> <?php echo $rows['Description'] ?></td>
                                 <td> <?php echo $rows['ImpactTag'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
-                                <td> <?php echo $row2['Country']?></td>
+                                <td> <?php echo $rows['Country']?></td>
                                 <td> <?php echo $rows['Logo'] ?></td>
+                                <td> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
+                                <td> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
                             </tr>
                         <?php 
                             }

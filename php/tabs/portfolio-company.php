@@ -1,7 +1,21 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT * FROM PortfolioCompany";
+    $sql=" SELECT 
+	portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
+FROM 
+	portfoliocompany 
+LEFT JOIN 
+	currency 
+ON 
+	currency.CurrencyID = portfoliocompany.CurrencyID 
+LEFT JOIN 
+	country 
+ON 
+	country.CountryID = portfoliocompany.Headquarters 
+WHERE 
+	portfoliocompany.Deleted = 0; ";
+
     $result = $conn->query($sql) or die($conn->error);
     
     if ( isset($_POST['submit']))
@@ -39,6 +53,8 @@
         <link rel="shortcut icon" href="../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Portfolio Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body class="pb-5">
@@ -304,41 +320,33 @@
                 <!-- TABLE OF ALL PORTFOLIO COMPANIES -->
                 <div class="table-responsive" style="overflow-x:auto;">
                     <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 30px;">
-                        <t>
-                            <th>Edit </th>
-                            <th>Delete </th>
-                            <th scope="col" >Portfolio Company ID</th> 
-                            <th scope="col" >Created Date</th> 
-                            <th scope="col" >Modified Date</th>   
+                        <t> 
                             <th scope="col" >Portfolio Company Name</th>
                             <th scope="col" >Currency ID</th>
                             <th scope="col" >Portfolio Company Website</th>
-                            <th scope="col" >TotalInvestment Value</th>
+                            <th scope="col" >Total Investment Value</th>
                             <th scope="col" >Stake</th>
-                            <th scope="col" >Details</th>
+                            <th scope="col" colspan="2" >Details</th>
                             <th scope="col" >Year Founded</th>
                             <th scope="col" >Headquarters</th>
-                            <!-- <th scope="col" >Industry ID</th>
-                            <th scope="col" >Sector ID</th> -->
+                            <th>Edit </th>
+                            <th>Delete </th>
                         </t>
                         <?php
                             while($rows = mysqli_fetch_assoc($result))
                             {
                         ?>
-                            <tr>
-                                <td> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Edit</a></td>
-                                <td> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Delete</a></td>
-                                <td> <?php echo $rows['PortfolioCompanyID'] ?></td>
-                                <td> <?php echo $rows['CreatedDate'] ?></td>
-                                <td> <?php echo $rows['ModifiedDate'] ?></td>        
+                            <tr>     
                                 <td> <?php echo $rows['PortfolioCompanyName'] ?></td>
-                                <td> <?php echo $rows['CurrencyID'] ?></td>
+                                <td> <?php echo $rows['Currency'] ?></td>
                                 <td> <?php echo $rows['Website'] ?></td>
                                 <td> <?php echo $rows['TotalInvestmentValue'] ?></td>
                                 <td> <?php echo $rows['Stake'] ?></td>
-                                <td> <?php echo $rows['Details'] ?></td>
+                                <td colspan="2" style=" white-space: nowrap;overflow-x: hidden; text-overflow: ellipsis; "> <?php echo $rows['Details'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
-                                <td> <?php echo $rows['Headquarters'] ?></td>
+                                <td> <?php echo $rows['Country'] ?></td>
+                                <td> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Edit</a></td>
+                                <td> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Delete</a></td>
                                 <!-- <td> <?php echo $rows['IndustryID'] ?></td>
                                 <td> <?php echo $rows['SectorID'] ?></td> -->
                             </tr>
