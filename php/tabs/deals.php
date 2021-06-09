@@ -1,25 +1,210 @@
 <?php 
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
-    $sqlA1=" SELECT * FROM PortfolioCompanyNews Limit 20";
-    $resultA1 = $conn->query($sqlA1) or die($conn->error);
-    $rowA1 = mysqli_fetch_assoc($resultA1);
+    $sqlAA="    SELECT 
+                    News.NewsID, News.NewsURL,News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country 
+                FROM 
+                    PortfolioCompanyNews 
+                LEFT JOIN 
+                    News 
+                ON
+                    News.NewsID = PortfolioCompanyNews.NewsID 
+                LEFT JOIN 
+                    PortfolioCompany
+                ON
+                    PortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
+                LEFT JOIN 
+                    InvestorNews
+                ON
+                    InvestorNews.NewsID = PortfolioCompanyNews.NewsID 
+                LEFT JOIN 
+                    Investor
+                ON
+                    Investor.InvestorID = InvestorNews.InvestorID 
+                LEFT JOIN 
+                    PortfolioCompanySector
+                ON
+                    PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID         
+                LEFT JOIN 
+                    Sector          
+                ON
+                    Sector.SectorID = PortfolioCompanySector.SectorID      
+                LEFT JOIN 
+                    FundPortfolioCompany
+                ON
+                    FundPortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                LEFT JOIN 
+                    Fund
+                ON
+                    Fund.FundID = FundPortfolioCompany.FundID 
+                LEFT JOIN 
+                    FundInvestmentStage      
+                ON          
+                    FundInvestmentStage.FundID = Fund.FundID 
+                LEFT JOIN
+                    InvestmentStage
+                ON
+                    InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
+                LEFT JOIN 
+                    PortfolioCompanyCountry
+                ON
+                    PortfolioCompanyCountry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                LEFT JOIN 
+                    Country
+                ON 
+                    Country.CountryID = PortfolioCompanyCountry.CountryID
 
-    $tempNews = $rowA1['NewsID'];
-    $sql1=" SELECT * FROM News WHERE NewsID = '$tempNews' ORDER BY NewsDate";
-    $result1 = $conn->query($sql1) or die($conn->error);
-    $row1 = mysqli_fetch_assoc($result1);
+                GROUP BY News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue,Country.Country ";
+    $resultAA = $conn->query($sqlAA) or die($conn->error);
+    $rowAA = mysqli_fetch_assoc($resultAA);
 
-    $tempPortfolioCompany = $rowA1['PortfolioCompanyID'];
-    $sql2=" SELECT * FROM PortfolioCompany WHERE PortfolioCompanyID = '$tempPortfolioCompany' ";
-    $result2 = $conn->query($sql2) or die($conn->error);
-    $row2 = mysqli_fetch_assoc($result2);
+    //=================================================== 
+    //========== | PORTFOLIO COMPANY TABLE | ============
+    //===================================================
+    // PORTFOLIO COMPANY DEATILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
+    $sql = " SELECT DISTINCT 
+                PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
+            JOIN 
+                Country ON country.CountryID = PortfolioCompany.Headquarters 
+            WHERE Website IS NOT NULL AND Details IS NOT NULL";
+            
+    $result = mysqli_query($conn, $sql);
+    // $sql2 = "   SELECT 
+    //                 SUBSTRING(Details, 1, 55) AS Details 
+    //             FROM 
+    //                 PortfolioCompany 
+    //             WHERE 
+    //                 Details IS NOT NULL";
+    // $result2 = mysqli_query($conn, $sql2);
+    // Pulling Startup Data into the Country/Headquarters dropdown
+    $sql3 = "   SELECT DISTINCT 
+                    Country 
+                FROM 
+                    PortfolioCompany 
+                LEFT JOIN 
+                    Country ON Country.CountryID = PortfolioCompany.Headquarters 
+                WHERE Country IS NOT NULL";
+    $result3 = mysqli_query($conn, $sql3);
+    // Pulling Startup Data into the Currency dropdown
+    $sql4 = "   SELECT DISTINCT 
+                    Currency 
+                FROM 
+                    PortfolioCompany 
+                LEFT JOIN 
+                    Currency ON currency.CurrencyID = PortfolioCompany.CurrencyID 
+                WHERE Currency IS NOT NULL";
+    $result4 = mysqli_query($conn, $sql4);
+    //=================================================== 
+    //============== | USERDETAIL TABLE | ===============
+    //===================================================
+    $sql5 = "   SELECT DISTINCT 
+                    UserFullName
+                FROM 
+                    UserDetail 
+                WHERE 
+                    UserFullName IS NOT NULL ORDER BY UserFullName ASC";
+    $result5 = mysqli_query($conn, $sql5);
+    // Pulling UserDetail Data into the Email dropdown
+    $sql6 = "   SELECT DISTINCT 
+                    Email, ContactNumber1 
+                FROM 
+                    UserDetail 
+                WHERE Email IS NOT NULL";
+    $result6 = mysqli_query($conn, $sql6);
+    // Pulling UserDetail Data into the RoleType dropdown
+    $sql7 = "   SELECT DISTINCT 
+                    RoleType.RoleType
+                FROM 
+                    UserDetail 
+                LEFT JOIN 
+                    RoleType ON RoleType.RoleTypeID = UserDetail.RoleTypeID ";
+    $result7 = mysqli_query($conn, $sql7);
+    // Pulling UserDetail Data into the Gender dropdown
+    $sql8 = "   SELECT DISTINCT 
+                     Gender.Gender 
+                FROM 
+                    UserDetail 
+                LEFT JOIN 
+                    Gender ON Gender.GenderID = UserDetail.GenderID ";
+    $result8 = mysqli_query($conn, $sql8);
+    // Pulling UserDetail Data into the Race dropdown
+    $sql9 = "   SELECT DISTINCT 
+                     Race.Race 
+                FROM 
+                    UserDetail 
+                LEFT JOIN 
+                    Race ON Race.RaceID = UserDetail.RaceID ";
+    $result9 = mysqli_query($conn, $sql9);
+    //=================================================== 
+    //============== | INVESTOR TABLE | =================
+    //===================================================
+    $sqlA1 = "   SELECT DISTINCT 
+                InvestorName
+            FROM 
+                Investor 
+            WHERE 
+                InvestorName IS NOT NULL ORDER BY InvestorName ASC";
+            $resultA1 = mysqli_query($conn, $sqlA1);
 
-    $sqlA=" SELECT * FROM PortfolioCompanyUserDetail  WHERE PortfolioCompanyID = '$tempPortfolioCompany'";
-    $resultA = $conn->query($sqlA) or die($conn->error);
-    $rowA = mysqli_fetch_assoc($resultA);
+            $sqlA2 = "   SELECT DISTINCT 
+                Website
+            FROM 
+                Investor 
+            WHERE 
+                Website IS NOT NULL ORDER BY Website ASC";
+    $resultA2 = mysqli_query($conn, $sqlA2);
+    // INVETSOR NOTES. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
+    // Pulling Investor Data into the Notes dropdown
+    $sqlA3 = "  SELECT DISTINCT
+                    SUBSTRING(Note, 1, 55) AS Note 
+                FROM 
+                    Note
+                WHERE 
+                    Note IS NOT NULL";
+    $resultA3 = mysqli_query($conn, $sqlA3);
+    // Pulling Investor Data into the impact tag dropdown
+    $sqlA4 = "  SELECT DISTINCT
+                    ImpactTag
+                FROM 
+                Investor
+                WHERE 
+                    ImpactTag IS NOT NULL";
+    $resultA4 = mysqli_query($conn, $sqlA4);
+    // Pulling Investor Data into the Investor Headquarters dropdown
+    $sqlA5 = "  SELECT DISTINCT
+                    Country
+                FROM 
+                    Investor
+                JOIN 
+                    Country ON country.CountryID = Investor.Headquarters";
+    $resultA5 = mysqli_query($conn, $sqlA5);
+    // Pulling Investor Data into the impact tag dropdown
+    $sqlA6 = "  SELECT DISTINCT
+                    Description
+                FROM 
+                    Investor
+                JOIN 
+                    Description ON Description.DescriptionID = Investor.DescriptionID";
+    $resultA6 = mysqli_query($conn, $sqlA6);
+    //=================================================== 
+    //================ | FUND TABLE | ===================
+    //===================================================
+    // Pulling Fund Data into the Fund Section dropdown
+    $sqlB = "  SELECT DISTINCT
+                    FundName, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment
+                FROM 
+                    Fund
+                WHERE FundName IS NOT NULL AND CommittedCapitalOfFund IS NOT NULL AND CommittedCapital IS NOT NULL AND MinimumInvestment IS NOT NULL AND MaximumInvestment IS NOT NULL ";
+    $resultB = mysqli_query($conn, $sqlB);
+    // Pulling Fund Data into the FundName dropdown
+    $sqlB1 = "  SELECT DISTINCT
+                    InvestmentStage
+                FROM 
+                    InvestmentStage
+                WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
+    $resultB1 = mysqli_query($conn, $sqlB1);
+
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -77,15 +262,15 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form class="container" action="../../php/insert.php" method="POST" enctype="multipart/form-data">
-                                                <!-- 
-                                                    /////////////////////
-                                                    NEWS SECTION
-                                                    /////////////////////
-                                                    -->
+                                            <form class="container" action="./php/insert.php" method="POST" enctype="multipart/form-data">
+                                                <!--    
+                                                        =========================================================================
+                                                        ======================== NEWS SECTION ===================================
+                                                        =========================================================================
+                                                -->
                                                 <div class="row"> 
                                                     <h2 class="news-h2">
-                                                        Capture Deal Data
+                                                        News 
                                                     </h2>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                                                         <label for="NewsDate" class="form-label">News Date</label>
@@ -100,26 +285,52 @@
                                                         <textarea class="form-control" aria-label="With textarea" id="NewsNote" name="NewsNote"></textarea>
                                                     </div>  
                                                 </div>
-                                                <!-- 
-                                                /////////////////////
-                                                PORTFOLIO COMPANY SECTION
-                                                /////////////////////
+                                                <!--    
+                                                        =========================================================================
+                                                        ===================== STARTUP COMPANY SECTION ===========================
+                                                        =========================================================================
                                                 -->
-                                                <div class="row"> 
-                                                    <!-- 
-                                                        //////// Portfolio Company Detail ////////
-                                                    -->
+                                                <div class="row">  
+                                                    <h2 class="news-h2">
+                                                        Company Details
+                                                    </h2>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
-                                                        <input type="text" class="form-control" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
+                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
+                                                            <option>Select Company...</option>
+                                                            <?php
+                                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                                    # code...
+                                                                    echo "<option>".$row['PortfolioCompanyName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="PortfolioCompanyWebsite" class="form-label">Company Website</label>
-                                                        <input type="text" class="form-control" id="PortfolioCompanyWebsite" name="PortfolioCompanyWebsite" required>
+                                                        <select class="form-select" id="PortfolioCompanyWebsite" name="PortfolioCompanyWebsite" required>
+                                                            <option> Website...</option>
+                                                            <?php
+                                                                mysqli_data_seek($result,0);
+                                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                                    # code...
+                                                                    echo "<option>".$row['Website']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Details" class="form-label">Details</label>
-                                                        <input type="text" class="form-control" id="Details" name="Details">
+                                                        <select class="form-select" id="Details" name="Details" required>
+                                                            <option> Details...</option>
+                                                            <?php
+                                                                mysqli_data_seek($result, 0);
+                                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                                    # code...
+                                                                    echo "<option>".$row['Details']."..."."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="YearFounded" class="form-label">Year Founded</label>
@@ -127,61 +338,17 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Headquarters" class="form-label">Headquarters</label>
-                                                        <!-- <input type="text" class="form-control" id="Headquarters" name="Headquarters" required> -->
-                                                        <select id="Headquarters" name="Headquarters" class="form-select">
-                                                            <option>choose...</option>
-                                                            <option value="Unknown">Unknown</option>
-                                                            <option value="Finland">Finland</option>
-                                                            <option value="Canada">Canada</option>
-                                                            <option value="Angola">Angola</option>
-                                                            <option value="Benin">Benin</option>
-                                                            <option value="Botswana">Botswana</option>
-                                                            <option value="Burkina Faso">Burkina Faso</option>
-                                                            <option value="Cameroon">Cameroon</option>
-                                                            <option value="Chad">Chad</option>
-                                                            <option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
-                                                            <option value="Denmark">Denmark</option>
-                                                            <option value="Egypt">Egypt</option>
-                                                            <option value="Eswatini">Eswatini</option>
-                                                            <option value="Ethiopia">Ethiopia</option>
-                                                            <option value="EU">EU</option>
-                                                            <option value="Gabon">Gabon</option>
-                                                            <option value="Germany">Germany</option>
-                                                            <option value="Ghana">Ghana</option>
-                                                            <option value="India">India</option>
-                                                            <option value="Israel">Israel</option>
-                                                            <option value="Ivory Coast">Ivory Coast</option>
-                                                            <option value="Kenya">Kenya</option>
-                                                            <option value="Lesotho">Lesotho</option>
-                                                            <option value="Liberia">Liberia</option>
-                                                            <option value="Madagascar">Madagascar</option>
-                                                            <option value="Malawi">Malawi</option>
-                                                            <option value="Malaysia">Malaysia</option>
-                                                            <option value="Mali">Mali</option>
-                                                            <option value="Mauritius">Mauritius</option>
-                                                            <option value="Morocco">Morocco</option>
-                                                            <option value="Mozambique">Mozambique</option>
-                                                            <option value="Namibia">Namibia</option>
-                                                            <option value="Nepal">Nepal</option>
-                                                            <option value="Netherlands">Netherlands</option>
-                                                            <option value="Niger">Niger</option>
-                                                            <option value="Nigeria">Nigeria</option>
-                                                            <option value="Pakistan">Pakistan</option>
-                                                            <option value="Pan-African">Pan-African</option>
-                                                            <option value="Republic of Congo">Republic of Congo</option>
-                                                            <option value="Rwanda">Rwanda</option>
-                                                            <option value="Senegal">Senegal</option>
-                                                            <option value="Sierra Leone">Sierra Leone</option>
-                                                            <option value="Singapore">Singapore</option>
-                                                            <option value="Somalia">Somalia</option>
-                                                            <option value="South Africa">South Africa</option>
-                                                            <option value="South Sudan">South Sudan</option>
-                                                            <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
-                                                            <option value="Switzerland">Switzerland</option>
-                                                            <option value="Tanzania">Tanzania</option>
-                                                            <option value="Togo">Togo</option>
+                                                        <select class="form-select" id="Headquarters" name="Headquarters" required>
+                                                            <option> Headquarters...</option>
+                                                            <?php
+                                                                // mysqli_data_seek($result,0);
+                                                                while ($row3 = mysqli_fetch_assoc($result3)) {
+                                                                    # code...
+                                                                    echo "<option>".$row3['Country']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Stake" class="form-label">Stake</label>
                                                         <input type="text" class="form-control" id="Stake" name="Stake">
@@ -248,803 +415,188 @@
                                                             <option value="Other">Other</option>
                                                         </select>
                                                     </div>
-                                                    <!-- Sector Dropdowns -->
+                                                    <!-- Sector Dropdown -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ArtificialIntelligenceDrop">
-                                                        <label for="Sector" class="form-label">Sector</label>
+                                                        <label for="Sector" class="form-label">Sector </label>
                                                         <select id="Sector" name="Sector" class="form-select">
                                                             <option>choose...</option>
                                                         </select>
+                                                        <small style="color:red;">First select an industry </small>
                                                     </div>
                                                     <!-- 
                                                         /////////////////////
                                                         CURRENCY SECTION
                                                         /////////////////////
                                                     -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Currency" class="form-label">Currency</label>
-                                                        <select name="Currency" class="form-select" id="Currency" required>  
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Ethiopia Birr" >Ethiopia Birr</option>
-                                                            <option value="Angola Kwanza" >Angola Kwanza</option>
-                                                            <option value="Botswana Pula" >Botswana Pula</option>
-                                                            <option value="British Pound" >British Pound</option>
-                                                            <option value="Canada Dollar" >Canada Dollar</option>
-                                                            <option value="Central African CFA franc" >Central African CFA franc</option>
-                                                            <option value="Congo Franc" >Congo Franc</option>
-                                                            <option value="Denmark Krone" >Denmark Krone</option>
-                                                            <option value="Egypt Pound" >Egypt Pound</option>
-                                                            <option value="Euro" >Euro</option>
-                                                            <option value="Ghana Cedi" >Ghana Cedi</option>
-                                                            <option value="Indian Rupee" >Indian Rupee</option>
-                                                            <option value="Israel Shekel" >Israel Shekel</option>
-                                                            <option value="Kenya Shilling" >Kenya Shilling</option>
-                                                            <option value="Liberia Dollar" >Liberia Dollar</option>
-                                                            <option value="Madagascar Ariary" >Madagascar Ariary</option>
-                                                            <option value="Malawi Kwacha" >Malawi Kwacha</option>
-                                                            <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
-                                                            <option value="Mauritius Rupee" >Mauritius Rupee</option>
-                                                            <option value="Morocco Dirham" >Morocco Dirham</option>
-                                                            <option value="Mozambique Metical" >Mozambique Metical</option>
-                                                            <option value="Namibian Dollar" >Namibian Dollar</option>
-                                                            <option value="Nepal Rupee" >Nepal Rupee</option>
-                                                            <option value="Nigeria Naira" >Nigeria Naira</option>
-                                                            <option value="Norway Krone" >Norway Krone</option>
-                                                            <option value="Pakistan Rupee" >Pakistan Rupee</option>
-                                                            <option value="Rwanda Franc" >Rwanda Franc</option>
-                                                            <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
-                                                            <option value="Singapore Dollar" >Singapore Dollar</option>
-                                                            <option value="Somalia Shilling" >Somalia Shilling</option>
-                                                            <option value="South African Rand" >South African Rand</option>
-                                                            <option value="Sudan Pound" >Sudan Pound</option>
-                                                            <option value="Switzerland Franc" >Switzerland Franc</option>
-                                                            <option value="Tanzania Shilling" >Tanzania Shilling</option>
-                                                            <option value="Tunisia Dinar" >Tunisia Dinar</option>
-                                                            <option value="Uganda Shilling" >Uganda Shilling</option>
-                                                            <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
-                                                            <option value="Unknown Currency" >Unknown Currency</option>
-                                                            <option value="US Dollar" >US Dollar</option>
-                                                            <option value="West African CFA franc" >West African CFA franc</option>
-                                                            <option value="Zambia Kwacha" >Zambia Kwacha</option>
-                                                            <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
+                                                        <select class="form-select" id="Currency" name="Currency" required>
+                                                            <option> Currency...</option>
+                                                            <?php
+                                                                while ($row4 = mysqli_fetch_assoc($result4)) {
+                                                                    # code...
+                                                                    echo "<option>".$row4['Currency']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div> -->
+                                                </div>
+                                                <!--    
+                                                        =========================================================================
+                                                        ======================== USERDETAIL SECTION =============================
+                                                        =========================================================================
+                                                -->
+
+                                                <div class="row"> 
+                                                    <h2 class="news-h2">
+                                                        Contact Person
+                                                    </h2>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="UserFullName" class="form-label">First Name</label>
+                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                            <option> Select Contact Person...</option>
+                                                            <?php
+                                                                while ($row5 = mysqli_fetch_assoc($result5)) {
+                                                                    # code...
+                                                                    echo "<option>".$row5['UserFullName']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
-                                                </div>
-                                                <!-- 
-                                                    /////////////////////
-                                                    USER DETAIL
-                                                    /////////////////////
-                                                -->
-                                                <div class="row">
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="FirstName" class="form-label">First Name</label>
-                                                        <input type="text" class="form-control" id="FirstName" name="FirstName" required>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="LastName" class="form-label">Last Name</label>
-                                                        <input type="text" class="form-control" id="LastName" name="LastName" required>
+                                                        <select class="form-select" id="LastName" name="LastName" required>
+                                                            <option> Select LastName...</option>
+                                                            <?php
+                                                                mysqli_data_seek($result5,0);
+                                                                while ($row5 = mysqli_fetch_assoc($result5)) {
+                                                                    # code...
+                                                                    echo "<option>".$row5['LastName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Email" class="form-label">Email</label>
-                                                        <input type="text" class="form-control" id="Email" name="Email" required>
+                                                        <select class="form-select" id="Email" name="Email" required>
+                                                            <option> Select Email...</option>
+                                                            <?php
+                                                                while ($row6 = mysqli_fetch_assoc($result6)) {
+                                                                    # code...
+                                                                    echo "<option>".$row6['Email']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ContactNumber1" class="form-label">ContactNumber1</label>
-                                                        <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
+                                                        <label for="ContactNumber1" class="form-label"> Select Contact Number... </label>
+                                                        <select class="form-select" id="ContactNumber1" name="ContactNumber1" required>
+                                                            <option> Select Contact Number 1...</option>
+                                                            <?php
+                                                                mysqli_data_seek($result6,0);
+                                                                while ($row6 = mysqli_fetch_assoc($result6)) {
+                                                                    # code...
+                                                                    echo "<option>".$row6['ContactNumber1']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ContactNumber2" class="form-label">ContactNumber2</label>
+                                                        <label for="ContactNumber2" class="form-label">Select Contact Number 2...</label>
                                                         <input type="text" class="form-control" id="ContactNumber2" name="ContactNumber2">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="RoleType" class="form-label">RoleType</label>
-                                                        <select name="RoleType" class="form-select" id="RoleType" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="President">President</option>
-                                                            <option value="CEO">CEO</option>
-                                                            <option value="CFO">CFO</option>
-                                                            <option value="COO">COO</option>
+                                                        <label for="RoleType" class="form-label">Select Role Type...</label>                    
+                                                        <select class="form-select" id="RoleType" name="RoleType" required>
+                                                            <option> RoleType...</option>
+                                                            <?php
+                                                                while ($row7 = mysqli_fetch_assoc($result7)) {
+                                                                    # code...
+                                                                    echo "<option>".$row7['RoleType']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Gender" class="form-label">Gender</label>
-                                                        <select name="Gender" class="form-select" id="Gender" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Male">Male</option>
-                                                            <option value="Female">Female</option>
-                                                            <option value="Unknown">Unknown</option>
+                                                        <label for="Gender" class="form-label">Gender</label>                    
+                                                        <select class="form-select" id="Gender" name="Gender" required>
+                                                            <option> Select Gender...</option>
+                                                            <?php
+                                                                while ($row8 = mysqli_fetch_assoc($result8)) {
+                                                                    # code...
+                                                                    echo "<option>".$row8['Gender']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Race" class="form-label">Race</label>
-                                                        <select name="Race" class="form-select" id="Race" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Black">Black</option>
-                                                            <option value="White">White</option>
-                                                            <option value="Asian">Asian</option>
-                                                            <option value="Indian">Indian</option>
-                                                            <option value="Unknown">Unknown</option>
+                                                        <label for="Race" class="form-label">Race</label>                    
+                                                        <select class="form-select" id="Race" name="Race" required>
+                                                            <option> Select Race...</option>
+                                                            <?php
+                                                                while ($row9 = mysqli_fetch_assoc($result9)) {
+                                                                    # code...
+                                                                    echo "<option>".$row9['Race']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
-                                                <!-- 
-                                                    /////////////////////
-                                                    INVESTOR SECTION
-                                                    /////////////////////
+                                                <!--    
+                                                        =========================================================================
+                                                        ======================== INVESTOR SECTION ===============================
+                                                        =========================================================================
                                                 -->
-                                                <div class="row">
+                                                <div class="row"> 
+                                                    <h2 class="news-h2">
+                                                        Investor(s)
+                                                    </h2>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorName" class="form-label">Investor Name</label>
-                                                        <input list="investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
-                                                        <datalist id="investors">
-                                                            <option value=" 100x Group">
-                                                            <option value=" 12Tree Finance">
-                                                            <option value=" 138 Pyramids">
-                                                            <option value=" 27Four Investment Managers">
-                                                            <option value=" 4Di Capital">
-                                                            <option value=" 4DX Ventures">
-                                                            <option value=" 500 Startups">
-                                                            <option value=" 57 Stars">
-                                                            <option value=" 9Yards Capital">
-                                                            <option value=" A15">
-                                                            <option value=" ABC World Asia Pte Ltd">
-                                                            <option value=" ABN AMRO Social Impact Fund">
-                                                            <option value=" Absa Group">
-                                                            <option value=" Acceleprise">
-                                                            <option value=" Accial Capital">
-                                                            <option value=" Accion">
-                                                            <option value=" Acorn Private Equity">
-                                                            <option value=" Acorus Capital">
-                                                            <option value=" Act Venture Capital">
-                                                            <option value=" ACTIAM Impact Investing*">
-                                                            <option value=" Actis Africa Ltd">
-                                                            <option value=" Acuity Venture Partners">
-                                                            <option value=" Acumen">
-                                                            <option value=" Adenia Partners">
-                                                            <option value=" Adinah Capital Partners">
-                                                            <option value=" Adiwale Partners">
-                                                            <option value=" Adlevo Capital">
-                                                            <option value=" Aegon">
-                                                            <option value=" AFIG Funds">
-                                                            <option value=" AfrAsia Bank">
-                                                            <option value=" Africa Finance Corporation (AFC)">
-                                                            <option value=" Africa Lighthouse Capital">
-                                                            <option value=" Africa Rainbow Capital">
-                                                            <option value=" Africa Trust Group">
-                                                            <option value=" African Capital Alliance">
-                                                            <option value=" African Development Bank">
-                                                            <option value=" African Infrastructure Investment Managers (Pty) Ltd">
-                                                            <option value=" AfricInvest Group">
-                                                            <option value=" Afza Capital">
-                                                            <option value=" AgDevCo">
-                                                            <option value=" Agile Holdings">
-                                                            <option value=" Agility Ventures">
-                                                            <option value=" Agis Ventures">
-                                                            <option value=" Agri-Business Capital (ABC Fund)">
-                                                            <option value=" AgVentures">
-                                                            <option value=" AHL Venture Partners">
-                                                            <option value=" Ahmed Hentati">
-                                                            <option value=" Akili Partners">
-                                                            <option value=" Alameda Research / FTX">
-                                                            <option value=" Alex Angels">
-                                                            <option value=" Alexandria Fund">
-                                                            <option value=" Algebra Ventures">
-                                                            <option value=" Alitheia Capital">
-                                                            <option value=" Alitheia IDF">
-                                                            <option value=" All On">
-                                                            <option value=" Allianz Global Investors">
-                                                            <option value=" AlphaCode">
-                                                            <option value=" alter equity">
-                                                            <option value=" Amethis">
-                                                            <option value=" Amplifi VC">
-                                                            <option value=" Anava Seed Fund">
-                                                            <option value=" Andreessen Horowitz">
-                                                            <option value=" Anesvad">
-                                                            <option value=" Angel Investment Network">
-                                                            <option value=" Anorak Ventures">
-                                                            <option value=" Anthemis">
-                                                            <option value=" Antler">
-                                                            <option value=" API Capital">
-                                                            <option value=" Aptive Capital">
-                                                            <option value=" ARCH Emerging Markets Partners">
-                                                            <option value=" Argentil Capital Partners">
-                                                            <option value=" ARM-Harith Infrastructure Investment Limited">
-                                                            <option value=" Aruwa Capital">
-                                                            <option value=" Ascension Capital Partners">
-                                                            <option value=" Ascent Capital Africa">
-                                                            <option value=" Ashburton Fund Managers (Proprietary) Limited">
-                                                            <option value=" Asia Africa Investment Consulting (AAIC)">
-                                                            <option value=" ASMA Invest">
-                                                            <option value=" ASOC Management Company">
-                                                            <option value=" Ata Capital (Pty) Ltd">
-                                                            <option value=" Athaal Group">
-                                                            <option value=" Athena Capital (Pty) Ltd">
-                                                            <option value=" Athena Capital Advisors">
-                                                            <option value=" Atlantica Ventures">
-                                                            <option value=" AU21 Capital">
-                                                            <option value=" AUC Angels">
-                                                            <option value=" AV Ventures">
-                                                            <option value=" Averroes VC">
-                                                            <option value=" Awethu Project Capital">
-                                                            <option value=" AXA Investment Managers">
-                                                            <option value=" Axian Group">
-                                                            <option value=" Backstage Capital">
-                                                            <option value=" Baillie Gifford">
-                                                            <option value=" Bain Capital">
-                                                            <option value=" Bank of America">
-                                                            <option value=" Barak Fund Management">
-                                                            <option value=" Beco Capital">
-                                                            <option value=" Berkeley Energy">
-                                                            <option value=" Bertelsmann Stiftung">
-                                                            <option value=" Betatron">
-                                                            <option value=" Bezos Expeditions">
-                                                            <option value=" BFS Fund Manager">
-                                                            <option value=" Big Society Capital">
-                                                            <option value=" Bill & Melinda Gates Foundation">
-                                                            <option value=" Binance Labs">
-                                                            <option value=" BIO (Belgian Investment Company for Developing Countries)">
-                                                            <option value=" Bittrex">
-                                                            <option value=" BIX Capital">
-                                                            <option value=" Black Business Council">
-                                                            <option value=" Black Coffee">
-                                                            <option value=" BlackRock">
-                                                            <option value=" Blackstone">
-                                                            <option value=" BlueOrchard Finance">
-                                                            <option value=" Bopa Moruo">
-                                                            <option value=" Boundary Holding">
-                                                            <option value=" Bpifrance Investissement">
-                                                            <option value=" Brandon Drew">
-                                                            <option value=" Breakthrough Energy Ventures">
-                                                            <option value=" Bridges Fund Management">
-                                                            <option value=" BrightEdge">
-                                                            <option value=" Brighter Life Kenya 1 Limited (BLK1)">
-                                                            <option value=" Brightmore Capital">
-                                                            <option value=" BTG Pactual">
-                                                            <option value=" Business Partners Limited">
-                                                            <option value=" Cairo Angels">
-                                                            <option value=" Caisse des Depots et Consignations du Gabon">
-                                                            <option value=" Calvert Impact Capital">
-                                                            <option value=" Cambridge Associates*">
-                                                            <option value=" Capital Impact Partners">
-                                                            <option value=" Capitalworks Investment Partners">
-                                                            <option value=" Capricorn Investment Group">
-                                                            <option value=" Capsa Capital Partners">
-                                                            <option value=" CardinalStone Capital Advisers">
-                                                            <option value=" Casey Family Programs">
-                                                            <option value=" Catalyst Fund">
-                                                            <option value=" Catalyst Principal Partners">
-                                                            <option value=" Cauris Management">
-                                                            <option value=" CBRE Global Investors">
-                                                            <option value=" CDC Group">
-                                                            <option value=" CDG Capital Private Equity">
-                                                            <option value=" Celo Ecosystem Fund">
-                                                            <option value=" Ceniarth">
-                                                            <option value=" Centum Investments">
-                                                            <option value=" Cepheus Growth Capital Partners">
-                                                            <option value=" Chandaria Capital">
-                                                            <option value=" Change Ventures">
-                                                            <option value=" Chapel Hill Denham Nigeria Infrastructure Debt Fund (NIDF)">
-                                                            <option value=" Christian Super">
-                                                            <option value=" Cinnabar Investment Management">
-                                                            <option value=" Cisco Global Problem Solver Challenge">
-                                                            <option value=" Citigroup">
-                                                            <option value=" Clean Energy Ventures">
-                                                            <option value=" ClearSky">
-                                                            <option value=" Climate Fund Managers">
-                                                            <option value=" Climate Investor Two (CI2)">
-                                                            <option value=" ClimateWorks Foundation">
-                                                            <option value=" CNBB Venture Partners">
-                                                            <option value=" Co-Creation Hub (CcHub)">
-                                                            <option value=" Coast2Coast Capital">
-                                                            <option value=" Compass Venture Capital">
-                                                            <option value=" Consonance Investment Managers">
-                                                            <option value=" Convergence Finance">
-                                                            <option value=" Convergence Partners">
-                                                            <option value=" Cordaid Investment Management">
-                                                            <option value=" Craft Silicon">
-                                                            <option value=" CRE VC">
-                                                            <option value=" Credit Suisse">
-                                                            <option value=" Crevisse Partners">
-                                                            <option value=" CrossBoundary">
-                                                            <option value=" Crossfin">
-                                                            <option value=" Crucis Venture Capital">
-                                                            <option value=" DAAL VC">
-                                                            <option value=" DAI Capital">
-                                                            <option value=" Dale Williams">
-                                                            <option value=" DCVC">
-                                                            <option value=" Deciens Capital">
-                                                            <option value=" DEG">
-                                                            <option value=" Denali Venture Philanthropy">
-                                                            <option value=" Deutsche Bank">
-                                                            <option value=" Development Bank of Southern Africa (DBSA)">
-                                                            <option value=" Development Finance Corporation (DFC)">
-                                                            <option value=" Development Partners International LLP">
-                                                            <option value=" DFS Lab">
-                                                            <option value=" Diaspora Angel Network">
-                                                            <option value=" DiGAME Advisory">
-                                                            <option value=" Digital Africa Ventures">
-                                                            <option value=" Digital Horizon">
-                                                            <option value=" Disruptech Ventures">
-                                                            <option value=" DOB Equity">
-                                                            <option value=" Domini Impact Investments">
-                                                            <option value=" Dr Dumebi Okwechime">
-                                                            <option value=" Draper Dark Flow (DDF Capital)">
-                                                            <option value=" Dream Project Incubators (DPI)">
-                                                            <option value=" Dual Gate Investment Holding">
-                                                            <option value=" Dubai Angel Investors">
-                                                            <option value=" Dutch Fund for Climate and Development (DFCD)">
-                                                            <option value=" Dutch Good Growth Fund">
-                                                            <option value=" Dyres Ventures">
-                                                            <option value=" E-Squared">
-                                                            <option value=" Ebikar">
-                                                            <option value=" EchoVC Partners">
-                                                            <option value=" Ecobank Group">
-                                                            <option value=" EDFI">
-                                                            <option value=" Edge Growth">
-                                                            <option value=" EdVentures">
-                                                            <option value=" EF Logistics">
-                                                            <option value=" EFG EV">
-                                                            <option value=" Egbank">
-                                                            <option value=" Egypt Ventures">
-                                                            <option value=" Ekuity Capital">
-                                                            <option value=" Électricité de France (EDF)">
-                                                            <option value=" Elevar Equity">
-                                                            <option value=" Emerging Capital Partners">
-                                                            <option value=" Emerging Energy Corp">
-                                                            <option value=" Emfato Holdings">
-                                                            <option value=" Enablis Financial Corporation SA">
-                                                            <option value=" Endeavor">
-                                                            <option value=" Endure Capital">
-                                                            <option value=" Energy Access Ventures">
-                                                            <option value=" Enterprise Community Partners">
-                                                            <option value=" Entree Capital">
-                                                            <option value=" Entrepreneurs for Entrepreneurs (E4E)">
-                                                            <option value=" Enygma Ventures">
-                                                            <option value=" Enza Capital">
-                                                            <option value=" Eos Capital">
-                                                            <option value=" Eric Zinterhofer">
-                                                            <option value=" Espin Capital">
-                                                            <option value=" Essa Al-Saleh">
-                                                            <option value=" Ethos Private Equity">
-                                                            <option value=" European Investment Bank">
-                                                            <option value=" EXEO Capital">
-                                                            <option value=" Expert DOJO">
-                                                            <option value=" Fajr Capital">
-                                                            <option value=" FBNQuest Funds Ltd">
-                                                            <option value=" Ferd AS">
-                                                            <option value=" Finance in Motion">
-                                                            <option value=" FINCA International">
-                                                            <option value=" FinDev Canada">
-                                                            <option value=" Finnfund">
-                                                            <option value=" FinX Capital">
-                                                            <option value=" Fitech Ventures">
-                                                            <option value=" Flat6labs">
-                                                            <option value=" Flourish Ventures">
-                                                            <option value=" FMO">
-                                                            <option value=" Fondaction">
-                                                            <option value=" Fonds de solidarité FTQ">
-                                                            <option value=" Fonds Souverain d'Investissements Strategiques">
-                                                            <option value=" Ford Foundation">
-                                                            <option value=" Foundation North">
-                                                            <option value=" Foundation Ventures">
-                                                            <option value=" Founder Collective">
-                                                            <option value=" Frontline Ventures">
-                                                            <option value=" FSD Africa">
-                                                            <option value=" Future Africa">
-                                                            <option value=" Future Perfect Ventures">
-                                                            <option value=" Futuregrowth">
-                                                            <option value=" GAIA Fund Managers (Pty) Ltd">
-                                                            <option value=" GAIA Impact Fund">
-                                                            <option value=" GAN Ventures">
-                                                            <option value=" Gary Community Investments">
-                                                            <option value=" GAWA Capital">
-                                                            <option value=" GFH Holdings">
-                                                            <option value=" GGV Capital">
-                                                            <option value=" Glenmede">
-                                                            <option value=" Glint Ventures / Consulting">
-                                                            <option value=" Global Alliance for Improved Nutrition">
-                                                            <option value=" Global Capital">
-                                                            <option value=" Global Innovation Fund">
-                                                            <option value=" Global Partnerships">
-                                                            <option value=" Global Ventures">
-                                                            <option value=" Golden Palm">
-                                                            <option value=" Golding Capital">
-                                                            <option value=" GOODsoil VC">
-                                                            <option value=" Goodwell Investments">
-                                                            <option value=" Google Developers Launchpad">
-                                                            <option value=" Google.org">
-                                                            <option value=" Government Employees Pension Fund">
-                                                            <option value=" Gozem">
-                                                            <option value=" Graphene Ventures">
-                                                            <option value=" Grassroots Business Fund">
-                                                            <option value=" Gray Matters Capital">
-                                                            <option value=" GreenHouse Capital">
-                                                            <option value=" Greenspring Associates">
-                                                            <option value=" GreenTec Capital Partners">
-                                                            <option value=" Grenfell Holdings">
-                                                            <option value=" Grindrod Private Equity">
-                                                            <option value=" Grindstone Ventures">
-                                                            <option value=" Grofin">
-                                                            <option value=" Grovest Venture Capital Company Limited">
-                                                            <option value=" Growing Africa Capital">
-                                                            <option value=" Growth Capital Partners">
-                                                            <option value=" Growth Grid Venture Capital Partners">
-                                                            <option value=" GSV Ventures">
-                                                            <option value=" HaloCare">
-                                                            <option value=" Hancock Natural Resource Group">
-                                                            <option value=" Harith General Partners">
-                                                            <option value=" HAVAIC Holdings South Africa">
-                                                            <option value=" HCAP Partners*">
-                                                            <option value=" Helios Investment Partners">
-                                                            <option value=" Heritage Capital">
-                                                            <option value=" Hermes Investment Management">
-                                                            <option value=" HIMangel">
-                                                            <option value=" Hlayisani Capital">
-                                                            <option value=" Hubei Forbon Technology Co">
-                                                            <option value=" Hult Alumni Angels">
-                                                            <option value=" Hustle Fund VC">
-                                                            <option value=" i-Cubed Capital (Pty) Ltd">
-                                                            <option value=" Ibnsina Pharma">
-                                                            <option value=" IDB">
-                                                            <option value=" IDF Capital">
-                                                            <option value=" IDP Foundation">
-                                                            <option value=" Idriss Bello">
-                                                            <option value=" IFU (Investment Fund for Developing Countries)">
-                                                            <option value=" IJG Capital">
-                                                            <option value=" Ikea Foundation">
-                                                            <option value=" Impact Amplifier">
-                                                            <option value=" Impact Community Capital">
-                                                            <option value=" Impax Asset Management">
-                                                            <option value=" Imvelo Ventures">
-                                                            <option value=" Indigo 7 Ventures (I7V)">
-                                                            <option value=" Industrial Development Corporation (IDC)">
-                                                            <option value=" Infinitus Holdings (Pty) Ltd">
-                                                            <option value=" InfraCo Africa">
-                                                            <option value=" InfraCredit">
-                                                            <option value=" Ingressive Capital">
-                                                            <option value=" Injaro Investments">
-                                                            <option value=" Innlife investments">
-                                                            <option value=" Innovation Partners Africa">
-                                                            <option value=" INOKS Capital">
-                                                            <option value=" Inside Capital Partners">
-                                                            <option value=" Insitor Partners">
-                                                            <option value=" Inspired Evolution Investment Management (Pty) Ltd">
-                                                            <option value=" Intel Capital">
-                                                            <option value=" International Finance Corporation (IFC)">
-                                                            <option value=" Invenfin">
-                                                            <option value=" Investec Asset Management - Africa Private Equity Fund">
-                                                            <option value=" Investisseurs & Partenaires">
-                                                            <option value=" Itanna">
-                                                            <option value=" J.P. Morgan">
-                                                            <option value=" Janus Henderson Investors">
-                                                            <option value=" Jarvie Group">
-                                                            <option value=" Jasminum Capital">
-                                                            <option value=" Jim Waltrip">
-                                                            <option value=" Johannesburg Stock Exchange (JSE)">
-                                                            <option value=" Jonathan Rose Companies">
-                                                            <option value=" Jordan Park">
-                                                            <option value=" Jozi Angels">
-                                                            <option value=" JUA Kickstarter Fund">
-                                                            <option value=" JUN Capital">
-                                                            <option value=" Kagiso Capital">
-                                                            <option value=" Kagiso Tiso Holdings">
-                                                            <option value=" Kalon Venture Partners">
-                                                            <option value=" Karim Jouini">
-                                                            <option value=" Kasada Capital Management">
-                                                            <option value=" KawiSafi Ventures">
-                                                            <option value=" Ke Nako Capital (Pty) Ltd">
-                                                            <option value=" Kepple Africa Ventures">
-                                                            <option value=" KfW">
-                                                            <option value=" Khula Lula">
-                                                            <option value=" Khumovest">
-                                                            <option value=" Kibo Capital">
-                                                            <option value=" Kingson Capital Partners">
-                                                            <option value=" Kleoss Capital">
-                                                            <option value=" Knarrs Ventures">
-                                                            <option value=" KNF Ventures/Knife Capital">
-                                                            <option value=" Kois Invest">
-                                                            <option value=" Kupanda Capital">
-                                                            <option value=" KZN Growth Fund Trust">
-                                                            <option value=" Labs by ARM">
-                                                            <option value=" Lachy Groom">
-                                                            <option value=" Lagos Angel Network">
-                                                            <option value=" Lateral Capital">
-                                                            <option value=" LeapFrog Investments">
-                                                            <option value=" Lendable Inc">
-                                                            <option value=" Lendable">
-                                                            <option value=" Lexington Partners">
-                                                            <option value=" LGT Lightstone">
-                                                            <option value=" Linkmakers Capital">
-                                                            <option value=" Lion’s Head Global Partners (LHGP)">
-                                                            <option value=" LionPride Investment Holdings">
-                                                            <option value=" Liquid 2 Ventures">
-                                                            <option value=" LocalGlobe">
-                                                            <option value=" LoftyInc">
-                                                            <option value=" Lombard Odier & Cie">
-                                                            <option value=" Lorax Capital Partners">
-                                                            <option value=" Loyal VC">
-                                                            <option value=" Ludlow Ventures">
-                                                            <option value=" Luxembourg Microfinance and Development Fund (LMDF)">
-                                                            <option value=" M&G Investments">
-                                                            <option value=" MAC Capital Partners">
-                                                            <option value=" MaC Venture Capital">
-                                                            <option value=" Mahlako-a-Phahla Financial Services">
-                                                            <option value=" MAIF">
-                                                            <option value=" Makalani Management Company (Pty) Ltd">
-                                                            <option value=" Mark Forrester">
-                                                            <option value=" Matuca Sarl">
-                                                            <option value=" Maxula Gestion">
-                                                            <option value=" MCB Equity Fund">
-                                                            <option value=" Mediterrania Capital Partners">
-                                                            <option value=" Medu Capital">
-                                                            <option value=" Meninx Holding">
-                                                            <option value=" Mennonite Economic Development Association (MEDA)">
-                                                            <option value=" Mercy Corps Ventures">
-                                                            <option value=" Mergence">
-                                                            <option value=" Mesoamerica">
-                                                            <option value=" MEST">
-                                                            <option value=" Metier">
-                                                            <option value=" MFS Africa">
-                                                            <option value=" Michael & Susan Dell Foundation">
-                                                            <option value=" Michael Siebel">
-                                                            <option value=" Microtraction">
-                                                            <option value=" Milton A. & Charlotte R. Kramer Charitable Foundation">
-                                                            <option value=" MITC Capital">
-                                                            <option value=" MN">
-                                                            <option value=" Mobility 54">
-                                                            <option value=" Modus Capital">
-                                                            <option value=" Montegray Capital">
-                                                            <option value=" Morgan Stanley">
-                                                            <option value=" Mozilla Corporation">
-                                                            <option value=" MSA Capital">
-                                                            <option value=" Multiply Group">
-                                                            <option value=" Musha Ventures">
-                                                            <option value=" Naspers Foundry">
-                                                            <option value=" National Australia Bank">
-                                                            <option value=" National Empowerment Fund (NEF)">
-                                                            <option value=" Nedbank Private Equity">
-                                                            <option value=" Nephila">
-                                                            <option value=" Neuberger Berman">
-                                                            <option value=" New Forests">
-                                                            <option value=" NewAfrica Impact">
-                                                            <option value=" Newtown Partners">
-                                                            <option value=" Niche Capital">
-                                                            <option value=" Nigeria Impact Startup Relief Facility (NISRF)">
-                                                            <option value=" Nigeria Sovereign Investment Authority">
-                                                            <option value=" Nigerian Stock Exchange">
-                                                            <option value=" Nile Development & Investment">
-                                                            <option value=" Ninety One">
-                                                            <option value=" Nonprofit Finance Fund*">
-                                                            <option value=" Norfund">
-                                                            <option value=" Norican">
-                                                            <option value=" Norsad Finance">
-                                                            <option value=" Northern Trust">
-                                                            <option value=" Novare Equity Partners (Pty) Ltd">
-                                                            <option value=" Novastar Ventures">
-                                                            <option value=" NREP">
-                                                            <option value=" Oasis Capital">
-                                                            <option value=" Obviam">
-                                                            <option value=" Oikocredit International">
-                                                            <option value=" Old Mutual Alternative Investments">
-                                                            <option value=" Olumide Soyombo">
-                                                            <option value=" Oman Technology Fund">
-                                                            <option value=" Omidyar Network">
-                                                            <option value=" Omnivore">
-                                                            <option value=" One Africa Capital Partners">
-                                                            <option value=" One to Watch">
-                                                            <option value=" Open Society Foundations">
-                                                            <option value=" Orange Ventures">
-                                                            <option value=" Ortus Africa Capital">
-                                                            <option value=" Outlierz Ventures">
-                                                            <option value=" Owl Ventures">
-                                                            <option value=" P1 Ventures">
-                                                            <option value=" Pacer Ventures">
-                                                            <option value=" Pacific Community Ventures">
-                                                            <option value=" PAPEfunds">
-                                                            <option value=" Paper Plane Ventures/ Platform Investment Partners">
-                                                            <option value=" Partech">
-                                                            <option value=" PCM Capital Partners">
-                                                            <option value=" Pearl Capital Partners">
-                                                            <option value=" Pembani Remgro Infrastructure Managers (Pty) Ltd">
-                                                            <option value=" Persistent Energy Capital (PEC)">
-                                                            <option value=" Pharos Capital Group">
-                                                            <option value=" Phatisa">
-                                                            <option value=" Pick n Pay">
-                                                            <option value=" Pioneer">
-                                                            <option value=" Platform Capital Investment Partners">
-                                                            <option value=" Plexo Capital">
-                                                            <option value=" Plug and Play">
-                                                            <option value=" Plus VC (+VC)">
-                                                            <option value=" Point Nine Capital">
-                                                            <option value=" Polychain">
-                                                            <option value=" Portocolom EAF">
-                                                            <option value=" Portugal Gateway Growth Fund">
-                                                            <option value=" Principal Partners">
-                                                            <option value=" ProfitShare Partners">
-                                                            <option value=" Proparco">
-                                                            <option value=" Prudential">
-                                                            <option value=" Public Investment Corporation">
-                                                            <option value=" Q-Impact">
-                                                            <option value=" Quona Capital">
-                                                            <option value=" Raba Partnership">
-                                                            <option value=" Rabo Foundation">
-                                                            <option value=" Rally Cap Ventures">
-                                                            <option value=" Raptor Group">
-                                                            <option value=" RBC Global Asset Management">
-                                                            <option value=" Realdania">
-                                                            <option value=" Renew / Impact Angel Network (IAN)">
-                                                            <option value=" ResponsAbility">
-                                                            <option value=" Reyl">
-                                                            <option value=" RGAx">
-                                                            <option value=" RH Managers">
-                                                            <option value=" Ribbit Capital">
-                                                            <option value=" Rising Tide Africa">
-                                                            <option value=" RMB Corvest">
-                                                            <option value=" ROAM Africa">
-                                                            <option value=" RobecoSAM*">
-                                                            <option value=" Rockwood Private Equity">
-                                                            <option value=" Ronald Lauder">
-                                                            <option value=" Root Capital">
-                                                            <option value=" Rothschild & Co Merchant Banking">
-                                                            <option value=" RP Global">
-                                                            <option value=" Ruby Rock Investment">
-                                                            <option value=" Sagemcom">
-                                                            <option value=" Sahel Capital">
-                                                            <option value=" Sahil Lavingia">
-                                                            <option value=" Saisan Company Ltd">
-                                                            <option value=" SaltPay">
-                                                            <option value=" Samata Capital">
-                                                            <option value=" Sampada Private Equity (Pty) Ltd">
-                                                            <option value=" Samurai Incubate">
-                                                            <option value=" Sanari Capital">
-                                                            <option value=" Sandeep Nailwal">
-                                                            <option value=" Sango Capital">
-                                                            <option value=" Sanlam Private Equity">
-                                                            <option value=" Sarona Asset Management">
-                                                            <option value=" Sasfin Private Equity Fund Managers">
-                                                            <option value=" Savannah Fund">
-                                                            <option value=" Savant Fund Managers">
-                                                            <option value=" Saviu Ventures">
-                                                            <option value=" Sawari Ventures">
-                                                            <option value=" SBC">
-                                                            <option value=" SBI Investment">
-                                                            <option value=" SBM Mauritius Asset Managers">
-                                                            <option value=" SEAF">
-                                                            <option value=" Secha Capital">
-                                                            <option value=" Seedrs">
-                                                            <option value=" Segal Family Foundation">
-                                                            <option value=" Senatla Capital">
-                                                            <option value=" SETsquared">
-                                                            <option value=" SGC7375">
-                                                            <option value=" Shell Foundation*">
-                                                            <option value=" ShEquity">
-                                                            <option value=" Sherpa Ventures">
-                                                            <option value=" SIMA Funds">
-                                                            <option value=" Sithega">
-                                                            <option value=" SixThirty">
-                                                            <option value=" SJF Ventures*">
-                                                            <option value=" Small Foundation">
-                                                            <option value=" Smollan">
-                                                            <option value=" Soma Capital">
-                                                            <option value=" South Suez Capital Ltd">
-                                                            <option value=" SPARK+ Africa Fund">
-                                                            <option value=" SPE Capital Partners">
-                                                            <option value=" SSE Angel Network">
-                                                            <option value=" Standard Bank Group">
-                                                            <option value=" Stellenbosch Graduate Institute (SGI)">
-                                                            <option value=" STOA">
-                                                            <option value=" Stockdale Street">
-                                                            <option value=" Stripe">
-                                                            <option value=" Subtropico Limited">
-                                                            <option value=" Summit Private Equity">
-                                                            <option value=" SunFunder">
-                                                            <option value=" Surdna Foundation">
-                                                            <option value=" SUSI Partners">
-                                                            <option value=" Swedfund International AB">
-                                                            <option value=" Swiss Investment Fund for Emerging Markets (SIFEM)">
-                                                            <option value=" Symbiotics">
-                                                            <option value=" Synergy Capital Managers">
-                                                            <option value=" Takura Capital">
-                                                            <option value=" Tamela Holdings (Pty) Ltd">
-                                                            <option value=" Tana Africa Capital Managers">
-                                                            <option value=" Tangerine Life">
-                                                            <option value=" Target Global">
-                                                            <option value=" Team Africa Ventures">
-                                                            <option value=" Techstars">
-                                                            <option value=" The California Endowment">
-                                                            <option value=" The Carlyle Group">
-                                                            <option value=" The Eastern and Southern African Trade & Development Bank TDB">
-                                                            <option value=" The Forest Company">
-                                                            <option value=" The Innovation Village">
-                                                            <option value=" The Kresge Foundation">
-                                                            <option value=" The Lemelson Foundation">
-                                                            <option value=" The Oakmont Partnership">
-                                                            <option value=" The Rise Fund">
-                                                            <option value=" The Rockefeller Foundation">
-                                                            <option value=" The SA SME Fund Limited">
-                                                            <option value=" The Sasakawa Peace Foundation">
-                                                            <option value=" The Vistria Group">
-                                                            <option value=" Thinkroom Consulting">
-                                                            <option value=" Third Way Investment Partners (TWIP)">
-                                                            <option value=" ThomasLloyd Group">
-                                                            <option value=" Thuso Incubation Partners">
-                                                            <option value=" Tides">
-                                                            <option value=" TLcom Capital">
-                                                            <option value=" Total Energy Ventures">
-                                                            <option value=" TPG Growth">
-                                                            <option value=" TRG Capital">
-                                                            <option value=" TriLinc Global*">
-                                                            <option value=" Trinitas Private Equity">
-                                                            <option value=" Trinity Wall Street">
-                                                            <option value=" Triodos Investment Management">
-                                                            <option value=" Tsadik Foundation">
-                                                            <option value=" U.S. Africa Development Foundation (USADF)">
-                                                            <option value=" U.S.-African TIES program">
-                                                            <option value=" UBank">
-                                                            <option value=" UBS">
-                                                            <option value=" UGFS-NA">
-                                                            <option value=" UK Foreign Commonwealth and Development Office (FCDO)">
-                                                            <option value=" uKheshe">
-                                                            <option value=" Umkhati Wethu Ventures">
-                                                            <option value=" UNICEF">
-                                                            <option value=" USADF">
-                                                            <option value=" Van Lanschot Kempen">
-                                                            <option value=" Vantage Capital Group">
-                                                            <option value=" VentureBuilder">
-                                                            <option value=" Ventures Platform">
-                                                            <option value=" VentureWave Capital">
-                                                            <option value=" Verod Capital Management">
-                                                            <option value=" VestedWorld">
-                                                            <option value=" VFD Group">
-                                                            <option value=" ViaMedia">
-                                                            <option value=" ViKtoria Ventures">
-                                                            <option value=" Village Capital">
-                                                            <option value=" Villgro Africa">
-                                                            <option value=" Virginia Community Capital">
-                                                            <option value=" Vision Ventures">
-                                                            <option value=" Vodacom Digital Accelerator">
-                                                            <option value=" Vostok New Ventures">
-                                                            <option value=" VPB (Pty) Ltd / Temo Capital">
-                                                            <option value=" Vumela">
-                                                            <option value=" Wallace Global Fund">
-                                                            <option value=" Wamda Capital">
-                                                            <option value=" Wangara Green Ventures">
-                                                            <option value=" Wellington Management">
-                                                            <option value=" Wendel Africa">
-                                                            <option value=" Wespath Benefits and Investments">
-                                                            <option value=" West Africa Capital Advisors">
-                                                            <option value=" Westbrooke Capital Management">
-                                                            <option value=" WIC Capital">
-                                                            <option value=" Women Entrepreneurs Finance Initiative (We-Fi)">
-                                                            <option value=" Women's World Banking">
-                                                            <option value=" Womena">
-                                                            <option value=" XSML Capital">
-                                                            <option value=" Y Combinator">
-                                                            <option value=" Yellowwoods">
-                                                            <option value=" Yoyo">
-                                                            <option value=" ZAIS Group">
-                                                            <option value=" ZB Capital">
-                                                            <option value=" Zebu Investment Partners">
-                                                            <option value=" Zedcrest Capital">
-                                                            <option value=" Zephyr Management">
-                                                            <option value=" Zetogon">
-                                                            <option value=" Zurich Insurance Group">
-                                                        </datalist>
+                                                        <label for="InvestorName" class="form-label">Investor Name</label>        
+                                                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                                                            <option> InvestorName...</option>
+                                                            <?php
+                                                                while ($rowA1 = mysqli_fetch_assoc($resultA1)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA1['InvestorName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>  
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorWebsite" class="form-label">Investor Website</label>
-                                                        <input type="text" class="form-control" id="InvestorWebsite" name="InvestorWebsite" required>
+                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="InvestorWebsite" class="form-label">Investor Website</label>       
+                                                        <select class="form-select" id="InvestorWebsite" name="InvestorWebsite" required>
+                                                            <option> Website...</option>
+                                                            <?php
+                                                                while ($rowA2 = mysqli_fetch_assoc($resultA2)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA2['Website']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorNote" class="form-label">Investor Note</label>
-                                                        <textarea class="form-control InvestorNote" aria-label="With textarea" id=" InvestorNote" name=" InvestorNote"></textarea>
+                                                        <label for="InvestorNote" class="form-label">Investor Note</label>     
+                                                        <select class="form-select" id="InvestorNote" name="InvestorNote" required>
+                                                            <option> Select Note...</option>
+                                                            <?php
+                                                                while ($rowA3 = mysqli_fetch_assoc($resultA3)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA3['Note']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ImpactTag" class="form-label">Impact Tag</label>
-                                                        <select name="ImpactTag" class="form-select" id="ImpactTag" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Impact">Impact</option>
-                                                            <option value="Gender">Gender</option>
-                                                            <option value="Race">Race</option>
+                                                        <label for="ImpactTag" class="form-label">Impact Tag</label>     
+                                                        <select class="form-select" id="ImpactTag" name="ImpactTag" required>
+                                                            <option> Select Impact Tag...</option>
+                                                            <?php
+                                                                while ($rowA4 = mysqli_fetch_assoc($resultA4)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA4['ImpactTag']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
@@ -1052,60 +604,15 @@
                                                         <input type="text" class="form-control" id="YearFounded" name="YearFounded">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorHeadquarters" class="form-label">Headquarters</label>
-                                                        <!-- <input type="text" class="form-control" id="Headquarters" name="Headquarters" required> -->
-                                                        <select id="InvestorHeadquarters" name="InvestorHeadquarters" class="form-select">
-                                                            <option>choose...</option>
-                                                            <option value="Unknown">Unknown</option>
-                                                            <option value="Finland">Finland</option>
-                                                            <option value="Canada">Canada</option>
-                                                            <option value="Angola">Angola</option>
-                                                            <option value="Benin">Benin</option>
-                                                            <option value="Botswana">Botswana</option>
-                                                            <option value="Burkina Faso">Burkina Faso</option>
-                                                            <option value="Cameroon">Cameroon</option>
-                                                            <option value="Chad">Chad</option>
-                                                            <option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
-                                                            <option value="Denmark">Denmark</option>
-                                                            <option value="Egypt">Egypt</option>
-                                                            <option value="Eswatini">Eswatini</option>
-                                                            <option value="Ethiopia">Ethiopia</option>
-                                                            <option value="EU">EU</option>
-                                                            <option value="Gabon">Gabon</option>
-                                                            <option value="Germany">Germany</option>
-                                                            <option value="Ghana">Ghana</option>
-                                                            <option value="India">India</option>
-                                                            <option value="Israel">Israel</option>
-                                                            <option value="Ivory Coast">Ivory Coast</option>
-                                                            <option value="Kenya">Kenya</option>
-                                                            <option value="Lesotho">Lesotho</option>
-                                                            <option value="Liberia">Liberia</option>
-                                                            <option value="Madagascar">Madagascar</option>
-                                                            <option value="Malawi">Malawi</option>
-                                                            <option value="Malaysia">Malaysia</option>
-                                                            <option value="Mali">Mali</option>
-                                                            <option value="Mauritius">Mauritius</option>
-                                                            <option value="Morocco">Morocco</option>
-                                                            <option value="Mozambique">Mozambique</option>
-                                                            <option value="Namibia">Namibia</option>
-                                                            <option value="Nepal">Nepal</option>
-                                                            <option value="Netherlands">Netherlands</option>
-                                                            <option value="Niger">Niger</option>
-                                                            <option value="Nigeria">Nigeria</option>
-                                                            <option value="Pakistan">Pakistan</option>
-                                                            <option value="Pan-African">Pan-African</option>
-                                                            <option value="Republic of Congo">Republic of Congo</option>
-                                                            <option value="Rwanda">Rwanda</option>
-                                                            <option value="Senegal">Senegal</option>
-                                                            <option value="Sierra Leone">Sierra Leone</option>
-                                                            <option value="Singapore">Singapore</option>
-                                                            <option value="Somalia">Somalia</option>
-                                                            <option value="South Africa">South Africa</option>
-                                                            <option value="South Sudan">South Sudan</option>
-                                                            <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
-                                                            <option value="Switzerland">Switzerland</option>
-                                                            <option value="Tanzania">Tanzania</option>
-                                                            <option value="Togo">Togo</option>
+                                                        <label for="InvestorHeadquarters" class="form-label">Headquarters</label>     
+                                                        <select class="form-select" id="InvestorHeadquarters" name="InvestorHeadquarters" required>
+                                                            <option> Select Headquarters...</option>
+                                                            <?php
+                                                                while ($rowA5 = mysqli_fetch_assoc($resultA5)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA5['Country']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
@@ -1115,62 +622,99 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Description" class="form-label">Description</label>
                                                         <select name="Description" class="form-select" id="Description" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Asset Manager">Asset Manager</option>
-                                                            <option value="Asset Owner">Asset Owner</option>
-                                                            <option value="Accelerator">Accelerator</option>
-                                                            <option value="Angel Investor">Angel Investor</option>
-                                                            <option value="Angel Network">Angel Network</option>
-                                                            <option value="Corporate Accelerator">Corporate Accelerator</option>
-                                                            <option value="Service Provider">Service Provider</option>
-                                                            <option value="Non profit">Non profit</option>
-                                                            <option value="Crowdfunding Platform">Crowdfunding Platform</option>
-                                                            <option value="Unknown">Unknown</option>
+                                                            <option value="" selected >Select Description...</option>
+                                                            <?php
+                                                                while ($rowA6 = mysqli_fetch_assoc($resultA6)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA6['Description']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
-                                                <!-- Will need to capture investor unique currency or will it be the same as the startup they funded in? -->
-                                                <!-- 
-                                                    /////////////////////
-                                                    FUND SECTION
-                                                    /////////////////////
+                                                <!--    
+                                                        =========================================================================
+                                                        =========================== FUND SECTION ================================
+                                                        =========================================================================
                                                 -->
-                                                <div class="row">
+                                                <div class="row"> 
+                                                    <h2 class="news-h2">
+                                                        Investor Fund
+                                                    </h2>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="FundName" class="form-label">Fund Name</label>
-                                                            <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
+                                                        <select name="FundName" class="form-select" id="FundName">
+                                                            <option value="">Select Fund...</option>
+                                                            <?php
+                                                                while($rowB = mysqli_fetch_assoc($resultB)){
+                                                                    echo "<option>".$rowB['FundName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>  
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="CommittedCapitalOfFund" class="form-label"> Committed Capital Of Fund</label>
-                                                        <input type="text" class="form-control" id="CommittedCapitalOfFund" name="CommittedCapitalOfFund" >
+                                                        <select name="CommittedCapitalOfFund" class="form-select" id="CommittedCapitalOfFund" required>
+                                                            <option value="" selected >Select Committed Capital Of Fund...</option>
+                                                            <?php
+                                                                mysqli_data_seek($resultB, 0);
+                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowB['CommittedCapitalOfFund']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="CommittedCapital" class="form-label"> Committed Capital</label>
-                                                        <input type="number" class="form-control" id="CommittedCapital" name="CommittedCapital" required>
+                                                        <select name="CommittedCapital" class="form-select" id="CommittedCapital" required>
+                                                            <option value="" selected >Select Committed Capital...</option>
+                                                            <?php
+                                                                mysqli_data_seek($resultB, 0);
+                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowB['CommittedCapital']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>  
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="MinimumInvestment" class="form-label"> Minimum Investment</label>
-                                                        <input type="number" class="form-control" id="MinimumInvestment" name="MinimumInvestment" required>
+                                                        <select name="MinimumInvestment" class="form-select" id="MinimumInvestment" required>
+                                                            <option value="" selected >Select Minimum Investment...</option>
+                                                            <?php
+                                                                mysqli_data_seek($resultB, 0);
+                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowB['MinimumInvestment']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="MaximumInvestment" class="form-label"> Maximum Investment</label>
-                                                        <input type="number" class="form-control" id="MaximumInvestment" name="MaximumInvestment" required>
+                                                        <select name="MaximumInvestment" class="form-select" id="MaximumInvestment" required>
+                                                            <option value="" selected >Select Maximum Investment...</option>
+                                                            <?php
+                                                                mysqli_data_seek($resultB, 0);
+                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowB['MaximumInvestment']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
-                                                    <!-- Investment Stage -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestmentStage" class="form-label">Investment Stage </label>
                                                         <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
-                                                            <option value=""selected >Choose...</option>
-                                                            <option value="Pre-Seed">Pre-Seed</option>
-                                                            <option value="Seed">Seed</option>
-                                                            <option value="Pre-Series A">Pre-Series A</option>
-                                                            <option value="Series A">Series A</option>
-                                                            <option value="Pre-Series B">Pre-Series B</option>
-                                                            <option value="Series B">Series B</option>
-                                                            <option value="Pre-Series C">Pre-Series C</option>
-                                                            <option value="Series C">Series C</option>
-                                                            <option value="Pre-Series D">Pre-Series D</option>
-                                                            <option value="Series D">Series D</option>
+                                                            <option value="" selected >Select Investment Stage...</option>
+                                                            <?php
+                                                                // mysqli_data_seek($resultB, 0);
+                                                                while ($rowB1 = mysqli_fetch_assoc($resultB1)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowB1['InvestmentStage']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -1179,8 +723,17 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundNote" class="form-label">Fund Note</label>
-                                                        <textarea class="form-control FundNote" aria-label="With textarea" id=" FundNote" name="FundNote"></textarea>
-                                                    </div>
+                                                        <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
+                                                            <option value="" selected >Select Fund Note...</option>
+                                                            <?php
+                                                                mysqli_data_seek($resultA3, 0);
+                                                                while ($rowA3 = mysqli_fetch_assoc($resultA3)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowA3['Note']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div> -->
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
                                             </form>
@@ -1195,7 +748,7 @@
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
-                            <form action="../InvestorExport.php" method="POST">
+                            <form action="../DealExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>
@@ -1207,29 +760,29 @@
                             <th scope="col">Date</th>
                             <th scope="col">Portfolio Company</th>
                             <th scope="col">Investor(s)</th>
+                            <th scope="col">Fund(s)</th>
                             <th scope="col">Value Of Investment</th>
                             <th scope="col">Investment Stage </th>
                             <th scope="col">Sector</th>
                             <th scope="col">Portfolio Company Headquarters</th>
-                            <th scope="col">Investment/Capital Raise Link</th>
-                            <th scope="col">Stake</th>
                             <th scope="col"> View More </th>
                         </t>
                         <?php
-                            while($rowA1 = mysqli_fetch_assoc($resultA1) )
+                            while(($rowAA = mysqli_fetch_assoc($resultAA)))
                             {
                         ?>
                         <tr>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> <a href="../crud/ViewMore.php?InvestorID=<?php echo $rows['InvestorID']; ?>">View Deal</a></td>
+                            <td> <?php echo $rowAA["NewsDate"];?> </td>
+                            <td> <?php echo $rowAA["PortfolioCompanyName"];?> </td>
+                            <td> <?php echo $rowAA["InvestorName"];?> </td>
+                            <td> <?php echo $rowAA["FundName"];?> </td>
+                            <td> <?php echo $rowAA["TotalInvestmentValue"];?> </td>
+                            <td> <?php echo $rowAA["InvestmentStage"];?> </td>
+                            <td> <?php echo $rowAA["Sector"];?> </td>
+                            <td> <?php echo $rowAA["Country"];?></td>
+                            <td> 
+                                <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
+                            </td>
                         </tr>
                         <?php
                             }
@@ -1245,3 +798,7 @@
         <script src="../../js/scripts.js"></script>
     </body>
 </html>
+
+
+                 
+

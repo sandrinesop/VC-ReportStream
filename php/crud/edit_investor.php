@@ -87,11 +87,10 @@
             <form name="form" method="post" action="" class="form container"> 
                 <input type="hidden" name="new" value="1" />
                 <input name="InvestorID" type="hidden" value="<?php echo $row['InvestorID'];?>" />
-                <p><input class="form-control col" type="text" name="ModifiedDate" required value="<?php echo $row['ModifiedDate'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Currency" placeholder="Enter Currency"  value="<?php echo $row3['Currency'];?>" /></p>
                 <p><input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName"  value="<?php echo $row['InvestorName'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Website" placeholder="Enter Website"  value="<?php echo $row['Website'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Description" placeholder="Enter Description"  value="<?php echo $row4['Description'];?>" /></p>
+                <p><input class="form-control col" type="text" name="Currency" placeholder="Enter Currency"  value="<?php echo $row3['Currency'];?>" /></p>
                 <p><input class="form-control col" type="text" name="ImpactTag" placeholder="Enter ImpactTag"  value="<?php echo $row['ImpactTag'];?>" /></p>
                 <p><input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Headquarters" placeholder="Enter Headquarters"  value="<?php echo $row2['Country'];?>" /></p>

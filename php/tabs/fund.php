@@ -2,16 +2,16 @@
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	fund.FundID, fund.Deleted, fund.DeletedDate, fund.FundName, currency.Currency, fund.CommittedCapitalOfFund, fund.CommittedCapital, fund.MinimumInvestment, fund.MaximumInvestment 
+	            fund.FundID, fund.Deleted, fund.DeletedDate, fund.FundName, currency.Currency, fund.CommittedCapitalOfFund, fund.CommittedCapital, fund.MinimumInvestment, fund.MaximumInvestment 
             FROM 
                 fund 
             LEFT JOIN 
                 currency 
             ON 
                 currency.CurrencyID = fund.CurrencyID 
-            WHERE 
+            WHERE  
                 fund.Deleted = 0
-            LIMIT 100;";
+        ";
 
     $result = $conn->query($sql) or die($conn->error);
 

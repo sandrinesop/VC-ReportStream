@@ -21,7 +21,8 @@
         ON 
             country.CountryID = investor.Headquarters 
         WHERE 
-            investor.Deleted=0;";
+            investor.Deleted= 0 
+        ORDER BY InvestorName;"; 
             
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);  
@@ -37,11 +38,12 @@
             $Logo                   = $_FILES['img']['name'];
             $InvestorNote           = $_POST['InvestorNote'];
             $Description            = $_POST['Description'];
+            $Currency                = $_POST['Currency'];
 
             // INVESTOR NOTE INSERT
 
-            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note)
-            VALUES (uuid(), now(), now(), '$InvestorNote')";
+            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
+            VALUES (uuid(), now(), now(), '$InvestorNote','fb450b19-7056-11eb-a66b-96000010b114')";
             $query2 = mysqli_query($conn, $sql2);
 
             if($query2){
@@ -51,22 +53,24 @@
             }
 
             // INVESTOR TABLE INSERT
-            $m = "../img/".$_FILES['img']['name'];
+            // $m = "../img/".$_FILES['img']['name'];
 
             // Use move_uploaded_file function to move files
-            move_uploaded_file($_FILES['img']['tmp_name'], $m);
+            // move_uploaded_file($_FILES['img']['tmp_name'], $m);
+
+            $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
             // echo "Uploaded Successfully"; 
-            $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, InvestorName, Website, Description, ImpactTag, YearFounded, Headquarters, Logo) 
-            VALUES (uuid(), now(), now(),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
+            $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, ImpactTag, YearFounded, Headquarters, Logo) 
+            VALUES (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
 
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
                 // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
                 header( "refresh: 3;url= investor.php" );
         }else{
-            echo 'Oops! There was an error submitting Investor table data';
+            echo 'Oops! There was an error creating new Investor'. mysqli_error($conn);
         }
     }
 ?>
@@ -133,7 +137,7 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorName" class="form-label">Investor Name</label>
                                                         <input list="investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
-                                                        <datalist id="investors">
+                                                        <!-- <datalist id="investors">
                                                             <option value=" 100x Group">
                                                             <option value=" 12Tree Finance">
                                                             <option value=" 138 Pyramids">
@@ -786,7 +790,9 @@
                                                             <option value=" Zephyr Management">
                                                             <option value=" Zetogon">
                                                             <option value=" Zurich Insurance Group">
-                                                        </datalist>
+                                                        </datalist> -->
+                                                        <datalist >
+                                                        </>
                                                     </div>  
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorWebsite" class="form-label">Investor Website</label>
@@ -866,6 +872,55 @@
                                                             <option value="Togo">Togo</option>
                                                         </select>
                                                     </div>
+                                                    <!-- Actual Currencies as in the DB --> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="Currency" class="form-label">Currency</label>
+                                                        <select name="Currency" class="form-select" id="Currency" required>  
+                                                            <option value="" selected >Choose...</option>
+                                                            <option value="Ethiopia Birr" >Ethiopia Birr</option>
+                                                            <option value="Angola Kwanza" >Angola Kwanza</option>
+                                                            <option value="Botswana Pula" >Botswana Pula</option>
+                                                            <option value="British Pound" >British Pound</option>
+                                                            <option value="Canada Dollar" >Canada Dollar</option>
+                                                            <option value="Central African CFA franc" >Central African CFA franc</option>
+                                                            <option value="Congo Franc" >Congo Franc</option>
+                                                            <option value="Denmark Krone" >Denmark Krone</option>
+                                                            <option value="Egypt Pound" >Egypt Pound</option>
+                                                            <option value="Euro" >Euro</option>
+                                                            <option value="Ghana Cedi" >Ghana Cedi</option>
+                                                            <option value="Indian Rupee" >Indian Rupee</option>
+                                                            <option value="Israel Shekel" >Israel Shekel</option>
+                                                            <option value="Kenya Shilling" >Kenya Shilling</option>
+                                                            <option value="Liberia Dollar" >Liberia Dollar</option>
+                                                            <option value="Madagascar Ariary" >Madagascar Ariary</option>
+                                                            <option value="Malawi Kwacha" >Malawi Kwacha</option>
+                                                            <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
+                                                            <option value="Mauritius Rupee" >Mauritius Rupee</option>
+                                                            <option value="Morocco Dirham" >Morocco Dirham</option>
+                                                            <option value="Mozambique Metical" >Mozambique Metical</option>
+                                                            <option value="Namibian Dollar" >Namibian Dollar</option>
+                                                            <option value="Nepal Rupee" >Nepal Rupee</option>
+                                                            <option value="Nigeria Naira" >Nigeria Naira</option>
+                                                            <option value="Norway Krone" >Norway Krone</option>
+                                                            <option value="Pakistan Rupee" >Pakistan Rupee</option>
+                                                            <option value="Rwanda Franc" >Rwanda Franc</option>
+                                                            <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
+                                                            <option value="Singapore Dollar" >Singapore Dollar</option>
+                                                            <option value="Somalia Shilling" >Somalia Shilling</option>
+                                                            <option value="South African Rand" >South African Rand</option>
+                                                            <option value="Sudan Pound" >Sudan Pound</option>
+                                                            <option value="Switzerland Franc" >Switzerland Franc</option>
+                                                            <option value="Tanzania Shilling" >Tanzania Shilling</option>
+                                                            <option value="Tunisia Dinar" >Tunisia Dinar</option>
+                                                            <option value="Uganda Shilling" >Uganda Shilling</option>
+                                                            <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
+                                                            <option value="Unknown Currency" >Unknown Currency</option>
+                                                            <option value="US Dollar" >US Dollar</option>
+                                                            <option value="West African CFA franc" >West African CFA franc</option>
+                                                            <option value="Zambia Kwacha" >Zambia Kwacha</option>
+                                                            <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
+                                                        </select>
+                                                    </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="img" class="form-label">Logo</label>
                                                         <input type="file" class="form-control" id="img" name="img" required>
@@ -932,7 +987,7 @@
                                 <td> <?php echo $rows['ImpactTag'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
                                 <td> <?php echo $rows['Country']?></td>
-                                <td> <?php echo $rows['Logo'] ?></td>
+                                <td> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?></td>
                                 <td> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
                                 <td> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
                             </tr>

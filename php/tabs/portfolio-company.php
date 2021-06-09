@@ -14,7 +14,7 @@ LEFT JOIN
 ON 
 	country.CountryID = portfoliocompany.Headquarters 
 WHERE 
-	portfoliocompany.Deleted = 0; ";
+	portfoliocompany.Deleted = 0; "; 
 
     $result = $conn->query($sql) or die($conn->error);
     

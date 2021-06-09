@@ -117,7 +117,7 @@
         // **** 5TH CONDITION IF 4RD SUBMISSION IS SUCCESSFULL **** //
         if($query4){
             $sql5 = "INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID)
-            VALUES (uuid(), now(), now(),'$FirstName', '$LastName', '$ContactNumber1', '$ContactNumber2', '$Email',(select R.RoleTypeID FROM roletype R where R.RoleType = '$RoleType'), (select G.GenderID FROM gender G where G.Gender = '$Gender'), (select RC.RaceID FROM race RC where RC.Race = '$Race') )";
+            VALUES (uuid(), now(), now(), (SELECT CONCAT( FirstName, " ", LastName)), '$FirstName', '$LastName', '$ContactNumber1', '$ContactNumber2', '$Email',(select R.RoleTypeID FROM roletype R where R.RoleType = '$RoleType'), (select G.GenderID FROM gender G where G.Gender = '$Gender'), (select RC.RaceID FROM race RC where RC.Race = '$Race'))";
             $query5 = mysqli_query($conn, $sql5);
             // echo 'Form 5 Submitted!=> '.$query5.'<br/>';
         } else {
@@ -138,10 +138,6 @@
             $sql8 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note)
             VALUES (uuid(), now(), now(), '$FundNote')";
             $query8 = mysqli_query($conn, $sql8);
-
-            // echo 'Form 6 Submitted!=> '.$query6.'<br/>';
-            // echo 'Form 6 Submitted!=> '.$query7.'<br/>';
-            // echo 'Form 6 Submitted!=> '.$query8.'<br/>';
         } else {
             echo 'Oops! There was an error submitting Form 6'.'<br/>';
         }
