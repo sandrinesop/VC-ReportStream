@@ -7,10 +7,10 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('NewsDate','NewsURL','PortfolioCompanyName','InvestorName', 'TotalInvestmentValue','Sector','FundName','InvestmentStage', 'Country'));
+        fputcsv($output, array('NewsDate','NewsURL','PortfolioCompanyName','InvestorName', 'TotalInvestmentValue','Industry','Sector','FundName','InvestmentStage', 'Country'));
         $query = 
                 "SELECT 
-                     News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, PortfolioCompany.TotalInvestmentValue, Sector.Sector, Fund.FundName, InvestmentStage.InvestmentStage, Country.Country 
+                     News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, PortfolioCompany.TotalInvestmentValue,Industry.Industry, Sector.Sector, Fund.FundName, InvestmentStage.InvestmentStage, Country.Country 
                 FROM 
                     PortfolioCompanyNews 
                 LEFT JOIN 
@@ -61,6 +61,14 @@
                     Country
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
+                LEFT JOIN 
+                    PortfolioCompanyIndustry
+                ON 
+                    PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                LEFT JOIN 
+                    Industry
+                ON 
+                    Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
         ";
         
         $result = mysqli_query($conn, $query);

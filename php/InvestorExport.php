@@ -7,8 +7,14 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('CreatedDate','InvestorName','Website','ImpactTag','YearFounded','Logo'));
-        $query = "SELECT * FROM Investor ORDER BY InvestorName DESC";
+        fputcsv($output, array('InvestorName','Website','Currency','Description','ImpactTag','YearFounded','Logo'));
+        $query = "SELECT InvestorName, Website,Currency.Currency, Description.Description, ImpactTag, YearFounded, Logo 
+        FROM Investor
+        LEFT JOIN Currency
+        ON Currency.CurrencyID = Investor.CurrencyID
+        LEFT JOIN Description
+        ON Description.DescriptionID = Investor.DescriptionID  
+        ORDER BY InvestorName DESC";
         $result = mysqli_query($conn, $query);
 
         while( $row = mysqli_fetch_assoc($result))

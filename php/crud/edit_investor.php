@@ -11,8 +11,6 @@
     $sql2 = " SELECT Country FROM Country WHERE CountryID = '$tempHeadquarter' ";
     $result2 = mysqli_query($conn, $sql2) or die($conn->error);
     $row2 = mysqli_fetch_assoc($result2);
-    // echo 'Headquaters =>'.$row2['Country'];
-    // $country = $row2['Country'];
     
     // Access the Currency table to get currency name
     $tempCurrency = $row['CurrencyID'];
@@ -30,18 +28,18 @@
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         $InvestorID     =$_REQUEST['InvestorID'];
-        $ModifiedDate   =$_REQUEST['ModifiedDate'];
+        // $ModifiedDate   =$_REQUEST['ModifiedDate'];
         $InvestorName   =$_REQUEST['InvestorName'];
         $Website        =$_REQUEST['Website'];
         $Description    =$_REQUEST['Description'];
         $ImpactTag      =$_REQUEST['ImpactTag'];
         $YearFounded    =$_REQUEST['YearFounded'];
         $Headquarters   =$_REQUEST['Headquarters']; 
-        $Logo           =$_REQUEST['Logo'];
+        // $Logo           =$_REQUEST['Logo'];
         
-
+// ModifiedDate= DATE()
         // DescriptionID='".$Description."',
-        $update="UPDATE Investor SET ModifiedDate='".$ModifiedDate."',InvestorName='".$InvestorName."', Website='".$Website."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters='".$Headquarters."', Logo='".$Logo."' where InvestorID='".$InvestorID."'";
+        $update="UPDATE Investor SET InvestorName='".$InvestorName."', Website='".$Website."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') where InvestorID='".$InvestorID."'";
         mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/investor.php'>View Updated Record</a>";
@@ -95,7 +93,7 @@
                 <p><input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Headquarters" placeholder="Enter Headquarters"  value="<?php echo $row2['Country'];?>" /></p>
                 <!-- <?php echo $country;?> -->
-                <p><input class="form-control col" type="text" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p>
+                <!-- <p><input class="form-control col" type="text" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p> -->
 
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>

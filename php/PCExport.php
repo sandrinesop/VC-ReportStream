@@ -7,14 +7,22 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('CreatedDate','InvestorName','Website','ImpactTag','YearFounded','Logo'));
-        $query = "SELECT * FROM PortfolioCompany ORDER BY CreatedDate DESC";
+        fputcsv($output, array('PortfolioCompanyName','Website','TotalInvestmentValue','Stake','Details','Year Founded','Headquarters','Logo'));
+        $query = "  SELECT PortfolioCompanyName,Website,TotalInvestmentValue,Stake,Details,YearFounded, country.country,Logo 
+                    FROM 
+                        PortfolioCompany
+                    LEFT JOIN 
+                        country 
+                    ON 
+                        country.CountryID = portfoliocompany.Headquarters 
+                    ORDER BY 
+                        PortfolioCompanyName DESC";
         $result = mysqli_query($conn, $query);
 
         while( $row = mysqli_fetch_assoc($result))
         {
             fputcsv($output, $row);
         }
-        fclose($output);
-    }
+            fclose($output);
+        }
 ?>

@@ -4,24 +4,28 @@
     $sql=" SELECT userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race FROM userdetail 
 
     LEFT JOIN 
-    roletype 
+        roletype 
     ON 
-    roletype.RoleTypeID=userdetail.RoleTypeID
+        roletype.RoleTypeID=userdetail.RoleTypeID
 
     LEFT JOIN 
-    gender
+        gender
     ON
-    gender.GenderID = userdetail.GenderID
+        gender.GenderID = userdetail.GenderID
 
     LEFT JOIN 
-    race 
+        race 
     ON 
-    race.RaceID =userdetail.RaceID; ";
+        race.RaceID =userdetail.RaceID
+    WHERE  
+        userdetail.Deleted = 0 ";
 
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
+    
+    // $UserDetailID =$_REQUEST['UserDetailID'];
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
@@ -36,28 +40,24 @@
             $Gender                 = $_POST['Gender'];
             $Race                   = $_POST['Race'];
 
-            $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
-            VALUES (uuid(), now(), now(), (select CONCAT(FirstName, Coalesce(LastName, '')) from UserDetail ), '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
+            $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
+            VALUES (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
 
             $query3 = mysqli_query($conn, $sqlUser);
+            
+
             if($query3){
-                // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
-                header( "refresh: 3;url= contacts.php" );
+                echo 'Thanks for your contribution! You will be redirected in 5 sec...';
+                // header( "refresh: 5;url= contacts.php" );
             }else{
                 echo 'Oops! There was an error creating new contact';
             }
 
-            $tempUserDetailID = $row['UserDetailID'];
-
-            $sqlUserFullName =" Update UserDetail( UserFullName) 
-            VALUES ( (select CONCAT(FirstName, Coalesce(LastName, '')) from UserDetail )) WHERE UserDetailID ='$tempUserDetailID'";
-
-            $update="UPDATE UserDetail SET UserFullName='SELECT CONCAT(FirstName, Coalesce(LastName, '') FROM UserDetail' where UserDetailID='".$tempUserDetailID."'";
-            mysqli_query($conn, $update) or die($conn->error);
+            
             $status = "Record Updated Successfully. </br></br>
             <a href='../tabs/contacts.php'>View Updated Record</a>";
             echo '<p style="color:#FF0000;">'.$status.'</p>';
-            header( "refresh: 3;url= ../tabs/contacts.php" );
+            header( "refresh: 5;url= ../tabs/contacts.php" );
     }
 ?>
 
@@ -120,6 +120,10 @@
                                         <div class="modal-body">
                                             <form class="container" method="POST" enctype="multipart/form-data">
                                                 <div class="row">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="UserFullName" class="form-label">Full Name</label>
+                                                        <input type="text" class="form-control" id="UserFullName" name="UserFullName" required>
+                                                    </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FirstName" class="form-label">First Name</label>
                                                         <input type="text" class="form-control" id="FirstName" name="FirstName" required>
@@ -184,7 +188,7 @@
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-6 col-md-4 col-lg-2"> 
-                            <form action="../InvestorExport.php" method="POST">
+                            <form action="../ContactExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>

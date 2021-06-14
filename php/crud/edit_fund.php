@@ -22,13 +22,13 @@
         $MaximumInvestment          = $_REQUEST['MaximumInvestment'];
 
 
-        $update="update Fund set ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID='".$Currency."', CommittedCapitalOfFund='".$CommittedCapitalOfFund."', CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."'";
+        $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), CommittedCapitalOfFund='".$CommittedCapitalOfFund."', CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
 
         mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
+        <a href='../tabs/fund.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 3;url= ../tabs//portfolio-company.php" );
+        header( "refresh: 3;url= ../tabs/fund.php" );
     }else {
 ?>
 <!DOCTYPE html>

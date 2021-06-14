@@ -1,43 +1,53 @@
 <?php 
     include_once('../connect.php');
+    include_once('../DealLink.php');
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT 
-                    News.NewsID, News.NewsURL,News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country 
+                    News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, InvestmentValue.InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName 
                 FROM 
                     PortfolioCompanyNews 
+                -- Include News table data 
                 LEFT JOIN 
                     News 
                 ON
                     News.NewsID = PortfolioCompanyNews.NewsID 
                 LEFT JOIN 
+                -- Include PortfoliCompany table data
                     PortfolioCompany
                 ON
                     PortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
                 LEFT JOIN 
+                -- Link Investor to News using InvestorNews table
                     InvestorNews
                 ON
                     InvestorNews.NewsID = PortfolioCompanyNews.NewsID 
                 LEFT JOIN 
+                -- Include Invesor table data
                     Investor
                 ON
                     Investor.InvestorID = InvestorNews.InvestorID 
                 LEFT JOIN 
+                -- Link Sector to Porfolio Company using PortfolioCompanySector table
                     PortfolioCompanySector
                 ON
                     PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID         
                 LEFT JOIN 
+                -- Include Sector table data
                     Sector          
                 ON
                     Sector.SectorID = PortfolioCompanySector.SectorID      
                 LEFT JOIN 
+                -- Link Fund to PortfolioCompany using FundPortfolioCompany
                     FundPortfolioCompany
                 ON
                     FundPortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
                 LEFT JOIN 
+                -- include Fund table data
                     Fund
                 ON
                     Fund.FundID = FundPortfolioCompany.FundID 
                 LEFT JOIN 
+                -- Link investment stage to fund
                     FundInvestmentStage      
                 ON          
                     FundInvestmentStage.FundID = Fund.FundID 
@@ -53,14 +63,42 @@
                     Country
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
+                LEFT JOIN 
+                    PortfolioCompanyInvestmentValue
+                ON 
+                    PortfolioCompanyInvestmentValue.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                LEFT JOIN 
+                    InvestmentValue
+                ON 
+                    InvestmentValue.InvestmentValueID = PortfolioCompanyInvestmentValue.InvestmentValueID
+                LEFT JOIN 
+                    PortfolioCompanyIndustry
+                ON 
+                    PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                LEFT JOIN 
+                    Industry
+                ON 
+                    Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
+                LEFT JOIN 
+                    PortfolioCompanyUserDetail
+                ON 
+                    PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                LEFT JOIN 
+                    UserDetail
+                ON 
+                    UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
 
-                GROUP BY News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue,Country.Country ";
+                GROUP BY News.NewsURL, InvestmentValue.InvestmentValue
+                ORDER BY  news.NewsDate DESC ";
+
     $resultAA = $conn->query($sqlAA) or die($conn->error);
     $rowAA = mysqli_fetch_assoc($resultAA);
 
-    //=================================================== 
-    //========== | PORTFOLIO COMPANY TABLE | ============
-    //===================================================
+    //==================================================== 
+    // BELOW IS CODE DISPLAYING DATA ON DEALS SCREEN TABLE
+    //====================================================
+    //========== | PORTFOLIO COMPANY TABLE | =============
+    //====================================================
     // PORTFOLIO COMPANY DEATILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
     $sql = " SELECT DISTINCT 
                 PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
@@ -69,14 +107,6 @@
             WHERE Website IS NOT NULL AND Details IS NOT NULL";
             
     $result = mysqli_query($conn, $sql);
-    // $sql2 = "   SELECT 
-    //                 SUBSTRING(Details, 1, 55) AS Details 
-    //             FROM 
-    //                 PortfolioCompany 
-    //             WHERE 
-    //                 Details IS NOT NULL";
-    // $result2 = mysqli_query($conn, $sql2);
-    // Pulling Startup Data into the Country/Headquarters dropdown
     $sql3 = "   SELECT DISTINCT 
                     Country 
                 FROM 
@@ -262,16 +292,16 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form class="container" action="./php/insert.php" method="POST" enctype="multipart/form-data">
+                                            <form class="container" action="../DealLink.php" method="POST" enctype="multipart/form-data">
                                                 <!--    
                                                         =========================================================================
                                                         ======================== NEWS SECTION ===================================
                                                         =========================================================================
                                                 -->
                                                 <div class="row"> 
-                                                    <h2 class="news-h2">
+                                                    <h5>
                                                         News 
-                                                    </h2>
+                                                    </h5>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                                                         <label for="NewsDate" class="form-label">News Date</label>
                                                         <input type="date" value="" class="form-control" id="NewsDate" name="NewsDate" required>
@@ -282,7 +312,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="NewsNote" class="form-label">News Note</label>
-                                                        <textarea class="form-control" aria-label="With textarea" id="NewsNote" name="NewsNote"></textarea>
+                                                        <textarea class="form-control" aria-label="With textarea" id="NewsNote" name="NewsNote" required></textarea>
                                                     </div>  
                                                 </div>
                                                 <!--    
@@ -291,9 +321,9 @@
                                                         =========================================================================
                                                 -->
                                                 <div class="row">  
-                                                    <h2 class="news-h2">
+                                                    <h5>
                                                         Company Details
-                                                    </h2>
+                                                    </h5>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
                                                         <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
@@ -306,60 +336,18 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="PortfolioCompanyWebsite" class="form-label">Company Website</label>
-                                                        <select class="form-select" id="PortfolioCompanyWebsite" name="PortfolioCompanyWebsite" required>
-                                                            <option> Website...</option>
-                                                            <?php
-                                                                mysqli_data_seek($result,0);
-                                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                                    # code...
-                                                                    echo "<option>".$row['Website']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Details" class="form-label">Details</label>
-                                                        <select class="form-select" id="Details" name="Details" required>
-                                                            <option> Details...</option>
-                                                            <?php
-                                                                mysqli_data_seek($result, 0);
-                                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                                    # code...
-                                                                    echo "<option>".$row['Details']."..."."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="YearFounded" class="form-label">Year Founded</label>
-                                                        <input type="text" class="form-control" id="YearFounded" name="YearFounded" required>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Headquarters" class="form-label">Headquarters</label>
-                                                        <select class="form-select" id="Headquarters" name="Headquarters" required>
-                                                            <option> Headquarters...</option>
-                                                            <?php
-                                                                // mysqli_data_seek($result,0);
-                                                                while ($row3 = mysqli_fetch_assoc($result3)) {
-                                                                    # code...
-                                                                    echo "<option>".$row3['Country']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="text" class="form-control" id="Stake" name="Stake">
+                                                        <input type="text" class="form-control" id="Stake" name="Stake" required>
+                                                        <small style="color:red;">Place a zero if stake not disclosed </small>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="TotalInvestmentValue" class="form-label">Total Investment Value</label>
-                                                        <input type="number" class="form-control" id="TotalInvestmentValue" name="TotalInvestmentValue" required>
+                                                        <label for="InvestmentValue" class="form-label">Total Investment Value</label>
+                                                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" required>
                                                     </div>
                                                     <!-- 
                                                         /////////////////////
-                                                            INDUSTRY SECTION
+                                                            INDUSTRY DROPDOWN
                                                         /////////////////////
                                                     -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -415,7 +403,11 @@
                                                             <option value="Other">Other</option>
                                                         </select>
                                                     </div>
-                                                    <!-- Sector Dropdown -->
+                                                    <!-- 
+                                                        /////////////////////
+                                                            SECTOR DROPDOWN
+                                                        /////////////////////
+                                                    -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ArtificialIntelligenceDrop">
                                                         <label for="Sector" class="form-label">Sector </label>
                                                         <select id="Sector" name="Sector" class="form-select">
@@ -423,36 +415,18 @@
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
                                                     </div>
-                                                    <!-- 
-                                                        /////////////////////
-                                                        CURRENCY SECTION
-                                                        /////////////////////
-                                                    -->
-                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Currency" class="form-label">Currency</label>
-                                                        <select class="form-select" id="Currency" name="Currency" required>
-                                                            <option> Currency...</option>
-                                                            <?php
-                                                                while ($row4 = mysqli_fetch_assoc($result4)) {
-                                                                    # code...
-                                                                    echo "<option>".$row4['Currency']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> -->
                                                 </div>
                                                 <!--    
                                                         =========================================================================
-                                                        ======================== USERDETAIL SECTION =============================
+                                                        ======================== STARTUP CONTACT SECTION ========================
                                                         =========================================================================
                                                 -->
-
-                                                <div class="row"> 
-                                                    <h2 class="news-h2">
-                                                        Contact Person
-                                                    </h2>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="UserFullName" class="form-label">First Name</label>
+                                                <div class="row">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
+                                                        <h5>
+                                                            Contact Person
+                                                        </h5>
+                                                        <label for="UserFullName" class="form-label">Startup Contact</label>
                                                         <select class="form-select" id="UserFullName" name="UserFullName" required>
                                                             <option> Select Contact Person...</option>
                                                             <?php
@@ -463,95 +437,17 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="LastName" class="form-label">Last Name</label>
-                                                        <select class="form-select" id="LastName" name="LastName" required>
-                                                            <option> Select LastName...</option>
-                                                            <?php
-                                                                mysqli_data_seek($result5,0);
-                                                                while ($row5 = mysqli_fetch_assoc($result5)) {
-                                                                    # code...
-                                                                    echo "<option>".$row5['LastName']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Email" class="form-label">Email</label>
-                                                        <select class="form-select" id="Email" name="Email" required>
-                                                            <option> Select Email...</option>
-                                                            <?php
-                                                                while ($row6 = mysqli_fetch_assoc($result6)) {
-                                                                    # code...
-                                                                    echo "<option>".$row6['Email']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ContactNumber1" class="form-label"> Select Contact Number... </label>
-                                                        <select class="form-select" id="ContactNumber1" name="ContactNumber1" required>
-                                                            <option> Select Contact Number 1...</option>
-                                                            <?php
-                                                                mysqli_data_seek($result6,0);
-                                                                while ($row6 = mysqli_fetch_assoc($result6)) {
-                                                                    # code...
-                                                                    echo "<option>".$row6['ContactNumber1']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ContactNumber2" class="form-label">Select Contact Number 2...</label>
-                                                        <input type="text" class="form-control" id="ContactNumber2" name="ContactNumber2">
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="RoleType" class="form-label">Select Role Type...</label>                    
-                                                        <select class="form-select" id="RoleType" name="RoleType" required>
-                                                            <option> RoleType...</option>
-                                                            <?php
-                                                                while ($row7 = mysqli_fetch_assoc($result7)) {
-                                                                    # code...
-                                                                    echo "<option>".$row7['RoleType']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Gender" class="form-label">Gender</label>                    
-                                                        <select class="form-select" id="Gender" name="Gender" required>
-                                                            <option> Select Gender...</option>
-                                                            <?php
-                                                                while ($row8 = mysqli_fetch_assoc($result8)) {
-                                                                    # code...
-                                                                    echo "<option>".$row8['Gender']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Race" class="form-label">Race</label>                    
-                                                        <select class="form-select" id="Race" name="Race" required>
-                                                            <option> Select Race...</option>
-                                                            <?php
-                                                                while ($row9 = mysqli_fetch_assoc($result9)) {
-                                                                    # code...
-                                                                    echo "<option>".$row9['Race']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> -->
                                                 </div>
                                                 <!--    
                                                         =========================================================================
                                                         ======================== INVESTOR SECTION ===============================
                                                         =========================================================================
                                                 -->
-                                                <div class="row"> 
-                                                    <h2 class="news-h2">
+                                                <div class="row">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12"> 
+                                                    <h5>
                                                         Investor(s)
-                                                    </h2>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                    </h5>
                                                         <label for="InvestorName" class="form-label">Investor Name</label>        
                                                         <select class="form-select" id="InvestorName" name="InvestorName" required>
                                                             <option> InvestorName...</option>
@@ -562,7 +458,21 @@
                                                                 }
                                                             ?>
                                                         </select>
-                                                    </div>  
+                                                    </div> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <h5>
+                                                            Investor Fund
+                                                        </h5>
+                                                        <label for="FundName" class="form-label">Fund Name</label>
+                                                        <select name="FundName" class="form-select" id="FundName"  required>
+                                                            <option value="">Select Fund...</option>
+                                                            <?php
+                                                                while($rowB = mysqli_fetch_assoc($resultB)){
+                                                                    echo "<option>".$rowB['FundName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div> 
                                                     <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorWebsite" class="form-label">Investor Website</label>       
                                                         <select class="form-select" id="InvestorWebsite" name="InvestorWebsite" required>
@@ -634,106 +544,26 @@
                                                 </div>
                                                 <!--    
                                                         =========================================================================
-                                                        =========================== FUND SECTION ================================
+                                                        ======================== INVESTOR CONTACT SECTION ====================
                                                         =========================================================================
                                                 -->
-                                                <div class="row"> 
-                                                    <h2 class="news-h2">
-                                                        Investor Fund
-                                                    </h2>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="FundName" class="form-label">Fund Name</label>
-                                                        <select name="FundName" class="form-select" id="FundName">
-                                                            <option value="">Select Fund...</option>
+                                                <div class="row">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
+                                                        <h5>
+                                                            Contact Person
+                                                        </h5> 
+                                                        <label for="UserFullName" class="form-label">Investor Contact</label>
+                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                            <option> Select Contact Person...</option>
                                                             <?php
-                                                                while($rowB = mysqli_fetch_assoc($resultB)){
-                                                                    echo "<option>".$rowB['FundName']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>  
-                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="CommittedCapitalOfFund" class="form-label"> Committed Capital Of Fund</label>
-                                                        <select name="CommittedCapitalOfFund" class="form-select" id="CommittedCapitalOfFund" required>
-                                                            <option value="" selected >Select Committed Capital Of Fund...</option>
-                                                            <?php
-                                                                mysqli_data_seek($resultB, 0);
-                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
+                                                                mysqli_data_seek($result5, 0);
+                                                                while ($row5 = mysqli_fetch_assoc($result5)) {
                                                                     # code...
-                                                                    echo "<option>".$rowB['CommittedCapitalOfFund']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="CommittedCapital" class="form-label"> Committed Capital</label>
-                                                        <select name="CommittedCapital" class="form-select" id="CommittedCapital" required>
-                                                            <option value="" selected >Select Committed Capital...</option>
-                                                            <?php
-                                                                mysqli_data_seek($resultB, 0);
-                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowB['CommittedCapital']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>  
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="MinimumInvestment" class="form-label"> Minimum Investment</label>
-                                                        <select name="MinimumInvestment" class="form-select" id="MinimumInvestment" required>
-                                                            <option value="" selected >Select Minimum Investment...</option>
-                                                            <?php
-                                                                mysqli_data_seek($resultB, 0);
-                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowB['MinimumInvestment']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="MaximumInvestment" class="form-label"> Maximum Investment</label>
-                                                        <select name="MaximumInvestment" class="form-select" id="MaximumInvestment" required>
-                                                            <option value="" selected >Select Maximum Investment...</option>
-                                                            <?php
-                                                                mysqli_data_seek($resultB, 0);
-                                                                while ($rowB = mysqli_fetch_assoc($resultB)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowB['MaximumInvestment']."</option>";
+                                                                    echo "<option>".$row5['UserFullName']."</option>";
                                                                 }
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestmentStage" class="form-label">Investment Stage </label>
-                                                        <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
-                                                            <option value="" selected >Select Investment Stage...</option>
-                                                            <?php
-                                                                // mysqli_data_seek($resultB, 0);
-                                                                while ($rowB1 = mysqli_fetch_assoc($resultB1)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowB1['InvestmentStage']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="IndustryPreference" class="form-label">Industry Preference</label>
-                                                        <textarea class="form-control IndustryPreference" aria-label="With textarea" id=" IndustryPreference" name=" IndustryPreference"></textarea>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="FundNote" class="form-label">Fund Note</label>
-                                                        <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
-                                                            <option value="" selected >Select Fund Note...</option>
-                                                            <?php
-                                                                mysqli_data_seek($resultA3, 0);
-                                                                while ($rowA3 = mysqli_fetch_assoc($resultA3)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA3['Note']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> -->
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
                                             </form>
@@ -762,9 +592,10 @@
                             <th scope="col">Investor(s)</th>
                             <th scope="col">Fund(s)</th>
                             <th scope="col">Value Of Investment</th>
-                            <th scope="col">Investment Stage </th>
-                            <th scope="col">Sector</th>
+                            <th scope="col">Industry </th>
+                            <th scope="col">Sector(s)</th>
                             <th scope="col">Portfolio Company Headquarters</th>
+                            <th scope="col">Company Contact(s)</th>
                             <th scope="col"> View More </th>
                         </t>
                         <?php
@@ -776,10 +607,11 @@
                             <td> <?php echo $rowAA["PortfolioCompanyName"];?> </td>
                             <td> <?php echo $rowAA["InvestorName"];?> </td>
                             <td> <?php echo $rowAA["FundName"];?> </td>
-                            <td> <?php echo $rowAA["TotalInvestmentValue"];?> </td>
-                            <td> <?php echo $rowAA["InvestmentStage"];?> </td>
+                            <td> <?php echo $rowAA["InvestmentValue"];?> </td>
+                            <td> <?php echo $rowAA["Industry"];?> </td>
                             <td> <?php echo $rowAA["Sector"];?> </td>
                             <td> <?php echo $rowAA["Country"];?></td>
+                            <td> <?php echo $rowAA["UserFullName"];?></td>
                             <td> 
                                 <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
                             </td>

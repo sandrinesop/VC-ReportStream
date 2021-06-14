@@ -49,8 +49,8 @@
             if($query2){
                 // echo 'Form 3 Submitted! => '.$query3.'<br/>';
             } else {
-                echo 'Oops! There was an error submitting Investor Note'.'<br/>';
-            }
+                echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            };
 
             // INVESTOR TABLE INSERT
             // $m = "../img/".$_FILES['img']['name'];
@@ -70,7 +70,7 @@
                 // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
                 header( "refresh: 3;url= investor.php" );
         }else{
-            echo 'Oops! There was an error creating new Investor'. mysqli_error($conn);
+            echo 'Oops! There was an error creating new Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
     }
 ?>

@@ -29,16 +29,16 @@
         $Details                 = $_REQUEST['Details'];
         $YearFounded             = $_REQUEST['YearFounded'];
         $Headquarters            = $_REQUEST['Headquarters'];
-        $Logo                    = $_REQUEST['Logo'];
+        // $Logo                    = $_REQUEST['Logo'];
 
 
-        $update="update PortfolioCompany set ModifiedDate='uuid()',PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID='".$Currency."', Website='".$Website."', TotalInvestmentValue='".$TotalInvestmentValue."', Stake='".$Stake."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters='".$Headquarters."', Logo='".$Logo."'";
+        $update="UPDATE PortfolioCompany SET ModifiedDate='uuid()',PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', TotalInvestmentValue='".$TotalInvestmentValue."', Stake='".$Stake."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
 
         mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 3;url= ../tabs//portfolio-company.php" );
+        header( "refresh: 3;url= ../tabs/portfolio-company.php" );
     }else {
 ?>
 <!DOCTYPE html>
@@ -79,7 +79,7 @@
             <form name="form" method="post" action="" class="form container"> 
                 <input type="hidden" name="new" value="1" />
                 <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['PortfolioCompanyID'];?>" />
-                <p><input class="form-control col" type="text" name="ModifiedDate" required value="<?php echo $row['ModifiedDate'];?>" /></p>
+                <!-- <p><input class="form-control col" type="text" name="ModifiedDate" required value="<?php echo $row['ModifiedDate'];?>" /></p> -->
                 <p><input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Website" placeholder="Enter Website"  value="<?php echo $row['Website'];?>" /></p>
                 <p><textarea class="form-control col" type="text" name="Details" placeholder="Enter Details"   > <?php echo $row['Details'];?></textarea></p>
@@ -89,7 +89,7 @@
                 <p><input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" /></p>
                 <p><input class="form-control col" type="text" name="Headquarters" placeholder="Enter Headquarters"  value="<?php echo $row2['Country'];?>" /></p>
                 <!-- <?php echo $country;?> -->
-                <p><input class="form-control col" type="file" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p>
+                <!-- <p><input class="form-control col" type="file" name="Logo" placeholder="Enter Logo"  value="<?php echo $row['Logo'];?>" /></p> -->
 
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>

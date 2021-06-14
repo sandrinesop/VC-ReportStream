@@ -2,7 +2,7 @@
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
     $PortfolioCompanyID =$_REQUEST['PortfolioCompanyID'];
-    $sql=" DELETE FROM PortfolioCompany where PortfolioCompanyID = '$PortfolioCompanyID' "; 
+    $sql="UPDATE PortfolioCompany SET Deleted = 1, DeletedDate = NOW() WHERE PortfolioCompanyID = '$PortfolioCompanyID ' "; 
     
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = mysqli_query($conn, $sql) or die($conn->error);

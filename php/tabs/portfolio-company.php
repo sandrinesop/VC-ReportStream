@@ -32,15 +32,31 @@ WHERE
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
         $Currency                = $_POST['Currency'];
+        $Logo                    = $_FILES['img']['name'];
+
+        // Company Logo Insert code
+        $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
         // PORTFOLIO COMPANY NOTE INSERT
-        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, PortfolioCompanyName, CurrencyID, PortfolioCompanyWebsite,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, IndustryID, SectorID)
-            VALUES (uuid(), now(), now(),'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),(select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select sector.SectorID FROM sector where sector.Sector = '$Sector'))";
+        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, Logo)
+            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
             $query = mysqli_query($conn, $sql);
+        // if($query){
+        //     header( "refresh: 3; url= portfolio-company.php" );
+        // } else {
+        //     echo 'Oops! There was an error creating the company. Please try again later.'.'<br/>'.mysqli_error($conn);
+        // }
+        // LINKING COMPANY WITH SECTOR AND INDUSTRY
         if($query){
-            header( "refresh: 3; url= portfolio-company.php" );
+        // LINKING COMPANY WITH SECTOR AND INDUSTRY
+        $sql2 = "   INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$Sector'))";
+        $query2 = mysqli_query($conn, $sql2);
+
+        header( "refresh: 3; url= portfolio-company.php" );
+
         } else {
-            echo 'Oops! There was an error submitting form. Please try again later.';
+            echo 'Oops! There was an error Linking PortfolioCompany and Sector'.mysqli_error($conn).'<br/>';
         }
     }
 ?>
@@ -108,8 +124,8 @@ WHERE
                                                         <input type="text" class="form-control" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="PortfolioCompanyWebsite" class="form-label">Company Website</label>
-                                                        <input type="text" class="form-control" id="PortfolioCompanyWebsite" name="PortfolioCompanyWebsite" required>
+                                                        <label for="Website" class="form-label">Company Website</label>
+                                                        <input type="text" class="form-control" id="Website" name="Website" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Details" class="form-label">Details</label>
@@ -297,6 +313,10 @@ WHERE
                                                             <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
                                                         </select>
                                                     </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="img" class="form-label">Logo</label>
+                                                        <input type="file" class="form-control" id="img" name="img" required>
+                                                    </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
                                             </form>
@@ -322,13 +342,14 @@ WHERE
                     <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 30px;">
                         <t> 
                             <th scope="col" >Portfolio Company Name</th>
-                            <th scope="col" >Currency ID</th>
+                            <th scope="col" >Currency </th>
                             <th scope="col" >Portfolio Company Website</th>
                             <th scope="col" >Total Investment Value</th>
                             <th scope="col" >Stake</th>
                             <th scope="col" colspan="2" >Details</th>
                             <th scope="col" >Year Founded</th>
                             <th scope="col" >Headquarters</th>
+                            <th scope="col" >Logo</th>
                             <th>Edit </th>
                             <th>Delete </th>
                         </t>
@@ -345,6 +366,7 @@ WHERE
                                 <td colspan="2" style=" white-space: nowrap;overflow-x: hidden; text-overflow: ellipsis; "> <?php echo $rows['Details'] ?></td>
                                 <td> <?php echo $rows['YearFounded'] ?></td>
                                 <td> <?php echo $rows['Country'] ?></td>
+                                <td> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?></td>
                                 <td> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Edit</a></td>
                                 <td> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Delete</a></td>
                                 <!-- <td> <?php echo $rows['IndustryID'] ?></td>

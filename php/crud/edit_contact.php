@@ -26,18 +26,19 @@
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
+        $ModifiedDate           = $_REQUEST['ModifiedDate'];
         $UserFullName           = $_REQUEST['UserFullName'];
         $FirstName              = $_REQUEST['FirstName'];
         $LastName               = $_REQUEST['LastName'];
         $ContactNumber1         = $_REQUEST['ContactNumber1'];
         $ContactNumber2         = $_REQUEST['ContactNumber2'];
         $Email                  = $_REQUEST['Email'];
-        $RoleTypeID             = $_REQUEST['RoleTypeID'];
-        $GenderID               = $_REQUEST['GenderID'];
-        $RaceID                 = $_REQUEST['RaceID'];
+        $RoleType               = $_REQUEST['RoleTypeID'];
+        $Gender                 = $_REQUEST['GenderID'];
+        $Race                   = $_REQUEST['RaceID'];
         
         // DescriptionID='".$Description."',
-        $update="UPDATE Investor SET ModifiedDate='".$ModifiedDate."',InvestorName='".$InvestorName."', Website='".$Website."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters='".$Headquarters."', Logo='".$Logo."' where InvestorID='".$InvestorID."'";
+        $update="UPDATE UserDetail SET ModifiedDate=UUID(),UserFullName='".$UserFullName."', FirstName='".$FirstName."', LastName='".$LastName."', ContactNumber1='".$ContactNumber1."', ContactNumber2='".$ContactNumber2."', Email='".$Email."', RoleTypeID =  (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), GenderID =(select Gender.GenderID FROM Gender where Gender.Gender = '$Gender'), RaceID = (select Race.RaceID FROM Race where Race.Race = '$Race') where UserDetailID='".$UserDetailID."'";
         mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/contacts.php'>View Updated Record</a>";

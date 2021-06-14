@@ -2,7 +2,7 @@
     include_once('../connect.php');
     // QUERY DATABASE FROM DATA
     $FundID =$_REQUEST['FundID'];
-    $sql=" DELETE FROM Fund where FundID = '$FundID' "; 
+    $sql=" UPDATE Fund SET Deleted = 1, DeletedDate = NOW() WHERE FundID = '$FundID "; 
     
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = mysqli_query($conn, $sql) or die($conn->error);

@@ -26,18 +26,25 @@
         $MaximumInvestment      = $_POST['MaximumInvestment'];
         $FundNote               = $_POST['FundNote'];
         $Currency               = $_POST['Currency'];
-        
-        $sql = "INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
-        VALUES (uuid(), now(), now(), '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
-        
+        $InvestmentStage        = $_POST['InvestmentStage'];
+        // FUND INSERTION QUERY
+        $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
+                    VALUES (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
         $query = mysqli_query($conn, $sql);
+        // FUND NOTE INSERTION QUERY
+        $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
+                VALUES (uuid(), now(), now(), '$FundNote','fb450e57-7056-11eb-a66b-96000010b114' )";
+        $query2 = mysqli_query($conn, $sql2);
+        // FUND INVESTMENTSTAGE INSERTION QUERY
+        $sql3 = "INSERT INTO InvestmentStage(InvestmentStageID, CreatedDate, ModifiedDate, Deleted, InvestmentStage) 
+                VALUES (uuid(), now(), now(),0, '$InvestmentStage' )";
+        $query3 = mysqli_query($conn, $sql3);
 
-        if($query){
-            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note) 
-        VALUES (uuid(), now(), now(), '$FundNote')";
+        if($query && $query2 && $query3){
+            echo '<script> Alert(Fund created successfully!)</script>';
             header( "refresh: 3; url= fund.php" );
         } else {
-            echo 'Oops! There was an error submitting form. Please try again later.';
+            echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
     }
 
