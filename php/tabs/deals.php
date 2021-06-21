@@ -2,8 +2,8 @@
     include_once('../connect.php');
     include_once('../DealLink.php');
     // QUERY DATABASE FROM DATA
-    $sqlAA="    SELECT 
-                    News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, InvestmentValue.InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName 
+    $sqlAA="    SELECT DISTINCT
+                    News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, GROUP_CONCAT(DISTINCT  InvestmentValue) AS InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Deals.Stake
                 FROM 
                     PortfolioCompanyNews 
                 -- Include News table data 
@@ -67,10 +67,10 @@
                     PortfolioCompanyInvestmentValue
                 ON 
                     PortfolioCompanyInvestmentValue.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
-                LEFT JOIN 
-                    InvestmentValue
-                ON 
-                    InvestmentValue.InvestmentValueID = PortfolioCompanyInvestmentValue.InvestmentValueID
+                -- LEFT JOIN 
+                --     InvestmentValue
+                -- ON 
+                --     InvestmentValue.InvestmentValueID = PortfolioCompanyInvestmentValue.InvestmentValueID
                 LEFT JOIN 
                     PortfolioCompanyIndustry
                 ON 
@@ -87,8 +87,16 @@
                     UserDetail
                 ON 
                     UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+                LEFT JOIN 
+                    RoleType
+                ON 
+                    RoleType.RoleTypeID = UserDetail.RoleTypeID
+                LEFT JOIN 
+                    Deals
+                ON 
+                    Deals.portfoliocompanyID = PortfolioCompanyNews.PortfolioCompanyID
 
-                GROUP BY News.NewsURL, InvestmentValue.InvestmentValue
+                GROUP BY News.NewsURL
                 ORDER BY  news.NewsDate DESC ";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
@@ -244,6 +252,7 @@
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Deals </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
@@ -408,9 +417,9 @@
                                                             SECTOR DROPDOWN
                                                         /////////////////////
                                                     -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ArtificialIntelligenceDrop">
-                                                        <label for="Sector" class="form-label">Sector </label>
-                                                        <select id="Sector" name="Sector" class="form-select">
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
+                                                        <label for="Sector" class="form-label" >Sector </label>
+                                                        <select id="Sector" name="Sector"  class="form-select sectorDropdowns" multiple="true">
                                                             <option>choose...</option>
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
@@ -552,8 +561,8 @@
                                                         <h5>
                                                             Contact Person
                                                         </h5> 
-                                                        <label for="UserFullName" class="form-label">Investor Contact</label>
-                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                        <label for="UserFullName1" class="form-label">Investor Contact</label>
+                                                        <select class="form-select" id="UserFullName1" name="UserFullName1" required>
                                                             <option> Select Contact Person...</option>
                                                             <?php
                                                                 mysqli_data_seek($result5, 0);
@@ -584,42 +593,53 @@
                         </span>
                     </div>
                 </div>
-                <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3400px;line-height: 30px;">
-                        <t>
-                            <th scope="col">Date</th>
-                            <th scope="col">Portfolio Company</th>
-                            <th scope="col">Investor(s)</th>
-                            <th scope="col">Fund(s)</th>
-                            <th scope="col">Value Of Investment</th>
-                            <th scope="col">Industry </th>
-                            <th scope="col">Sector(s)</th>
-                            <th scope="col">Portfolio Company Headquarters</th>
-                            <th scope="col">Company Contact(s)</th>
-                            <th scope="col"> View More </th>
-                        </t>
-                        <?php
-                            while(($rowAA = mysqli_fetch_assoc($resultAA)))
-                            {
-                        ?>
-                        <tr>
-                            <td> <?php echo $rowAA["NewsDate"];?> </td>
-                            <td> <?php echo $rowAA["PortfolioCompanyName"];?> </td>
-                            <td> <?php echo $rowAA["InvestorName"];?> </td>
-                            <td> <?php echo $rowAA["FundName"];?> </td>
-                            <td> <?php echo $rowAA["InvestmentValue"];?> </td>
-                            <td> <?php echo $rowAA["Industry"];?> </td>
-                            <td> <?php echo $rowAA["Sector"];?> </td>
-                            <td> <?php echo $rowAA["Country"];?></td>
-                            <td> <?php echo $rowAA["UserFullName"];?></td>
-                            <td> 
-                                <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
-                            </td>
-                        </tr>
-                        <?php
-                            }
-                        ?>
-                    </table>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3400px; line-height: 18px;">
+                                <t>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">News Link</th>
+                                    <th scope="col">Portfolio Company</th>
+                                    <th scope="col">Investor(s)</th>
+                                    <th scope="col">Fund(s)</th>
+                                    <th scope="col">Value Of Investment</th>
+                                    <th scope="col">Stake</th>
+                                    <th scope="col">Industry </th>
+                                    <th scope="col">Sector(s)</th>
+                                    <th scope="col">Portfolio Company Headquarters</th>
+                                    <th scope="col">Company Contact(s)</th>
+                                    <th scope="col">Role </th>
+                                    <th scope="col">View More </th>
+                                </t>
+                                <?php
+                                    while(($rowAA = mysqli_fetch_assoc($resultAA)))
+                                    {
+                                ?>
+                                <tr>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["NewsURL"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["InvestmentValue"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["Stake"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
+                                    <td> 
+                                        <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
+                                    </td>
+                                </tr>
+                                <?php
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -628,6 +648,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
+        <script src="../../js/select2.min.js"></script>
     </body>
 </html>
 

@@ -66,7 +66,7 @@ WHERE
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="../resources/DCA_Icon.png" type="image/x-icon">
+        <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Portfolio Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
@@ -337,46 +337,50 @@ WHERE
                         </span>
                     </div>
                 </div>
-                <!-- TABLE OF ALL PORTFOLIO COMPANIES -->
-                <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 30px;">
-                        <t> 
-                            <th scope="col" >Portfolio Company Name</th>
-                            <th scope="col" >Currency </th>
-                            <th scope="col" >Portfolio Company Website</th>
-                            <th scope="col" >Total Investment Value</th>
-                            <th scope="col" >Stake</th>
-                            <th scope="col" colspan="2" >Details</th>
-                            <th scope="col" >Year Founded</th>
-                            <th scope="col" >Headquarters</th>
-                            <th scope="col" >Logo</th>
-                            <th>Edit </th>
-                            <th>Delete </th>
-                        </t>
-                        <?php
-                            while($rows = mysqli_fetch_assoc($result))
-                            {
-                        ?>
-                            <tr>     
-                                <td> <?php echo $rows['PortfolioCompanyName'] ?></td>
-                                <td> <?php echo $rows['Currency'] ?></td>
-                                <td> <?php echo $rows['Website'] ?></td>
-                                <td> <?php echo $rows['TotalInvestmentValue'] ?></td>
-                                <td> <?php echo $rows['Stake'] ?></td>
-                                <td colspan="2" style=" white-space: nowrap;overflow-x: hidden; text-overflow: ellipsis; "> <?php echo $rows['Details'] ?></td>
-                                <td> <?php echo $rows['YearFounded'] ?></td>
-                                <td> <?php echo $rows['Country'] ?></td>
-                                <td> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?></td>
-                                <td> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Edit</a></td>
-                                <td> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">Delete</a></td>
-                                <!-- <td> <?php echo $rows['IndustryID'] ?></td>
-                                <td> <?php echo $rows['SectorID'] ?></td> -->
-                            </tr>
-                        <?php 
-                            }
-                        ?>
-                    </table>
-                </div> 
+                <!-- TABLE OF ALL PORTFOLIO COMPANIES --> 
+                <div class="card">
+                    <div class="card-body bg-secondary">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 2400px; line-height: 18px;">
+                                <t> 
+                                    <th scope="col" >Portfolio Company Name</th>
+                                    <th scope="col" >Currency </th>
+                                    <th scope="col" >Portfolio Company Website</th>
+                                    <th scope="col" >Total Investment Value</th>
+                                    <th scope="col" >Stake</th>
+                                    <th scope="col" >Details</th>
+                                    <th scope="col" >Year Founded</th>
+                                    <th scope="col" >Headquarters</th>
+                                    <th scope="col" >Logo</th>
+                                    <th scope="col">Edit </th>
+                                    <th scope="col">Delete </th>
+                                </t>
+                                <?php
+                                    while($rows = mysqli_fetch_assoc($result))
+                                    {
+                                ?>
+                                    <tr>     
+                                        <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['TotalInvestmentValue'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Stake'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
+                                        <td class="text-truncate"> <small> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Edit</a></small></td>
+                                        <td class="text-truncate"> <small> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Delete</a></small></td>
+                                        <!-- <td> <?php echo $rows['IndustryID'] ?></td>
+                                        <td> <?php echo $rows['SectorID'] ?></td> -->
+                                    </tr>
+                                <?php 
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
         <!-- Scripts -->

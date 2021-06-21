@@ -128,7 +128,7 @@
                 
                 <p><input class="form-control col" type="text" name="Country" placeholder="Unknown Headquarters"  value="<?php echo $rowA1['Country'];?>" DISABLED/></p>
 
-                <button><a href="../tabs/deals.php"> Close</a></button>
+                <button><a href="../../index.php"> Close</a></button>
             </form>
         </main>
     </body>

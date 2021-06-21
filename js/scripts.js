@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    // =============================================
+    // ====== INDUSTRY AND SECTOR SWITCHER =========
+    // =============================================
     $("#Industry").change(function() {
         var el = $(this);
 
@@ -1154,13 +1157,14 @@ $(document).ready(function() {
             $("#Sector").append("<option value=\"Universities\"> Universities</option>");
         }
     });
+    // ==============================================================
+    // =============== MULTI-SELECT USING Select2.JS ================
+    // ==============================================================
+    // Placed this Jquery code at the very bottom so that it runs after every other Javascript on this page has been executed 
+    // This is to prevent errors since JavaScript runs from top to bottom.
+    $(".sectorDropdowns").select2({
+        width: '300px', 
+        maximumSelectionLength: 5,
+        placeholder: "Select Sector"
+    })
 });
-
-/* 
-
-else if (el.val() === "Events") {
-    $('#Sector').find('option').remove().end().append('<option value="">choose...</option>');
-    $("#Sector").append("<option value=\" CAD\">CAD</option>");
-}
-
-*/

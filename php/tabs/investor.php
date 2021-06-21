@@ -961,40 +961,44 @@
                         </span>
                     </div>
                 </div>
-                <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 30px; table-layout:fixed; overflow:hidden;">
-                        <t>
-                            <th scope="col">Investor Name</th>
-                            <th scope="col" colspan="2">Website</th>
-                            <th scope="col">Currency</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">ImpactTag </th>
-                            <th scope="col">Year Founded</th>
-                            <th scope="col">Headquarters</th>
-                            <th scope="col">Logo</th>
-                            <th scope="col">Edit </th>
-                            <th scope="col">Delete </th>
-                        </t>
-                        <?php
-                            while($rows = mysqli_fetch_assoc($result) )
-                            {
-                        ?>
-                            <tr>
-                                <td> <?php echo $rows['InvestorName'] ?></td>
-                                <td colspan="2" style=" white-space: nowrap;overflow-x: hidden; text-overflow: ellipsis; "> <?php echo $rows['Website'] ?></td>
-                                <td> <?php echo $rows['Currency'] ?></td>
-                                <td> <?php echo $rows['Description'] ?></td>
-                                <td> <?php echo $rows['ImpactTag'] ?></td>
-                                <td> <?php echo $rows['YearFounded'] ?></td>
-                                <td> <?php echo $rows['Country']?></td>
-                                <td> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?></td>
-                                <td> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Edit</a></td>
-                                <td> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a></td>
-                            </tr>
-                        <?php 
-                            }
-                        ?>
-                    </table>
+                <div class="card">
+                    <div class="card-body bg-secondary"">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2200px; line-height: 18px; ">
+                                <t>
+                                    <th scope="col">Investor Name</th>
+                                    <th scope="col" >Website</th>
+                                    <th scope="col">Currency</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">ImpactTag </th>
+                                    <th scope="col">Year Founded</th>
+                                    <th scope="col">Headquarters</th>
+                                    <th scope="col">Logo</th>
+                                    <th scope="col">Edit </th>
+                                    <th scope="col">Delete </th>
+                                </t>
+                                <?php
+                                    while($rows = mysqli_fetch_assoc($result) )
+                                    {
+                                ?>
+                                    <tr>
+                                        <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Description'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['ImpactTag'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Country']?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
+                                        <td class="text-truncate"> <small> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
+                                        <td class="text-truncate"> <small> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a> </small></td>
+                                    </tr>
+                                <?php 
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

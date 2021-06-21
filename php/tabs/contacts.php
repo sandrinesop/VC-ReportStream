@@ -194,42 +194,46 @@
                         </span>
                     </div>
                 </div>
-                <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 30px;">
-                        <t>
-                            <th>User Full Name</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Contact Number 1</th>
-                            <th>Contact Number 2 </th>
-                            <th>Email</th>
-                            <th>RoleType</th>
-                            <th>Gender</th>
-                            <th>Race  </th>
-                            <th>Edit  </th>
-                            <th>Delete </th>
-                        </t>
-                        <?php
-                            while($rows = mysqli_fetch_assoc($result))
-                            {
-                        ?>
-                            <tr>
-                                <td> <?php echo $rows['UserFullName'] ?></td>
-                                <td> <?php echo $rows['FirstName'] ?></td>
-                                <td> <?php echo $rows['LastName'] ?></td>
-                                <td> <?php echo $rows['ContactNumber1'] ?></td>
-                                <td> <?php echo $rows['ContactNumber2'] ?></td>
-                                <td> <?php echo $rows['Email'] ?></td>
-                                <td> <?php echo $rows['RoleType'] ?></td>
-                                <td> <?php echo $rows['Gender'] ?></td>
-                                <td> <?php echo $rows['Race'] ?></td>
-                                <td> <a href="../crud/edit_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Edit</a></td>
-                                <td> <a href="../crud/delete_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Delete</a></td>
-                            </tr>
-                        <?php 
-                            }
-                        ?>
-                    </table>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 18px;">
+                                <t>
+                                    <th scope="col">User Full Name</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Contact Number 1</th>
+                                    <th scope="col">Contact Number 2 </th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">RoleType</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Race  </th>
+                                    <th scope="col">Edit  </th>
+                                    <th scope="col">Delete </th>
+                                </t>
+                                <?php
+                                    while($rows = mysqli_fetch_assoc($result))
+                                    {
+                                ?>
+                                    <tr>
+                                        <td class="text-truncate"> <small><?php echo $rows['UserFullName'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['RoleType'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['Gender'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['Race'] ?></small></td>
+                                        <td class="text-truncate"> <a href="../crud/edit_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Edit</a></td>
+                                        <td class="text-truncate"> <a href="../crud/delete_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Delete</a></td>
+                                    </tr>
+                                <?php 
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

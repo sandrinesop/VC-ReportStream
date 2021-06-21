@@ -222,38 +222,42 @@
                         </span>
                     </div>
                 </div>
-                <!-- TABLE OF ALL PORTFOLIO COMPANIES -->
-                <div class="table-responsive" style="overflow-x:auto;">
-                    <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 30px;">
-                        <t>
-                            <th scope="col">Fund Name</th>
-                            <th scope="col">Currency</th>
-                            <th scope="col">Committed Capital Of Fund</th>
-                            <th scope="col">Committed Capital </th>
-                            <th scope="col">Minimum Investment</th>
-                            <th scope="col">Maximum Investment</th>
-                            <th scope="col">Edit </th>
-                            <th scope="col">Delete </th>
-                        </t>
-                        <?php
-                            while($rows = mysqli_fetch_assoc($result))
-                            {
-                        ?>
-                        <tr>
-                            <td> <?php echo $rows['FundName'] ?></td>
-                            <td> <?php echo $rows['Currency'] ?></td>
-                            <td> <?php echo $rows['CommittedCapitalOfFund'] ?></td>
-                            <td> <?php echo $rows['CommittedCapital'] ?></td>
-                            <td> <?php echo $rows['MinimumInvestment'] ?></td>
-                            <td> <?php echo $rows['MaximumInvestment'] ?></td>
-                            <td> <a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">Edit</a></td>
-                            <td> <a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?>">Delete</a></td>
-                        </tr>
-                        <?php 
-                            }
-                        ?>
-                    </table>
-                </div> 
+                <!-- TABLE OF ALL PORTFOLIO COMPANIES --> 
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;">
+                                <t>
+                                    <th scope="col">Fund Name</th>
+                                    <th scope="col">Currency</th>
+                                    <th scope="col">Committed Capital Of Fund</th>
+                                    <th scope="col">Committed Capital </th>
+                                    <th scope="col">Minimum Investment</th>
+                                    <th scope="col">Maximum Investment</th>
+                                    <th scope="col">Edit </th>
+                                    <th scope="col">Delete </th>
+                                </t>
+                                <?php
+                                    while($rows = mysqli_fetch_assoc($result))
+                                    {
+                                ?>
+                                <tr>
+                                    <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['CommittedCapitalOfFund'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['CommittedCapital'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
+                                    <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
+                                    <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>
+                                </tr>
+                                <?php 
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
         <!-- Scripts -->

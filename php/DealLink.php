@@ -14,13 +14,13 @@
         $NewsNote       = $_POST['NewsNote'];
         // PORTFOLIO COMPANY TABLE
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
-        // $Stake                   = $_POST['Stake'];
+        $Stake                   = $_POST['Stake'];
         $InvestmentValue         = $_POST['InvestmentValue'];
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
         // USER DETAIL TABLE
         $StartUpContact       = $_POST['UserFullName'];
-        $InvestorContact       = $_POST['UserFullName'];
+        $InvestorContact       = $_POST['UserFullName1'];
         // INVESTOR TABLE
         $InvestorName           = $_POST['InvestorName'];
         // FUND TABLE
@@ -189,8 +189,8 @@
         // **** INSERT STATEMENTS FOR THE DEALS CENTRAL CAPTURING TABLES **** //
         // =====================================================================
         // =====================================================================
-        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestorID, FundID, InvestmentValue, SectorID, IndustryID, UserDetailID1, UserDetailID2)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'),(select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct InvestmentValue.InvestmentValueID FROM InvestmentValue where InvestmentValue.InvestmentValue = '$InvestmentValue'), (select distinct Sector.SectorID FROM Sector where Sector.Sector = '$Sector'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact   '), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
+        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestorID, FundID, InvestmentValue, stake, SectorID, IndustryID, UserDetailID1, UserDetailID2)
+                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'),(select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), '$InvestmentValue', '$Stake', (select distinct Sector.SectorID FROM Sector where Sector.Sector = '$Sector'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
         $queryDLS = mysqli_query($conn, $sqlDLS);
         // DLS
         if ($queryDLS){
