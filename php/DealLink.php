@@ -18,6 +18,14 @@
         $InvestmentValue         = $_POST['InvestmentValue'];
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
+        // Loop through the array of sectors
+        $sectors="";  
+        foreach($Sector as $sects)  
+        {  
+            $sectors.= $sects.",";  
+        }  
+
+
         // USER DETAIL TABLE
         $StartUpContact       = $_POST['UserFullName'];
         $InvestorContact       = $_POST['UserFullName1'];
@@ -74,6 +82,7 @@
         // ===============================
         // PortfolioCompany Mapping tables
         // ===============================
+
         $sqlA1 = "  INSERT INTO PortfolioCompanyNews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, NewsID)
                     VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
         $queryA1 = mysqli_query($conn, $sqlA1);
@@ -83,14 +92,14 @@
             echo 'Oops! There was an error on linking Portfolio Company News. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         }
         // A1  END
-        $sqlB1 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                    VALUES (uuid(), now(), now(),0,NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Sector.SectorID FROM Sector where Sector.Sector = '$Sector'))";
-        $queryB1 = mysqli_query($conn, $sqlB1);
-        if ( $queryB1 ){
+        // $sqlB1 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+        //             VALUES (uuid(), now(), now(),0,NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Sector.SectorID FROM Sector where Sector.Sector = '$Sector'))";
+        // $queryB1 = mysqli_query($conn, $sqlB1);
+        // if ( $queryB1 ){
             // Success
-        } else {
-            echo 'Oops! There was an error on linking Portfolio Company Sector. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-        }
+        // } else {
+        //     echo 'Oops! There was an error on linking Portfolio Company Sector. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+        // }
         // B1  END
         $sqlC1 = "  INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
                     VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry') )";
@@ -111,15 +120,7 @@
             echo 'Oops! There was an error on linking Portfolio Company User. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         }
         // D1  END
-        $sqlE1 = "  INSERT INTO PortfolioCompanyInvestmentValue(PortfolioCompanyInvestmentValueID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, InvestmentValueID)
-                    VALUES (uuid(), now(), now(),0,NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct InvestmentValue.InvestmentValueID FROM InvestmentValue where InvestmentValue.InvestmentValue = '$InvestmentValue'))";
-        $queryE1 = mysqli_query($conn, $sqlE1);
-        if ($queryE1){
-            // Success
-        } else {
-            echo 'Oops! There was an error on linking Portfolio Company InvestmentValue. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-        }
-        // E1  END
+
         // $sqlF1 = "  INSERT INTO PortfolioCompanyStake(PortfolioCompanyStakeID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, StakeID)
         //             VALUES (uuid(), now(), now(),0,NULL,(select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct stake.StakeID FROM stake where stake.Stake = '$Stake'))";
         // $queryF1 = mysqli_query($conn, $sqlF1);
@@ -189,8 +190,8 @@
         // **** INSERT STATEMENTS FOR THE DEALS CENTRAL CAPTURING TABLES **** //
         // =====================================================================
         // =====================================================================
-        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestorID, FundID, InvestmentValue, stake, SectorID, IndustryID, UserDetailID1, UserDetailID2)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'),(select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), '$InvestmentValue', '$Stake', (select distinct Sector.SectorID FROM Sector where Sector.Sector = '$Sector'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
+        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestorID, FundID, InvestmentValue, stake, IndustryID, Sector, UserDetailID1, UserDetailID2)
+                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'),(select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), '$InvestmentValue', '$Stake', (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), '$sectors', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
         $queryDLS = mysqli_query($conn, $sqlDLS);
         // DLS
         if ($queryDLS){

@@ -87,9 +87,6 @@ WHERE
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
                         </li>
                     </ul>

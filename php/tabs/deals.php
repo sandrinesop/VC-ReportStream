@@ -31,11 +31,11 @@
                     PortfolioCompanySector
                 ON
                     PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID         
-                LEFT JOIN 
-                -- Include Sector table data
-                    Sector          
-                ON
-                    Sector.SectorID = PortfolioCompanySector.SectorID      
+                -- LEFT JOIN 
+                -- -- Include Sector table data
+                --     Sector          
+                -- ON
+                --     Sector.SectorID = PortfolioCompanySector.SectorID      
                 LEFT JOIN 
                 -- Link Fund to PortfolioCompany using FundPortfolioCompany
                     FundPortfolioCompany
@@ -271,9 +271,6 @@
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
                         </li>
                     </ul>
@@ -419,7 +416,7 @@
                                                     -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
                                                         <label for="Sector" class="form-label" >Sector </label>
-                                                        <select id="Sector" name="Sector"  class="form-select sectorDropdowns" multiple="true">
+                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
                                                             <option>choose...</option>
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
