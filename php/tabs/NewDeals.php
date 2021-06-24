@@ -3,49 +3,29 @@
     include_once('../DealLink.php');
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, GROUP_CONCAT(DISTINCT  InvestmentValue) AS InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Deals.Stake
+                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, Fund.FundName, deals.InvestmentValue, deals.Stake, Industry.Industry, deals.Sector, InvestmentStage.InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
-                    PortfolioCompanyNews 
+                    deals 
                 -- Include News table data 
                 LEFT JOIN 
                     News 
                 ON
-                    News.NewsID = PortfolioCompanyNews.NewsID 
+                    News.NewsID = deals.NewsID 
                 LEFT JOIN 
                 -- Include PortfoliCompany table data
                     PortfolioCompany
                 ON
-                    PortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
-                LEFT JOIN 
-                -- Link Investor to News using InvestorNews table
-                    InvestorNews
-                ON
-                    InvestorNews.NewsID = PortfolioCompanyNews.NewsID 
+                    PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
                 LEFT JOIN 
                 -- Include Invesor table data
                     Investor
                 ON
-                    Investor.InvestorID = InvestorNews.InvestorID 
-                LEFT JOIN 
-                -- Link Sector to Porfolio Company using PortfolioCompanySector table
-                    PortfolioCompanySector
-                ON
-                    PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID         
-                -- LEFT JOIN 
-                -- -- Include Sector table data
-                --     Sector          
-                -- ON
-                --     Sector.SectorID = PortfolioCompanySector.SectorID      
-                LEFT JOIN 
-                -- Link Fund to PortfolioCompany using FundPortfolioCompany
-                    FundPortfolioCompany
-                ON
-                    FundPortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    Investor.InvestorID = deals.InvestorID 
                 LEFT JOIN 
                 -- include Fund table data
                     Fund
                 ON
-                    Fund.FundID = FundPortfolioCompany.FundID 
+                    Fund.FundID = deals.FundID 
                 LEFT JOIN 
                 -- Link investment stage to fund
                     FundInvestmentStage      
@@ -58,53 +38,30 @@
                 LEFT JOIN 
                     PortfolioCompanyCountry
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
                 LEFT JOIN 
-                    PortfolioCompanyInvestmentValue
-                ON 
-                    PortfolioCompanyInvestmentValue.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
-                -- LEFT JOIN 
-                --     InvestmentValue
-                -- ON 
-                --     InvestmentValue.InvestmentValueID = PortfolioCompanyInvestmentValue.InvestmentValueID
-                LEFT JOIN 
-                    PortfolioCompanyIndustry
-                ON 
-                    PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
-                LEFT JOIN 
                     Industry
                 ON 
-                    Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
-                LEFT JOIN 
-                    PortfolioCompanyUserDetail
-                ON 
-                    PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    Industry.IndustryID = deals.IndustryID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+                    UserDetail.UserDetailID = deals.UserDetailID1
                 LEFT JOIN 
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
-                LEFT JOIN 
-                    Deals
-                ON 
-                    Deals.portfoliocompanyID = PortfolioCompanyNews.PortfolioCompanyID
-
-                GROUP BY News.NewsURL
                 ORDER BY  news.NewsDate DESC ";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
     $rowAA = mysqli_fetch_assoc($resultAA);
 
     //==================================================== 
-    // BELOW IS CODE DISPLAYING DATA ON DEALS CAPTURE SCREEN MODAL
-    // tHE DATA ON THE DROPDOWNS IS BEING PULLED FROM THE DATABASE
+    // BELOW IS CODE DISPLAYING DATA ON deals SCREEN TABLE
     //====================================================
     //========== | PORTFOLIO COMPANY TABLE | =============
     //====================================================
@@ -251,7 +208,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
-        <title>VC Reportstream | Deals </title>
+        <title>VC Reportstream | deals </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.min.css">

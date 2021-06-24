@@ -25,7 +25,6 @@
             $sectors.= $sects.",";  
         }  
 
-
         // USER DETAIL TABLE
         $StartUpContact       = $_POST['UserFullName'];
         $InvestorContact       = $_POST['UserFullName1'];
@@ -34,11 +33,18 @@
         // FUND TABLE
         $FundName               = $_POST['FundName'];
 
+
         // ====================================================================================================================================================
         // ====================================================================================================================================================
         // BELOW ARE THE INSERT STATEMENTS TO THE NEWS AND NOTE TABLE. THIS IS ONE OF THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
         // ====================================================================================================================================================
         // ====================================================================================================================================================
+        // ===============================
+        // ===============================
+        // ===============================
+        // ===============================        
+        // ===============================
+
         $sql = "    INSERT INTO 
                         News(NewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsDate, NewsURL) 
                     VALUES 
@@ -51,7 +57,20 @@
                     VALUES 
                         (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
         $query2 = mysqli_query($conn, $sql2);
-        // Query End
+
+        if ($query && $query2 ){
+            // Success
+        } else {
+            echo 'Oops! There was an error saving news item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        // ===============================
+        // ===============================
+        // ===============================
+        // NO LONGER NEED BELOW TABLES
+        // THE DATA IS IN DEALS TABLE
+        // ===============================        
+        // ===============================
 
         // $sql3 = "    INSERT INTO 
         //                 Stake(StakeID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Stake) 
@@ -60,27 +79,27 @@
         // $query3 = mysqli_query($conn, $sql3);
         // Query End
 
-        $sql4 = "    INSERT INTO 
-                        InvestmentValue(InvestmentValueID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestmentValue) 
-                    VALUES 
-                        (uuid(), now(), now(),0,NULL,'$InvestmentValue')";
-        $query4 = mysqli_query($conn, $sql4);
+        // $sql4 = "    INSERT INTO 
+        //                 InvestmentValue(InvestmentValueID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestmentValue) 
+        //             VALUES 
+        //                 (uuid(), now(), now(),0,NULL,'$InvestmentValue')";
+        // $query4 = mysqli_query($conn, $sql4);
 
 
-        if ($query && $query2 ){
-            // Success
-        } else {
-            echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
+
 
         // =====================================================
         // =====================================================
-        // **** INSERT STATEMENTS FOR THE MAPPING TABLES **** //
+        // ***** INSERT STATEMENTS FOR THE MAPPING TABLES ******
         // =====================================================
         // =====================================================
-
+        
+        // ===============================
+        // ===============================
         // ===============================
         // PortfolioCompany Mapping tables
+        // ===============================
+        // ===============================
         // ===============================
 
         $sqlA1 = "  INSERT INTO PortfolioCompanyNews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, NewsID)
@@ -101,24 +120,24 @@
         //     echo 'Oops! There was an error on linking Portfolio Company Sector. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         // }
         // B1  END
-        $sqlC1 = "  INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry') )";
-                    // echo $Industry;
-        $queryC1 = mysqli_query($conn, $sqlC1);
-        if ( $queryC1 ){
-            // Success
-        } else {
-            echo 'Oops! There was an error on linking Portfolio Company Industry. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-        }
+        // $sqlC1 = "  INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry') )";
+        //             // echo $Industry;
+        // $queryC1 = mysqli_query($conn, $sqlC1);
+        // if ( $queryC1 ){
+        //     Success
+        // } else {
+        //     echo 'Oops! There was an error on linking Portfolio Company Industry. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+        // }
         // C1  END
-        $sqlD1 = "  INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
-                    VALUES (uuid(), now(), now(),0,NULL,(select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))";
-        $queryD1 = mysqli_query($conn, $sqlD1);
-        if ( $queryD1 ){
-            // Success
-        } else {
-            echo 'Oops! There was an error on linking Portfolio Company User. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-        }
+        // $sqlD1 = "  INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+        //             VALUES (uuid(), now(), now(),0,NULL,(select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))";
+        // $queryD1 = mysqli_query($conn, $sqlD1);
+        // if ( $queryD1 ){
+        //     // Success
+        // } else {
+        //     echo 'Oops! There was an error on linking Portfolio Company User. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+        // }
         // D1  END
 
         // $sqlF1 = "  INSERT INTO PortfolioCompanyStake(PortfolioCompanyStakeID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, StakeID)
@@ -131,65 +150,79 @@
         //     echo 'Oops! There was an error on linking Portfolio Company Stake. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         // }
 
+
         // =======================
-        // Investor Mapping tables
         // =======================
-        $sqlA2 = "  INSERT INTO InvestorNews(InvestorNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, NewsID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
-        $queryA2 = mysqli_query($conn, $sqlA2);
+        // =======================
+        // INVESTOR MAPPING TABLES
+        // =======================
+        // =======================
+        // =======================
+        // $sqlA2 = "  INSERT INTO InvestorNews(InvestorNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, NewsID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
+        // $queryA2 = mysqli_query($conn, $sqlA2);
         // A2 END
-        $sqlB2 = "  INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-        $queryB2 = mysqli_query($conn, $sqlB2);
+        // $sqlB2 = "  INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        // $queryB2 = mysqli_query($conn, $sqlB2);
         // B2 END
         $sqlC2 = "  INSERT INTO InvestorUserDetail(InvestorUserDetailID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, UserDetailID)
                     VALUES (uuid(), now(), now(),0,NULL,(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
         $queryC2 = mysqli_query($conn, $sqlC2);
         // C2 END
-        $sqlD2 = "  INSERT INTO InvestorInvestmentValue(InvestorInvestmentValueID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, InvestmentValueID)
-                    VALUES (uuid(), now(), now(),0,NULL,(select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select InvestmentValue.InvestmentValueID FROM InvestmentValue where InvestmentValue.InvestmentValue = '$InvestmentValue'))";
-        $queryD2 = mysqli_query($conn, $sqlD2);
+        // $sqlD2 = "  INSERT INTO InvestorInvestmentValue(InvestorInvestmentValueID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, InvestmentValueID)
+        //             VALUES (uuid(), now(), now(),0,NULL,(select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select InvestmentValue.InvestmentValueID FROM InvestmentValue where InvestmentValue.InvestmentValue = '$InvestmentValue'))";
+        // $queryD2 = mysqli_query($conn, $sqlD2);
         // D2 END
 
-        if ($queryA2 && $queryB2 && $queryC2){
-            // Success
-        } else {
+        if ( $queryC2){
+            //  Success
+        } else{
             echo 'Oops! There was an error on linking Investor Section. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
 
         // ===================
-        // Fund Mapping tables
+        // ===================
+        // ===================
+        // FUND MAPPING TABLES
+        // ===================
+        // ===================
         // ===================
         $sqlA3 = "  INSERT INTO FundNews(FundNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, NewsID)
                     VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'))";
         $queryA3 = mysqli_query($conn, $sqlA3);
         // A3
-        $sqlB3 = "  INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, PortfolioCompanyID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-        $queryB3 = mysqli_query($conn, $sqlB3);
+        // $sqlB3 = "  INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, PortfolioCompanyID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        // $queryB3 = mysqli_query($conn, $sqlB3);
         // B3
-        $sqlC3 = "  INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, InvestorID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
-        $queryC3 = mysqli_query($conn, $sqlC3);
+        // $sqlC3 = "  INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, InvestorID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
+        // $queryC3 = mysqli_query($conn, $sqlC3);
         // C3
-        $sqlD3 = "   INSERT INTO FundIndustry(FundIndustryID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, IndustryID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry') )";
-        $queryD3 = mysqli_query($conn, $sqlD3);
+        // $sqlD3 = "   INSERT INTO FundIndustry(FundIndustryID, CreatedDate, ModifiedDate,Deleted, DeletedDate, FundID, IndustryID)
+        //             VALUES (uuid(), now(), now(),0,NULL, (select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry') )";
+        // $queryD3 = mysqli_query($conn, $sqlD3);
                     // echo $Industry;
                     // echo $Sector;
         // D3
-        if ($queryA3 && $queryB3 && $queryC3 && $queryD3){
-            // Success
-        } else {
-            echo 'Oops! There was an error on linking Fund Section. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
+        // if ($queryA3 && $queryB3 && $queryC3 && $queryD3){
+        //     // Success
+        // } else {
+        //     echo 'Oops! There was an error on linking Fund Section. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        // }
 
         
         // =====================================================================
         // =====================================================================
+        // ===================
+        // ===================
         // **** INSERT STATEMENTS FOR THE DEALS CENTRAL CAPTURING TABLES **** //
+        // ===================
+        // ===================
         // =====================================================================
         // =====================================================================
+
         $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestorID, FundID, InvestmentValue, stake, IndustryID, Sector, UserDetailID1, UserDetailID2)
                     VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'),(select distinct Fund.FundID FROM Fund where Fund.FundName = '$FundName'), '$InvestmentValue', '$Stake', (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), '$sectors', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
         $queryDLS = mysqli_query($conn, $sqlDLS);
