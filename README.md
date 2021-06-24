@@ -14,12 +14,18 @@ If you are also using a windows pc, you may want to install git bash to be able 
 
 Other tech tools/ resources used:
 1. **PhP** - a server scripting language which we'll use to collect form data, generate dynamic page content, or send and receive cookies ( although these last two functions will not air with version 1 of the web app.)
+Link: https://www.php.net/
 
 2. **MySQL** -an open-source relational database management system where we will store data from our web app.
 
 3. **JQuery** - a fast, small, and feature-rich JavaScript library which we'll use to execute functions efficiently on our app. We'll be reseting and re-populating indutry and sector dropdowns on our app with different values using this library. 
+Link: https://jquery.com/
 
 4. **Bootstrap 5** - a free and open-source CSS framework directed at responsive, mobile-first front-end web development.  We'll be using this framework along with our own custom styling files to add styling to our mobile app.
+Link: https://getbootstrap.com/
+
+5. **Select2 JS ** - a free and open-source JavaScript plugin. Select2 gives you a customizable select box with support for searching, tagging, remote data sets, infinite scrolling, and many other highly used options. 
+Link: https://select2.org/
 
 
 ####To contribute to this project-
