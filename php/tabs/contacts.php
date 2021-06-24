@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race FROM userdetail 
 

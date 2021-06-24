@@ -1,6 +1,6 @@
 <?php 
-    include_once('../connect.php');
-    include_once('../DealLink.php');
+    include_once('../App/connect.php');
+    include_once('../App/DealLink.php');
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
                     News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, Fund.FundName, deals.InvestmentValue, deals.Stake, Industry.Industry, deals.Sector, InvestmentStage.InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
@@ -240,13 +240,15 @@
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class=" my-5">
                 <div class="my-2">
-                    <div class="row">
+                    <div class="row w-50">
                         <!-- CREATE NEW Deal MODAL -->
-                        <span class="col-2">
+                        <span class="col">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                New Deal <img src="../../resources/icons/New.svg" alt="">
-                            </button>
+                            <small>
+                                <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <small>New Deal</small> <img src="../../resources/icons/New.svg" alt="">
+                                </button>
+                            </small>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
@@ -540,10 +542,14 @@
                                 </div>
                             </div>
                         </span>
+                        <!--  VIEW LEGACY DEALS -->
+                        <span class="col">
+                            <a href="./deals.php"><button class="btn new-button"> <small>View Legacy Deals</small> </button></a>
+                        </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col"> 
                             <form action="../DealExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
                             </form>
                         </span>
                     </div>

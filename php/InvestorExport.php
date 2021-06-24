@@ -1,7 +1,7 @@
 <?php 
     // EXPORTING A CSV FILE OF THE DATA
     If(isset($_POST["export"])){
-        include_once('./connect.php');
+        include_once('./App/connect.php');
         // QUERY DATABASE FROM DATA
         header('Content-Type:text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=data.csv');

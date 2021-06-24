@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
 	            fund.FundID, fund.Deleted, fund.DeletedDate, fund.FundName, currency.Currency, fund.CommittedCapitalOfFund, fund.CommittedCapital, fund.MinimumInvestment, fund.MaximumInvestment 

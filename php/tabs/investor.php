@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql="SELECT  
             investor.InvestorID, currency.Currency, investor.Deleted, investor.DeletedDate, investor.InvestorName, investor.Website, description.Description, investor.ImpactTag, investor.YearFounded, country.Country, investor.Logo 

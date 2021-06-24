@@ -1,6 +1,6 @@
 <?php 
-    include_once('../connect.php');
-    include_once('../DealLink.php');
+    include_once('../App/connect.php');
+    include_once('../App/DealLink.php');
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
                     News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, GROUP_CONCAT(DISTINCT  InvestmentValue) AS InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Deals.Stake
@@ -283,13 +283,13 @@
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class=" my-5">
                 <div class="my-2">
-                    <div class="row">
-                        <!-- CREATE NEW Deal MODAL -->
-                        <span class="col-2">
+                    <div class="row w-50">
+                        <!-- CREATE NEW DEAL MODAL -->
+                        <span class="col">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                New Deal <img src="../../resources/icons/New.svg" alt="">
-                            </button>
+                                <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <small>New Deal</small> <img src="../../resources/icons/New.svg" alt="">
+                                </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
@@ -583,10 +583,16 @@
                                 </div>
                             </div>
                         </span>
+                        <!--  VIEW NEW DEALS -->
+                        <span class="col">
+                            <a href="./NewDeals.php"><button class="btn new-button"> <small>View Recent Deals</small> </button></a>
+                        </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col"> 
                             <form action="../DealExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                                <button class="btn new-button" type="submit" name="export" formmethod="POST">
+                                    <small>Export CSV</small>
+                                </button>
                             </form>
                         </span>
                     </div>

@@ -41,7 +41,7 @@
         <main class="container text-center index-main">
             <div class="wrapper ">
                 <div>
-                    <a href="./php/tabs/deals.php">
+                    <a href="./php/tabs/NewDeals.php">
                         <div class=" Deals centered-nav">
                             <h1>Deals</h1>
                             <div>
