@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $UserDetailID =$_REQUEST['UserDetailID'];
     $sql=" SELECT *  FROM UserDetail where UserDetailID = '$UserDetailID'"; 

@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $UserDetailID =$_REQUEST['UserDetailID'];
     $sql="UPDATE UserDetail SET Deleted = 1, DeletedDate = NOW() WHERE UserDetailID = '$UserDetailID ' "; 

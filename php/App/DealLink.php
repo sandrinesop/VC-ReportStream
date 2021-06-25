@@ -237,6 +237,6 @@
         echo '<H3>Thanks for contibuting your data to the Deal Database!</H3> '
         .'<br/>'
         .'<small>You will be redirected shortly...</small>';
-        header("Refresh:5; url=./tabs/deals.php");
+        header("Refresh:5; url=../tabs/NewDeals.php");
     };
 ?>

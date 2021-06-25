@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $FundID =$_REQUEST['FundID'];
     $sql=" SELECT *  FROM Fund where FundID = '$FundID'"; 

@@ -1,5 +1,5 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $InvestorID =$_REQUEST['InvestorID'];
     $sql=" UPDATE Investor SET Deleted = 1, DeletedDate = NOW() WHERE InvestorID = '$InvestorID' "; 
