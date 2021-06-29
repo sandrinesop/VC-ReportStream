@@ -1163,8 +1163,8 @@ $(document).ready(function() {
     // Placed this Jquery code at the very bottom so that it runs after every other Javascript on this page has been executed 
     // This is to prevent errors since JavaScript runs from top to bottom.
     $(".sectorDropdowns").select2({
-        width: '300px', 
-        maximumSelectionLength: 5,
+        width: '250px', 
+        maximumSelectionLength: 8,
         placeholder: "Select Sector"
     })
 });

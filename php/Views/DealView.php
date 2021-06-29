@@ -1,7 +1,7 @@
 <?php 
-    include_once('../connect.php');
+    include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    $NewsID =$_REQUEST['NewsID'];
+    // $NewsID =$_REQUEST['NewsID'];
     // QUERY DATABASE FROM DATA
     $sqlA1="    SELECT 
                     News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue, GROUP_CONCAT(InvestorName) AS InvestorName,GROUP_CONCAT(Sector) AS Sector, GROUP_CONCAT(FundName) AS FundName, GROUP_CONCAT(InvestmentStage) AS InvestmentStage, Country.Country 
@@ -60,20 +60,6 @@
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
     $rowA1 = mysqli_fetch_assoc($resultA1);
 
-    
-    $status = "";
-    if(isset($_POST['new']) && $_POST['new']==1)
-    {
-        $InvestorID     =$_REQUEST['InvestorID'];
-        $ModifiedDate   =$_REQUEST['ModifiedDate'];
-        $InvestorName   =$_REQUEST['InvestorName'];
-        $Website        =$_REQUEST['Website'];
-        $Description    =$_REQUEST['Description'];
-        $ImpactTag      =$_REQUEST['ImpactTag'];
-        $YearFounded    =$_REQUEST['YearFounded'];
-        $Headquarters   =$_REQUEST['Headquarters']; 
-        $Logo           =$_REQUEST['Logo'];
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

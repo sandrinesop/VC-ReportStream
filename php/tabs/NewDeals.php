@@ -55,7 +55,7 @@
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
-                ORDER BY  news.NewsDate DESC ";
+                ORDER BY  news.NewsDate ";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
     $rowAA = mysqli_fetch_assoc($resultAA);
@@ -558,7 +558,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3400px; line-height: 18px;">
+                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;">
                                 <t>
                                     <th scope="col">Date</th>
                                     <th scope="col">News Link</th>
@@ -580,7 +580,7 @@
                                 ?>
                                 <tr>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["NewsURL"];?> </small> </td>
+                                    <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > News Link</small></a></td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>

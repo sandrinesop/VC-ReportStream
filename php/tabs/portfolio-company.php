@@ -1,38 +1,146 @@
 <?php 
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    $sql=" SELECT 
-	portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
-FROM 
-	portfoliocompany 
-LEFT JOIN 
-	currency 
-ON 
-	currency.CurrencyID = portfoliocompany.CurrencyID 
-LEFT JOIN 
-	country 
-ON 
-	country.CountryID = portfoliocompany.Headquarters 
-WHERE 
-	portfoliocompany.Deleted = 0; "; 
-
+    $sql=" SELECT DISTINCT
+        portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
+        FROM 
+            portfoliocompany 
+        LEFT JOIN 
+            InvestorPortfolioCompany 
+        ON 
+            InvestorPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+        LEFT JOIN 
+            Investor 
+        ON 
+            Investor.InvestorID = InvestorPortfolioCompany.InvestorID 
+        LEFT JOIN 
+            FundPortfolioCompany 
+        ON 
+            FundPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+        LEFT JOIN 
+            Fund 
+        ON 
+            Fund.FundID = FundPortfolioCompany.FundID 
+        LEFT JOIN 
+            currency 
+        ON 
+            currency.CurrencyID = portfoliocompany.CurrencyID 
+        LEFT JOIN 
+            country 
+        ON 
+            country.CountryID = portfoliocompany.Headquarters 
+        LEFT JOIN 
+            PortfolioCompanyIndustry 
+        ON 
+            PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+        LEFT JOIN 
+            Industry 
+        ON 
+            Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
+        LEFT JOIN 
+            PortfolioCompanySector
+        ON 
+            PortfolioCompanySector.PortfolioCompanyID = portfoliocompany.PortfolioCompanyID
+        LEFT JOIN 
+            Sector 
+        ON 
+            Sector.SectorID = PortfolioCompanySector.SectorID
+        LEFT JOIN 
+            PortfolioCompanyUserDetail
+        ON 
+            PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompany.PortfolioCompanyID
+        LEFT JOIN 
+            UserDetail
+        ON 
+            UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+        LEFT JOIN 
+            RoleType
+        ON 
+            RoleType.RoleTypeID = UserDetail.RoleTypeID
+        LEFT JOIN 
+            gender
+        ON
+            gender.GenderID = userdetail.GenderID
+        LEFT JOIN 
+            race 
+        ON 
+            race.RaceID =userdetail.RaceID
+        WHERE 
+            portfoliocompany.Deleted = 0
+            
+        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
+    "; 
     $result = $conn->query($sql) or die($conn->error);
     
+    //===================================================
+    //===================================================
+    //Pulling data from the database and into dropdowns to create a new company with standardized data 
+    //===================================================
+    //===================================================
+
+    // USER FULLNAME TO SET CONTACT
+    $sql5 = "   SELECT DISTINCT 
+                    UserFullName
+                FROM 
+                    UserDetail 
+                WHERE 
+                    UserFullName IS NOT NULL ORDER BY UserFullName ASC";
+    $result5 = mysqli_query($conn, $sql5);
+    // CURRENCIES
+    $sql100 = "   SELECT DISTINCT 
+                    Currency
+                FROM 
+                    Currency 
+                WHERE 
+                    Currency IS NOT NULL ORDER BY Currency ASC";
+    $result100 = mysqli_query($conn, $sql100);
+    // COUNTRIES
+    $sql101 = "   SELECT DISTINCT 
+                    Country
+                FROM 
+                    Country 
+                WHERE 
+                    Country IS NOT NULL ORDER BY Country ASC";
+    $result101 = mysqli_query($conn, $sql101);
+    
+    // INVESTORS
+    $sql102 = "   SELECT DISTINCT 
+                    InvestorName
+                FROM 
+                    Investor 
+                WHERE 
+                    InvestorName IS NOT NULL ORDER BY InvestorName ASC";
+    $result102 = mysqli_query($conn, $sql102);
+    
+    // FUNDS
+    $sql103 = "   SELECT DISTINCT 
+                    FundName
+                FROM 
+                    Fund 
+                WHERE 
+                    FundName IS NOT NULL ORDER BY FundName ASC";
+    $result103 = mysqli_query($conn, $sql103);
+
     if ( isset($_POST['submit']))
     {
         // DEFINED VAR FOR THE SECOND TABLE
         // PORTFOLIO COMPANY TABLE
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
+        $Currency                = $_POST['Currency'];
         $PortfolioCompanyWebsite = $_POST['Website'];
-        $Details                 = $_POST['Details'];
-        $YearFounded             = $_POST['YearFounded'];
-        $Headquarters            = $_POST['Headquarters'];
-        $Stake                   = $_POST['Stake'];
         $TotalInvestmentValue    = $_POST['TotalInvestmentValue'];
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
-        $Currency                = $_POST['Currency'];
+        $Stake                   = $_POST['Stake'];
+        $Details                 = $_POST['Details'];
+        $YearFounded             = $_POST['YearFounded'];
+        $Headquarters            = $_POST['Headquarters'];
+        $UserFullName            = $_POST['UserFullName'];
         $Logo                    = $_FILES['img']['name'];
+        $InvestorName           = $_POST['InvestorName'];
+        $FundName               = $_POST['FundName'];
+
+        $sectors=""; 
 
         // Company Logo Insert code
         $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
@@ -41,22 +149,56 @@ WHERE
         $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, Logo)
             VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
             $query = mysqli_query($conn, $sql);
-        // if($query){
-        //     header( "refresh: 3; url= portfolio-company.php" );
-        // } else {
-        //     echo 'Oops! There was an error creating the company. Please try again later.'.'<br/>'.mysqli_error($conn);
-        // }
-        // LINKING COMPANY WITH SECTOR AND INDUSTRY
-        if($query){
-        // LINKING COMPANY WITH SECTOR AND INDUSTRY
-        $sql2 = "   INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$Sector'))";
-        $query2 = mysqli_query($conn, $sql2);
 
-        header( "refresh: 3; url= portfolio-company.php" );
+        // LINKING COMPANY WITH SECTORS AND INDUSTRY
+        if($query){
+
+            // echo 'This is the value inside the $PortfolioCompanyName variable : '.$PortfolioCompanyName;
+
+            foreach($Sector as $sects)  
+            {  
+                // $sectors.= $sects.",";
+                // $testQuery = " SELECT sector.SectorID FROM sector WHERE sector.Sector = '$sects'";
+                // $queryResult = mysqli_query($conn, $testQuery);
+
+                // while($queryRows = mysqli_fetch_assoc($queryResult) ){
+                // // echo 'For each iteration this is the Sector ID'.$queryRows['SectorID'].'<br/>';
+                // }
+
+                $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+                $query99 = mysqli_query($conn, $sql99);
+
+                if($query99){
+                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                } else {
+                    echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+                }
+            }
+        
+        $sql3 = "   INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+        $query3 = mysqli_query($conn, $sql3);
+        
+        // LINK CONTACT TO COMPANY
+        $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
+        $query4 = mysqli_query($conn, $sql4);
+        
+        // LINK INVESTOR TO COMPANY
+        $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
+                    VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        $query104 = mysqli_query($conn, $sql104);
+        
+        // LINK FUND TO COMPANY
+        $sql105 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                    VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        $query105 = mysqli_query($conn, $sql105);
+
+        header( "refresh: 5; url= portfolio-company.php" );
 
         } else {
-            echo 'Oops! There was an error Linking PortfolioCompany and Sector'.mysqli_error($conn).'<br/>';
+            echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
         }
     }
 ?>
@@ -69,6 +211,7 @@ WHERE
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | Portfolio Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
@@ -95,11 +238,10 @@ WHERE
         </nav> 
         <!-- BODY CONTENT -->
         <main class="container ">
-            <!-- ==== LIST OF PORTFOLIO COMPANIES ==== -->
             <div class=" my-5">
+                <!-- CREATE NEW PORTFOLIO COMPANY -->
                 <div class="my-2">
                     <div class="row">
-                        <!-- CREATE NEW PORTFOLIO COMPANY MODAL -->
                         <span class="col-3">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -120,87 +262,28 @@ WHERE
                                                         <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
                                                         <input type="text" class="form-control" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
                                                     </div>
+                                                    <!-- Actual Currencies as in the DB --> 
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="Currency" class="form-label">Currency</label>
+                                                        <select class="form-select" id="Currency" name="Currency" required>
+                                                            <option> Select Currency...</option>
+                                                            <?php
+                                                                while ($row100 = mysqli_fetch_assoc($result100)) {
+                                                                    # code...
+                                                                    echo "<option>".$row100['Currency']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Website" class="form-label">Company Website</label>
                                                         <input type="text" class="form-control" id="Website" name="Website" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Details" class="form-label">Details</label>
-                                                        <input type="text" class="form-control" id="Details" name="Details">
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="YearFounded" class="form-label">Year Founded</label>
-                                                        <input type="text" class="form-control" id="YearFounded" name="YearFounded" required>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Headquarters" class="form-label">Headquarters</label>
-                                                        <select id="Headquarters" name="Headquarters" class="form-select">
-                                                            <option>choose...</option>
-                                                            <option value="Unknown">Unknown</option>
-                                                            <option value="Finland">Finland</option>
-                                                            <option value="Canada">Canada</option>
-                                                            <option value="Angola">Angola</option>
-                                                            <option value="Benin">Benin</option>
-                                                            <option value="Botswana">Botswana</option>
-                                                            <option value="Burkina Faso">Burkina Faso</option>
-                                                            <option value="Cameroon">Cameroon</option>
-                                                            <option value="Chad">Chad</option>
-                                                            <option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
-                                                            <option value="Denmark">Denmark</option>
-                                                            <option value="Egypt">Egypt</option>
-                                                            <option value="Eswatini">Eswatini</option>
-                                                            <option value="Ethiopia">Ethiopia</option>
-                                                            <option value="EU">EU</option>
-                                                            <option value="Gabon">Gabon</option>
-                                                            <option value="Germany">Germany</option>
-                                                            <option value="Ghana">Ghana</option>
-                                                            <option value="India">India</option>
-                                                            <option value="Israel">Israel</option>
-                                                            <option value="Ivory Coast">Ivory Coast</option>
-                                                            <option value="Kenya">Kenya</option>
-                                                            <option value="Lesotho">Lesotho</option>
-                                                            <option value="Liberia">Liberia</option>
-                                                            <option value="Madagascar">Madagascar</option>
-                                                            <option value="Malawi">Malawi</option>
-                                                            <option value="Malaysia">Malaysia</option>
-                                                            <option value="Mali">Mali</option>
-                                                            <option value="Mauritius">Mauritius</option>
-                                                            <option value="Morocco">Morocco</option>
-                                                            <option value="Mozambique">Mozambique</option>
-                                                            <option value="Namibia">Namibia</option>
-                                                            <option value="Nepal">Nepal</option>
-                                                            <option value="Netherlands">Netherlands</option>
-                                                            <option value="Niger">Niger</option>
-                                                            <option value="Nigeria">Nigeria</option>
-                                                            <option value="Pakistan">Pakistan</option>
-                                                            <option value="Pan-African">Pan-African</option>
-                                                            <option value="Republic of Congo">Republic of Congo</option>
-                                                            <option value="Rwanda">Rwanda</option>
-                                                            <option value="Senegal">Senegal</option>
-                                                            <option value="Sierra Leone">Sierra Leone</option>
-                                                            <option value="Singapore">Singapore</option>
-                                                            <option value="Somalia">Somalia</option>
-                                                            <option value="South Africa">South Africa</option>
-                                                            <option value="South Sudan">South Sudan</option>
-                                                            <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
-                                                            <option value="Switzerland">Switzerland</option>
-                                                            <option value="Tanzania">Tanzania</option>
-                                                            <option value="Togo">Togo</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="text" class="form-control" id="Stake" name="Stake">
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="TotalInvestmentValue" class="form-label">Total Investment Value</label>
                                                         <input type="number" class="form-control" id="TotalInvestmentValue" name="TotalInvestmentValue" required>
                                                     </div>
-                                                    <!-- 
-                                                        /////////////////////
-                                                            INDUSTRY SECTION
-                                                        /////////////////////
-                                                    -->
+                                                    <!--   INDUSTRY DROPDOWN  -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Industry" class="form-label">Industry</label>
                                                         <select id="Industry" name="Industry" class="form-select">
@@ -254,65 +337,79 @@ WHERE
                                                             <option value="Other">Other</option>
                                                         </select>
                                                     </div>
-                                                    <!-- Sector Dropdowns | Data being fed through JQuery -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 sector" id="ArtificialIntelligenceDrop">
-                                                        <label for="Sector" class="form-label">Sector</label>
-                                                        <select id="Sector" name="Sector" class="form-select">
+                                                    <!-- SECTOR DROPDOWN | Data being fed through JQuery -->
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
+                                                        <label for="Sector" class="form-label" >Sector </label>
+                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
                                                             <option>choose...</option>
                                                         </select>
+                                                        <small style="color:red;">First select an industry </small>
                                                     </div>
-                                                    <!-- Actual Currencies as in the DB --> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Currency" class="form-label">Currency</label>
-                                                        <select name="Currency" class="form-select" id="Currency" required>  
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Ethiopia Birr" >Ethiopia Birr</option>
-                                                            <option value="Angola Kwanza" >Angola Kwanza</option>
-                                                            <option value="Botswana Pula" >Botswana Pula</option>
-                                                            <option value="British Pound" >British Pound</option>
-                                                            <option value="Canada Dollar" >Canada Dollar</option>
-                                                            <option value="Central African CFA franc" >Central African CFA franc</option>
-                                                            <option value="Congo Franc" >Congo Franc</option>
-                                                            <option value="Denmark Krone" >Denmark Krone</option>
-                                                            <option value="Egypt Pound" >Egypt Pound</option>
-                                                            <option value="Euro" >Euro</option>
-                                                            <option value="Ghana Cedi" >Ghana Cedi</option>
-                                                            <option value="Indian Rupee" >Indian Rupee</option>
-                                                            <option value="Israel Shekel" >Israel Shekel</option>
-                                                            <option value="Kenya Shilling" >Kenya Shilling</option>
-                                                            <option value="Liberia Dollar" >Liberia Dollar</option>
-                                                            <option value="Madagascar Ariary" >Madagascar Ariary</option>
-                                                            <option value="Malawi Kwacha" >Malawi Kwacha</option>
-                                                            <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
-                                                            <option value="Mauritius Rupee" >Mauritius Rupee</option>
-                                                            <option value="Morocco Dirham" >Morocco Dirham</option>
-                                                            <option value="Mozambique Metical" >Mozambique Metical</option>
-                                                            <option value="Namibian Dollar" >Namibian Dollar</option>
-                                                            <option value="Nepal Rupee" >Nepal Rupee</option>
-                                                            <option value="Nigeria Naira" >Nigeria Naira</option>
-                                                            <option value="Norway Krone" >Norway Krone</option>
-                                                            <option value="Pakistan Rupee" >Pakistan Rupee</option>
-                                                            <option value="Rwanda Franc" >Rwanda Franc</option>
-                                                            <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
-                                                            <option value="Singapore Dollar" >Singapore Dollar</option>
-                                                            <option value="Somalia Shilling" >Somalia Shilling</option>
-                                                            <option value="South African Rand" >South African Rand</option>
-                                                            <option value="Sudan Pound" >Sudan Pound</option>
-                                                            <option value="Switzerland Franc" >Switzerland Franc</option>
-                                                            <option value="Tanzania Shilling" >Tanzania Shilling</option>
-                                                            <option value="Tunisia Dinar" >Tunisia Dinar</option>
-                                                            <option value="Uganda Shilling" >Uganda Shilling</option>
-                                                            <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
-                                                            <option value="Unknown Currency" >Unknown Currency</option>
-                                                            <option value="US Dollar" >US Dollar</option>
-                                                            <option value="West African CFA franc" >West African CFA franc</option>
-                                                            <option value="Zambia Kwacha" >Zambia Kwacha</option>
-                                                            <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
+                                                        <label for="Stake" class="form-label">Stake</label>
+                                                        <input type="text" class="form-control" id="Stake" name="Stake">
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="Details" class="form-label">Details</label>
+                                                        <input type="text" class="form-control" id="Details" name="Details">
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="YearFounded" class="form-label">Year Founded</label>
+                                                        <input type="text" class="form-control" id="YearFounded" name="YearFounded" required>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="Headquarters" class="form-label">Headquarters</label>
+                                                        <select class="form-select" id="Headquarters" name="Headquarters" required>
+                                                            <option> Select Headquarters...</option>
+                                                            <?php
+                                                                while ($row101 = mysqli_fetch_assoc($result101)) {
+                                                                    # code...
+                                                                    echo "<option>".$row101['Country']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="img" class="form-label">Logo</label>
-                                                        <input type="file" class="form-control" id="img" name="img" required>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="UserFullName" class="form-label">Company Contact</label>
+                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                            <option> Select Contact Person...</option>
+                                                            <?php
+                                                                while ($row5 = mysqli_fetch_assoc($result5)) {
+                                                                    # code...
+                                                                    echo "<option>".$row5['UserFullName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="InvestorName" class="form-label">Investor(s)</label>
+                                                        <select class="form-select" id="InvestorName" name="InvestorName">
+                                                            <option> Select Investor(s)...</option>
+                                                            <?php
+                                                                while ($row102 = mysqli_fetch_assoc($result102)) {
+                                                                    # code...
+                                                                    echo "<option>".$row102['InvestorName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="FundName" class="form-label">Fund(s)</label>
+                                                        <select class="form-select" id="FundName" name="FundName">
+                                                            <option> Select Fund(s)...</option>
+                                                            <?php
+                                                                while ($row103 = mysqli_fetch_assoc($result103)) {
+                                                                    # code...
+                                                                    echo "<option>".$row103['FundName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                            <label for="img" class="form-label">Logo</label>
+                                                            <input type="file" class="form-control" id="img" name="img" required>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
@@ -329,25 +426,32 @@ WHERE
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
                             <form action="../PCExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export</button>
                             </form>
                         </span>
                     </div>
                 </div>
-                <!-- TABLE OF ALL PORTFOLIO COMPANIES --> 
+                <!-- DISLAY TABLE OF ALL PORTFOLIO COMPANIES --> 
                 <div class="card">
                     <div class="card-body bg-secondary">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 2400px; line-height: 18px;">
+                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;">
                                 <t> 
                                     <th scope="col" >Portfolio Company Name</th>
+                                    <th scope="col" >Investor(s) </th>
+                                    <th scope="col" >Fund(s)</th>
                                     <th scope="col" >Currency </th>
                                     <th scope="col" >Portfolio Company Website</th>
                                     <th scope="col" >Total Investment Value</th>
+                                    <th scope="col" >Industry</th>
+                                    <th scope="col" >Sector</th>
                                     <th scope="col" >Stake</th>
                                     <th scope="col" >Details</th>
                                     <th scope="col" >Year Founded</th>
                                     <th scope="col" >Headquarters</th>
+                                    <th scope="col" >CEO </th>
+                                    <th scope="col" >CEO Gender</th>
+                                    <th scope="col" >CEO Race</th>
                                     <th scope="col" >Logo</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
@@ -358,13 +462,20 @@ WHERE
                                 ?>
                                     <tr>     
                                         <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
                                         <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['TotalInvestmentValue'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Industry'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Stake'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['UserFullName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Gender'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Race'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
                                         <td class="text-truncate"> <small> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Edit</a></small></td>
                                         <td class="text-truncate"> <small> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Delete</a></small></td>
@@ -385,5 +496,6 @@ WHERE
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
+        <script src="../../js/select2.min.js"></script>
     </body>
 </html>

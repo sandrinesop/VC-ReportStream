@@ -107,7 +107,7 @@
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="FundName" class="form-label">Fund Name</label>
-                                                            <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
+                                                        <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
                                                     </div>
                                                     <!-- Actual Currencies as in the DB --> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
