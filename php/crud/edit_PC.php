@@ -241,10 +241,10 @@
                         </select>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        <label for="Sector" class="form-label" >Sector </label>
+                        <label for="Sector" class="form-label" >Sector </label> <br>
                         <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
                             <option value="<?php echo $row['Sector'];?>"><?php echo $row['Sector'];?></option>
-                        </select>
+                        </select> <br>
                         <small style="color:red;">First select an industry </small>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
