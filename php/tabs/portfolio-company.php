@@ -77,7 +77,6 @@
     //Pulling data from the database and into dropdowns to create a new company with standardized data 
     //===================================================
     //===================================================
-
     // USER FULLNAME TO SET CONTACT
     $sql5 = "   SELECT DISTINCT 
                     UserFullName
