@@ -1,56 +1,56 @@
 <?php 
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    $sql="SELECT  
-            Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
-
-        FROM 
-            Investor
-            -- Joining linking table so that we can access funds linked to investor
-        LEFT JOIN 
-            FundInvestor 
-        ON 
-            FundInvestor.InvestorID = Investor.InvestorID
-        LEFT JOIN 
-            Fund 
-        ON 
-            Fund.FundID = FundInvestor.FundID
-            -- Joining linking table so that we can access Portfolio Companies linked to investor
-        LEFT JOIN 
-            InvestorPortfolioCompany 
-        ON 
-            InvestorPortfolioCompany.InvestorID = Investor.InvestorID
-        LEFT JOIN 
-            PortfolioCompany 
-        ON 
-            PortfolioCompany.PortfolioCompanyID = InvestorPortfolioCompany.PortfolioCompanyID
-            -- Joining linking table so that we can access Notes linked to investor
-        LEFT JOIN 
-            InvestorNote 
-        ON 
-            InvestorNote.InvestorID = Investor.InvestorID
-        LEFT JOIN 
-            Note 
-        ON 
-            Note.NoteID = InvestorNote.NoteID
-        LEFT JOIN 
-            currency 
-        ON 
-            currency.CurrencyID=Investor.CurrencyID
+    $sql="  SELECT  
+                Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
+            FROM 
+                Investor
+                -- Joining linking table so that we can access funds linked to investor
+            LEFT JOIN 
+                FundInvestor 
+            ON 
+                FundInvestor.InvestorID = Investor.InvestorID
+            LEFT JOIN 
+                Fund 
+            ON 
+                Fund.FundID = FundInvestor.FundID
+                -- Joining linking table so that we can access Portfolio Companies linked to investor
+            LEFT JOIN 
+                InvestorPortfolioCompany 
+            ON 
+                InvestorPortfolioCompany.InvestorID = Investor.InvestorID
+            LEFT JOIN 
+                PortfolioCompany 
+            ON 
+                PortfolioCompany.PortfolioCompanyID = InvestorPortfolioCompany.PortfolioCompanyID
+                -- Joining linking table so that we can access Notes linked to investor
+            LEFT JOIN 
+                InvestorNote 
+            ON 
+                InvestorNote.InvestorID = Investor.InvestorID
+            LEFT JOIN 
+                Note 
+            ON 
+                Note.NoteID = InvestorNote.NoteID
+            LEFT JOIN 
+                currency 
+            ON 
+                currency.CurrencyID=Investor.CurrencyID
+                
+            LEFT JOIN 
+                description 
+            ON 
+                description.DescriptionID=Investor.DescriptionID 
+            LEFT JOIN 
+                country 
+            ON 
+                country.CountryID = Investor.Headquarters 
+            WHERE 
+                Investor.Deleted= 0 
             
-        LEFT JOIN 
-            description 
-        ON 
-            description.DescriptionID=Investor.DescriptionID 
-        LEFT JOIN 
-            country 
-        ON 
-            country.CountryID = Investor.Headquarters 
-        WHERE 
-            Investor.Deleted= 0 
-        
-        GROUP BY InvestorID, Deleted, DeletedDate, InvestorName, Description, Currency, ImpactTag, YearFounded, Logo
-        ORDER BY InvestorName;"; 
+            GROUP BY InvestorID, Deleted, DeletedDate, InvestorName, Description, Currency, ImpactTag, YearFounded, Logo
+            ORDER BY InvestorName;
+        "; 
             
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);  
