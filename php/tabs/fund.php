@@ -2,22 +2,70 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	            fund.FundID, fund.Deleted, fund.DeletedDate, fund.FundName, currency.Currency, fund.CommittedCapitalOfFund, fund.CommittedCapital, fund.MinimumInvestment, fund.MaximumInvestment 
+	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
             FROM 
-                fund 
+                Fund 
+                -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
+            LEFT JOIN 
+                FundInvestor 
+            ON 
+               FundInvestor.FundID = Fund.FundID
+            LEFT JOIN 
+                Investor 
+            ON 
+               Investor.InvestorID = FundInvestor.InvestorID
+            --    JOINING FUNDPORTFOLIOCOMPANY TO ACCESS LINKED COMPANIES
+            LEFT JOIN 
+                FundPortfolioCompany 
+            ON 
+               FundPortfolioCompany.FundID = Fund.FundID
+            LEFT JOIN 
+                PortfolioCompany 
+            ON 
+               PortfolioCompany.PortfolioCompanyID = FundPortfolioCompany.PortfolioCompanyID
+            --    JOINING FUNDPINVESTMENTSTAGE TO ACCESS LINKED INVESTMENTSTAGE
+            LEFT JOIN 
+                FundInvestmentStage 
+            ON 
+               FundInvestmentStage.FundID = Fund.FundID
+            LEFT JOIN 
+                InvestmentStage 
+            ON 
+               InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID
+            --    JOINING FUNDINDUSTRY TO ACCESS LINKED INDUSTRY
+            LEFT JOIN 
+                FundIndustry 
+            ON 
+               FundIndustry.FundID = Fund.FundID
+            LEFT JOIN 
+                Industry 
+            ON 
+               Industry.IndustryID = FundIndustry.IndustryID
+            --    JOINING FUNDNOTE TO ACCESS LINKED NOTE
+            LEFT JOIN 
+                FundNote 
+            ON 
+               FundNote.FundID = Fund.FundID
+            LEFT JOIN 
+                Note 
+            ON 
+               Note.NoteID = FundNote.NoteID
+
             LEFT JOIN 
                 currency 
             ON 
-                currency.CurrencyID = fund.CurrencyID 
+                currency.CurrencyID = Fund.CurrencyID 
             WHERE  
-                fund.Deleted = 0
-        ";
+                Fund.Deleted = 0
 
+            GROUP BY FundID, Deleted, DeletedDate, FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note
+        ";
+        
     $result = $conn->query($sql) or die($conn->error);
 
     if ( isset($_POST['submit']))
     {
-        // FUND TABLE
+        // Fund TABLE
 
         $FundName               = $_POST['FundName'];
         $CommittedCapitalOfFund = $_POST['CommittedCapitalOfFund'];
@@ -227,11 +275,15 @@
                             <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;">
                                 <t>
                                     <th scope="col">Fund Name</th>
+                                    <th scope="col">Investor(s)</th>
+                                    <th scope="col">Portfolio Companies List</th>
                                     <th scope="col">Currency</th>
-                                    <th scope="col">Committed Capital Of Fund</th>
                                     <th scope="col">Committed Capital </th>
                                     <th scope="col">Minimum Investment</th>
                                     <th scope="col">Maximum Investment</th>
+                                    <th scope="col">Investment Stage</th>
+                                    <th scope="col">Industry</th>
+                                    <th scope="col">Fund Note</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
                                 </t>
@@ -241,11 +293,15 @@
                                 ?>
                                 <tr>
                                     <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['CommittedCapitalOfFund'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['CommittedCapital'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['Industry'] ?> </small></td>
+                                    <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
                                     <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
                                     <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>
                                 </tr>

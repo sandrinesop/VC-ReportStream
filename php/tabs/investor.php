@@ -338,7 +338,7 @@
                                     <th scope="col">Investor Name</th>
                                     <th scope="col">Website</th>
                                     <th scope="col">Investor Fund((s)</th>
-                                    <th scope="col">Portfolio Companies</th>
+                                    <th scope="col">Portfolio Company List</th>
                                     <th scope="col">Investor Note</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Currency</th>
