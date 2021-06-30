@@ -2,26 +2,54 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql="SELECT  
-            investor.InvestorID, currency.Currency, investor.Deleted, investor.DeletedDate, investor.InvestorName, investor.Website, description.Description, investor.ImpactTag, investor.YearFounded, country.Country, investor.Logo 
+            Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
 
         FROM 
-            investor
-        
+            Investor
+            -- Joining linking table so that we can access funds linked to investor
+        LEFT JOIN 
+            FundInvestor 
+        ON 
+            FundInvestor.InvestorID = Investor.InvestorID
+        LEFT JOIN 
+            Fund 
+        ON 
+            Fund.FundID = FundInvestor.FundID
+            -- Joining linking table so that we can access Portfolio Companies linked to investor
+        LEFT JOIN 
+            InvestorPortfolioCompany 
+        ON 
+            InvestorPortfolioCompany.InvestorID = Investor.InvestorID
+        LEFT JOIN 
+            PortfolioCompany 
+        ON 
+            PortfolioCompany.PortfolioCompanyID = InvestorPortfolioCompany.PortfolioCompanyID
+            -- Joining linking table so that we can access Notes linked to investor
+        LEFT JOIN 
+            InvestorNote 
+        ON 
+            InvestorNote.InvestorID = Investor.InvestorID
+        LEFT JOIN 
+            Note 
+        ON 
+            Note.NoteID = InvestorNote.NoteID
         LEFT JOIN 
             currency 
         ON 
-            currency.CurrencyID=investor.CurrencyID
+            currency.CurrencyID=Investor.CurrencyID
             
         LEFT JOIN 
             description 
         ON 
-            description.DescriptionID=investor.DescriptionID 
+            description.DescriptionID=Investor.DescriptionID 
         LEFT JOIN 
             country 
         ON 
-            country.CountryID = investor.Headquarters 
+            country.CountryID = Investor.Headquarters 
         WHERE 
-            investor.Deleted= 0 
+            Investor.Deleted= 0 
+        
+        GROUP BY InvestorID, Deleted, DeletedDate, InvestorName, Description, Currency, ImpactTag, YearFounded, Logo
         ORDER BY InvestorName;"; 
             
     $result = $conn->query($sql) or die($conn->error);
@@ -68,7 +96,7 @@
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
                 // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
-                header( "refresh: 3;url= investor.php" );
+                header( "refresh: 3;url= Investor.php" );
         }else{
             echo 'Oops! There was an error creating new Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
@@ -133,8 +161,8 @@
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorName" class="form-label">Investor Name</label>
-                                                        <input list="investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
-                                                        <!-- <datalist id="investors">
+                                                        <input list="Investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
+                                                        <!-- <datalist id="Investors">
                                                             <option value=" 100x Group">
                                                             <option value=" 12Tree Finance">
                                                             <option value=" 138 Pyramids">
@@ -961,12 +989,15 @@
                 <div class="card">
                     <div class="card-body bg-secondary"">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2200px; line-height: 18px; ">
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 3600px; line-height: 18px; ">
                                 <t>
                                     <th scope="col">Investor Name</th>
-                                    <th scope="col" >Website</th>
-                                    <th scope="col">Currency</th>
+                                    <th scope="col">Website</th>
+                                    <th scope="col">Investor Fund((s)</th>
+                                    <th scope="col">Portfolio Companies</th>
+                                    <th scope="col">Investor Note</th>
                                     <th scope="col">Description</th>
+                                    <th scope="col">Currency</th>
                                     <th scope="col">ImpactTag </th>
                                     <th scope="col">Year Founded</th>
                                     <th scope="col">Headquarters</th>
@@ -981,13 +1012,16 @@
                                     <tr>
                                         <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Note'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Description'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['ImpactTag'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Country']?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
-                                        <td class="text-truncate"> <small> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
+                                        <td class="text-truncate"> <small> <a href="../crud/edit_Investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
                                         <td class="text-truncate"> <small> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a> </small></td>
                                     </tr>
                                 <?php 
