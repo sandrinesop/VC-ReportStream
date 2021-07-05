@@ -2,25 +2,84 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $FundID =$_REQUEST['FundID'];
-    $sql=" SELECT *  FROM Fund where FundID = '$FundID'"; 
+    $sql="  SELECT 
+                Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
+            FROM 
+                Fund 
+                -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
+            LEFT JOIN 
+                FundInvestor 
+            ON 
+            FundInvestor.FundID = Fund.FundID
+            LEFT JOIN 
+                Investor 
+            ON 
+            Investor.InvestorID = FundInvestor.InvestorID
+            --    JOINING FUNDPORTFOLIOCOMPANY TO ACCESS LINKED COMPANIES
+            LEFT JOIN 
+                FundPortfolioCompany 
+            ON 
+            FundPortfolioCompany.FundID = Fund.FundID
+            LEFT JOIN 
+                PortfolioCompany 
+            ON 
+            PortfolioCompany.PortfolioCompanyID = FundPortfolioCompany.PortfolioCompanyID
+            --    JOINING FUNDPINVESTMENTSTAGE TO ACCESS LINKED INVESTMENTSTAGE
+            LEFT JOIN 
+                FundInvestmentStage 
+            ON 
+            FundInvestmentStage.FundID = Fund.FundID
+            LEFT JOIN 
+                InvestmentStage 
+            ON 
+            InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID
+            --    JOINING FUNDINDUSTRY TO ACCESS LINKED INDUSTRY
+            LEFT JOIN 
+                FundIndustry 
+            ON 
+            FundIndustry.FundID = Fund.FundID
+            LEFT JOIN 
+                Industry 
+            ON 
+            Industry.IndustryID = FundIndustry.IndustryID
+            --    JOINING FUNDNOTE TO ACCESS LINKED NOTE
+            LEFT JOIN 
+                FundNote 
+            ON 
+            FundNote.FundID = Fund.FundID
+            LEFT JOIN 
+                Note 
+            ON 
+            Note.NoteID = FundNote.NoteID
+
+            LEFT JOIN 
+                currency 
+            ON 
+                currency.CurrencyID = Fund.CurrencyID 
+            WHERE  
+                Fund.Deleted = 0 AND Fund.FundID = '$FundID'
+
+            GROUP BY FundID, Deleted, DeletedDate, FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note 
+    "; 
+
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
-    $tempCurrency = $row['CurrencyID'];
-    $sql3 = " Select Currency from Currency where CurrencyID = '$tempCurrency' ";
-    $result3 = mysqli_query($conn, $sql3) or die($conn->error);
-    $row3 = mysqli_fetch_assoc($result3);
+    // $tempCurrency = $row['CurrencyID'];
+    // $sql3 = " Select Currency from Currency where CurrencyID = '$tempCurrency' ";
+    // $result3 = mysqli_query($conn, $sql3) or die($conn->error);
+    // $row3 = mysqli_fetch_assoc($result3);
 
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         $FundName                   = $_REQUEST['FundName'];
+        $InvestorName               = $_REQUEST['InvestorName'];
+        $PortfolioCompanyName       = $_REQUEST['PortfolioCompanyName'];
         $Currency                   = $_REQUEST['Currency'];
-        $CommittedCapitalOfFund     = $_REQUEST['CommittedCapitalOfFund'];
         $CommittedCapital           = $_REQUEST['CommittedCapital'];
         $MinimumInvestment          = $_REQUEST['MinimumInvestment'];
         $MaximumInvestment          = $_REQUEST['MaximumInvestment'];
-
 
         $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), CommittedCapitalOfFund='".$CommittedCapitalOfFund."', CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
 
@@ -68,13 +127,47 @@
         <main  class="my-5 ">
             <form name="form" method="post" action="" class="form container">
                 <input type="hidden" name="new" value="1" />
-                <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['FundID'];?>" />
-                <p><input class="form-control col" type="text" name="FundName" placeholder="Enter FundName"  value="<?php echo $row['FundName'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Currency" placeholder="Enter Currency"  value="<?php echo $row3['Currency'];?>" /></p>
-                <p><input class="form-control col" type="text" name="CommittedCapitalOfFund" placeholder="Enter CommittedCapitalOfFund"  value="<?php echo $row['CommittedCapitalOfFund'];?>" /></p>
-                <p><input class="form-control col" type="text" name="CommittedCapital" placeholder="Enter CommittedCapital" value="<?php echo $row['CommittedCapital'];?>"/></p>
-                <p><input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>" /></p>
-                <p><input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>" /></p>
+                <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['FundID'];?>"/>
+                <p>
+                    <label for="Website" class="form-label"> Fund Name </label>
+                    <input class="form-control col" type="text" name="FundName" placeholder="Enter FundName"  value="<?php echo $row['FundName'];?>" />
+                </p>
+                <p>
+                    <label for="InvestorName" class="form-label">Investor List </label>
+                    <input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName"  value="<?php echo $row['InvestorName'];?>" />
+                </p>
+                <p>
+                    <label for="PortfolioCompanyName" class="form-label">Portfolio Company List</label>
+                    <input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>"/>
+                </p>
+                <p>
+                    <label for="Currency" class="form-label">currency</label>
+                    <input class="form-control col" type="text" name="Currency" placeholder="Enter Currency" value="<?php echo $row['Currency'];?>"/>
+                </p>
+                <p>
+                    <label for="CommittedCapital" class="form-label">Committed Capital</label>
+                    <input class="form-control col" type="text" name="CommittedCapital" placeholder="Enter CommittedCapital" value="<?php echo $row['CommittedCapital'];?>"/>
+                </p>
+                <p>
+                    <label for="MinimumInvestment" class="form-label">Minimum Investment</label>
+                    <input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>"/>
+                </p>
+                <p>
+                    <label for="MaximumInvestment" class="form-label">Maximum Investment</label>
+                    <input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>"/>
+                </p>
+                <p>
+                    <label for="InvestmentStage" class="form-label">Investment Stage</label>
+                    <input class="form-control col" type="text" name="InvestmentStage" placeholder="Enter InvestmentStage"  value="<?php echo $row['InvestmentStage'];?>" />
+                </p>
+                <p>
+                    <label for="Industry" class="form-label">Industry</label>
+                    <input class="form-control col" type="text" name="Industry" placeholder="Enter Industry"  value="<?php echo $row['Industry'];?>" />
+                </p>
+                <p>
+                    <label for="Note" class="form-label">Note</label>
+                    <input class="form-control col" type="text" name="Note" placeholder="Enter Note"  value="<?php echo $row['Note'];?>" />
+                </p>
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>
             <?php } ?>

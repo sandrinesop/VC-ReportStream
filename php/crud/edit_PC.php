@@ -167,6 +167,7 @@
                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company Name</label>
                         <input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>" />
                     </p>
+                    <!-- Currency Dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Currency" class="form-label">Currency</label>
                         <select class="form-select" id="Currency" name="Currency" required>
@@ -259,6 +260,7 @@
                         <label for="YearFounded" class="form-label">Year Founded</label>
                         <input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" />
                     </p>
+                    <!-- Country dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Headquarters" class="form-label">Headquarters</label>
                         <select class="form-select" id="Headquarters" name="Headquarters" required>

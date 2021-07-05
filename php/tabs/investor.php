@@ -149,14 +149,47 @@
             // echo "Uploaded Successfully"; 
             $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, ImpactTag, YearFounded, Headquarters, Logo) 
             VALUES (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
-
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
                 // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
-                header( "refresh: 3;url= Investor.php" );
-        }else{
-            echo 'Oops! There was an error creating new Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }else{
+                echo 'Oops! There was an error creating new Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
+          
+        // LINK INVESTOR TO FUND 
+        $sql4 = "  INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
+        $query4 = mysqli_query($conn, $sql4);
+        if($query4){
+            // echo '<script> Alert("Fund created successfully!")</script>';
+            // header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error linking Investor to Fund  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
+                  
+        // LINK INVESTOR TO PORTFOLIO COMPANY 
+        $sql4 = "  INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        $query4 = mysqli_query($conn, $sql4);
+        if($query4){
+            // echo '<script> Alert("Fund created successfully!")</script>';
+            // header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+                  
+        // LINK INVESTOR TO NOTE
+        $sql5 = "  INSERT INTO InvestorNote(InvestorNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, NoteID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Note.NoteID FROM Note where Note.Note = '$InvestorNote'))";
+        $query5 = mysqli_query($conn, $sql5);
+        if($query5){
+            echo '<script> Alert("Investor created successfully!");</script>';
+            // header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        header( "refresh: 3;url= Investor.php" );
     }
 ?>
 
@@ -238,8 +271,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="PortfolioCompany" class="form-label">Portfolio Company</label>
-                                                        <select class="form-select" id="PortfolioCompany" name="PortfolioCompany">
+                                                        <label for="PortfolioCompanyName" class="form-label">Portfolio Company</label>
+                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName">
                                                             <option> Select Portfolio Company...</option>
                                                             <?php
                                                                 while ($row101 = mysqli_fetch_assoc($result101)) {

@@ -85,7 +85,7 @@
                 WHERE 
                     UserFullName IS NOT NULL ORDER BY UserFullName ASC";
     $result5 = mysqli_query($conn, $sql5);
-    // CURRENCIES
+    // ACCESSING CURRENCIES TO POPULATE DROPDOWN FROM DATABASE
     $sql100 = "   SELECT DISTINCT 
                     Currency
                 FROM 
@@ -93,7 +93,7 @@
                 WHERE 
                     Currency IS NOT NULL ORDER BY Currency ASC";
     $result100 = mysqli_query($conn, $sql100);
-    // COUNTRIES
+    // ACCESSING COUNTRIES TO POPULATE DROPDOWN FROM DATABASE
     $sql101 = "   SELECT DISTINCT 
                     Country
                 FROM 
@@ -102,7 +102,7 @@
                     Country IS NOT NULL ORDER BY Country ASC";
     $result101 = mysqli_query($conn, $sql101);
     
-    // INVESTORS
+    // ACCESSING INVESTORS TO POPULATE DROPDOWN FROM DATABASE
     $sql102 = "   SELECT DISTINCT 
                     InvestorName
                 FROM 
@@ -111,7 +111,7 @@
                     InvestorName IS NOT NULL ORDER BY InvestorName ASC";
     $result102 = mysqli_query($conn, $sql102);
     
-    // FUNDS
+    // ACCESSING FUNDS TO POPULATE DROPDOWN FROM DATABASE
     $sql103 = "   SELECT DISTINCT 
                     FundName
                 FROM 

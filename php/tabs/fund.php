@@ -62,22 +62,78 @@
         ";
         
     $result = $conn->query($sql) or die($conn->error);
+    
+    // CURRENCIES
+    $sql100 = "   SELECT DISTINCT 
+                    Currency
+                FROM 
+                    Currency 
+                WHERE 
+                    Currency IS NOT NULL ORDER BY Currency ASC";
+    $result100 = mysqli_query($conn, $sql100);
+
+    // COUNTRIES
+    $sql101 = "   SELECT DISTINCT 
+                    Country
+                FROM 
+                    Country 
+                WHERE 
+                    Country IS NOT NULL ORDER BY Country ASC";
+    $result101 = mysqli_query($conn, $sql101);
+    
+    // INVESTORS
+    $sql102 = "   SELECT DISTINCT 
+                    InvestorName
+                FROM 
+                    Investor 
+                WHERE 
+                    InvestorName IS NOT NULL ORDER BY InvestorName ASC";
+    $result102 = mysqli_query($conn, $sql102);
+    
+    // PORTFOLIO COMPANIES
+    $sql103 = "   SELECT DISTINCT 
+                    PortfolioCompanyName
+                FROM 
+                    PortfolioCompany 
+                WHERE 
+                    PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC";
+    $result103 = mysqli_query($conn, $sql103);    
+
+    // INVESTMENT STAGE
+    $sql104 = " SELECT DISTINCT 
+                    InvestmentStage
+                FROM 
+                    InvestmentStage 
+                WHERE 
+                    InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
+    $result104 = mysqli_query($conn, $sql104);
+
+    // INDUSTRY
+    $sql105 = "   SELECT DISTINCT 
+                    Industry
+                FROM 
+                    Industry 
+                WHERE 
+                    Industry IS NOT NULL ORDER BY Industry ASC";
+    $result105 = mysqli_query($conn, $sql105);
 
     if ( isset($_POST['submit']))
     {
         // Fund TABLE
 
         $FundName               = $_POST['FundName'];
-        $CommittedCapitalOfFund = $_POST['CommittedCapitalOfFund'];
+        $InvestorName           = $_POST['InvestorName'];
+        $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
+        $Currency               = $_POST['Currency'];
         $CommittedCapital       = $_POST['CommittedCapital'];
         $MinimumInvestment      = $_POST['MinimumInvestment'];
         $MaximumInvestment      = $_POST['MaximumInvestment'];
-        $FundNote               = $_POST['FundNote'];
-        $Currency               = $_POST['Currency'];
         $InvestmentStage        = $_POST['InvestmentStage'];
+        $Industry               = $_POST['Industry'];
+        $FundNote               = $_POST['FundNote'];
         // FUND INSERTION QUERY
-        $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment) 
-                    VALUES (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapitalOfFund', '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
+        $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
+                    VALUES (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
         $query = mysqli_query($conn, $sql);
         // FUND NOTE INSERTION QUERY
         $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
@@ -89,11 +145,63 @@
         $query3 = mysqli_query($conn, $sql3);
 
         if($query && $query2 && $query3){
-            echo '<script> Alert(Fund created successfully!)</script>';
-            header( "refresh: 3; url= fund.php" );
+            // echo '<script> Alert(Fund created successfully!)</script>';
+            // header( "refresh: 3; url= fund.php" );
         } else {
             echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
+         
+        // LINK FUND TO INVESTOR
+        $sql4 = "   INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
+        $query4 = mysqli_query($conn, $sql4);
+        if($query4){
+            // echo '<script> Alert("Fund created successfully!")</script>';
+            // header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error linking Fund to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+        // LINK FUND TO COMPANY
+        $sql5 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+        $query5 = mysqli_query($conn, $sql5);
+        if($query5){
+            // Do nothing if success
+        } else {
+            echo 'Oops! There was an error on linking Fund and Companies. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        // LINK FUND TO INDUSTRY
+        $sql6 = "   INSERT INTO FundIndustry(FundIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, IndustryID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+        $query6 = mysqli_query($conn, $sql6);
+        if($query6){
+            // Do nothing if success
+        } else {
+            echo 'Oops! There was an error on linking Fund and Industry. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        // LINK FUND TO INVESTMENTSTAGE
+        $sql6 = "   INSERT INTO FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$InvestmentStage'))";
+        $query6 = mysqli_query($conn, $sql6);
+        if($query6){
+            // Do nothing if success
+        } else {
+            echo 'Oops! There was an error on linking Fund and Industry. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        // LINK FUND TO INVESTMENTSTAGE
+        $sql7 = "   INSERT INTO FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
+        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Note.NoteID FROM Note where Note.Note = '$FundNote'))";
+        $query7 = mysqli_query($conn, $sql7);
+        if($query7){
+            // Do nothing if success
+        } else {
+            echo 'Oops! There was an error on linking Fund and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        header( "refresh: 5; url= fund.php" );
     }
 
 ?>
@@ -137,7 +245,7 @@
             <div class=" my-5">
                 <div class="my-2">
                     <div class="row">
-                        <!-- CREATE NEW PORTFOLIO COMPANY MODAL -->
+                        <!-- CREATE NEW FUND MODAL -->
                         <span class="col-1">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -158,58 +266,44 @@
                                                         <label for="FundName" class="form-label">Fund Name</label>
                                                         <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
                                                     </div>
+                                                    <!-- investors dropdown - populated from the database -->
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="InvestorName" class="form-label">Investor(S)</label>
+                                                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                                                            <option> Select Investor...</option>
+                                                            <?php
+                                                                while ($row102 = mysqli_fetch_assoc($result102)) {
+                                                                    # code...
+                                                                    echo "<option>".$row102['InvestorName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <!-- Portfolio Company dropdown - populated from the database -->
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                        <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
+                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
+                                                            <option> Select Investor...</option>
+                                                            <?php
+                                                                while ($row103 = mysqli_fetch_assoc($result103)) {
+                                                                    # code...
+                                                                    echo "<option>".$row103['PortfolioCompanyName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
                                                     <!-- Actual Currencies as in the DB --> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Currency" class="form-label">Currency</label>
-                                                        <select name="Currency" class="form-select" id="Currency" required>  
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Ethiopia Birr" >Ethiopia Birr</option>
-                                                            <option value="Angola Kwanza" >Angola Kwanza</option>
-                                                            <option value="Botswana Pula" >Botswana Pula</option>
-                                                            <option value="British Pound" >British Pound</option>
-                                                            <option value="Canada Dollar" >Canada Dollar</option>
-                                                            <option value="Central African CFA franc" >Central African CFA franc</option>
-                                                            <option value="Congo Franc" >Congo Franc</option>
-                                                            <option value="Denmark Krone" >Denmark Krone</option>
-                                                            <option value="Egypt Pound" >Egypt Pound</option>
-                                                            <option value="Euro" >Euro</option>
-                                                            <option value="Ghana Cedi" >Ghana Cedi</option>
-                                                            <option value="Indian Rupee" >Indian Rupee</option>
-                                                            <option value="Israel Shekel" >Israel Shekel</option>
-                                                            <option value="Kenya Shilling" >Kenya Shilling</option>
-                                                            <option value="Liberia Dollar" >Liberia Dollar</option>
-                                                            <option value="Madagascar Ariary" >Madagascar Ariary</option>
-                                                            <option value="Malawi Kwacha" >Malawi Kwacha</option>
-                                                            <option value="Malaysia Ringgit" >Malaysia Ringgit</option>
-                                                            <option value="Mauritius Rupee" >Mauritius Rupee</option>
-                                                            <option value="Morocco Dirham" >Morocco Dirham</option>
-                                                            <option value="Mozambique Metical" >Mozambique Metical</option>
-                                                            <option value="Namibian Dollar" >Namibian Dollar</option>
-                                                            <option value="Nepal Rupee" >Nepal Rupee</option>
-                                                            <option value="Nigeria Naira" >Nigeria Naira</option>
-                                                            <option value="Norway Krone" >Norway Krone</option>
-                                                            <option value="Pakistan Rupee" >Pakistan Rupee</option>
-                                                            <option value="Rwanda Franc" >Rwanda Franc</option>
-                                                            <option value="Sierra Leone Leone" >Sierra Leone Leone</option>
-                                                            <option value="Singapore Dollar" >Singapore Dollar</option>
-                                                            <option value="Somalia Shilling" >Somalia Shilling</option>
-                                                            <option value="South African Rand" >South African Rand</option>
-                                                            <option value="Sudan Pound" >Sudan Pound</option>
-                                                            <option value="Switzerland Franc" >Switzerland Franc</option>
-                                                            <option value="Tanzania Shilling" >Tanzania Shilling</option>
-                                                            <option value="Tunisia Dinar" >Tunisia Dinar</option>
-                                                            <option value="Uganda Shilling" >Uganda Shilling</option>
-                                                            <option value="United Arab Emirates Dirham" >United Arab Emirates Dirham</option>
-                                                            <option value="Unknown Currency" >Unknown Currency</option>
-                                                            <option value="US Dollar" >US Dollar</option>
-                                                            <option value="West African CFA franc" >West African CFA franc</option>
-                                                            <option value="Zambia Kwacha" >Zambia Kwacha</option>
-                                                            <option value="Zimbabwe Dollar" >Zimbabwe Dollar</option>                          
+                                                        <select class="form-select" id="Currency" name="Currency" required>
+                                                            <option> Select Currency...</option>
+                                                            <?php
+                                                                while ($row100 = mysqli_fetch_assoc($result100)) {
+                                                                    # code...
+                                                                    echo "<option>".$row100['Currency']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
-                                                    </div>  
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="CommittedCapitalOfFund" class="form-label"> Committed Capital Of Fund</label>
-                                                        <input type="text" class="form-control" id="CommittedCapitalOfFund" name="CommittedCapitalOfFund" >
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="CommittedCapital" class="form-label"> Committed Capital</label>
@@ -226,23 +320,28 @@
                                                     <!-- Investment Stage -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestmentStage" class="form-label">Investment Stage </label>
-                                                        <select name="InvestmentStage" class="form-select" id="InvestmentStage" required>
-                                                            <option value=""selected >Choose...</option>
-                                                            <option value="Pre-Seed">Pre-Seed</option>
-                                                            <option value="Seed">Seed</option>
-                                                            <option value="Pre-Series A">Pre-Series A</option>
-                                                            <option value="Series A">Series A</option>
-                                                            <option value="Pre-Series B">Pre-Series B</option>
-                                                            <option value="Series B">Series B</option>
-                                                            <option value="Pre-Series C">Pre-Series C</option>
-                                                            <option value="Series C">Series C</option>
-                                                            <option value="Pre-Series D">Pre-Series D</option>
-                                                            <option value="Series D">Series D</option>
+                                                        <select class="form-select" id="InvestmentStage" name="InvestmentStage" required>
+                                                            <option> Select Investment Stage...</option>
+                                                            <?php
+                                                                while ($row104 = mysqli_fetch_assoc($result104)) {
+                                                                    # code...
+                                                                    echo "<option>".$row104['InvestmentStage']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
+                                                    <!-- Industry dropdown -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="IndustryPreference" class="form-label">Industry Preference</label>
-                                                        <textarea class="form-control IndustryPreference" aria-label="With textarea" id=" IndustryPreference" name=" IndustryPreference"></textarea>
+                                                        <label for="Industry" class="form-label">Industry</label>
+                                                        <select class="form-select" id="Industry" name="Industry" required>
+                                                            <option> Select Investment Stage...</option>
+                                                            <?php
+                                                                while ($row105 = mysqli_fetch_assoc($result105)) {
+                                                                    # code...
+                                                                    echo "<option>".$row105['Industry']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundNote" class="form-label">Fund Note</label>
