@@ -1,9 +1,9 @@
 <?php 
     include_once('../App/connect.php');
-    include_once('../App/DealLink.php');
+    include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, Fund.FundName, deals.InvestmentValue, deals.Stake, Industry.Industry, deals.Sector, InvestmentStage.InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, Fund.FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
                     deals 
                 -- Include News table data 
@@ -48,13 +48,22 @@
                 ON 
                     Industry.IndustryID = deals.IndustryID
                 LEFT JOIN 
+                    DealSector
+                ON 
+                    DealSector.DealsID = Deals.DealsID
+                LEFT JOIN 
+                    Sector
+                ON 
+                    Sector.SectorID = DealSector.SectorID
+                LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = deals.UserDetailID1
+                    UserDetail.UserDetailID = Deals.UserDetailID1
                 LEFT JOIN 
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
+                GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
                 ORDER BY  news.NewsDate ";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
@@ -65,7 +74,7 @@
     //====================================================
     //========== | PORTFOLIO COMPANY TABLE | =============
     //====================================================
-    // PORTFOLIO COMPANY DEATILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
+    // PORTFOLIO COMPANY DETAILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
     $sql = " SELECT DISTINCT 
                 PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
             JOIN 
@@ -585,7 +594,7 @@
                                     <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["InvestmentValue"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["Stake"];?> </small> </td>
+                                    <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>

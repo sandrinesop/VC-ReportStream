@@ -127,10 +127,8 @@
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         $Currency                = $_POST['Currency'];
         $PortfolioCompanyWebsite = $_POST['Website'];
-        $TotalInvestmentValue    = $_POST['TotalInvestmentValue'];
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
-        $Stake                   = $_POST['Stake'];
         $Details                 = $_POST['Details'];
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
@@ -145,8 +143,8 @@
         $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
         // PORTFOLIO COMPANY NOTE INSERT
-        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website,TotalInvestmentValue, Stake, Details, YearFounded, Headquarters, Logo)
-            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite','$TotalInvestmentValue', '$Stake', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
+        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
+            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
             $query = mysqli_query($conn, $sql);
 
         // LINKING COMPANY WITH SECTORS AND INDUSTRY
@@ -175,26 +173,26 @@
                 }
             }
         
-        $sql3 = "   INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
-                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
-        $query3 = mysqli_query($conn, $sql3);
-        
-        // LINK CONTACT TO COMPANY
-        $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
-                    VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
-        $query4 = mysqli_query($conn, $sql4);
-        
-        // LINK INVESTOR TO COMPANY
-        $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
-                    VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-        $query104 = mysqli_query($conn, $sql104);
-        
-        // LINK FUND TO COMPANY
-        $sql105 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
-                    VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-        $query105 = mysqli_query($conn, $sql105);
+            $sql3 = "   INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                        VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+            $query3 = mysqli_query($conn, $sql3);
+            
+            // LINK CONTACT TO COMPANY
+            $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+                        VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
+            $query4 = mysqli_query($conn, $sql4);
+            
+            // LINK INVESTOR TO COMPANY
+            $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
+                        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+            $query104 = mysqli_query($conn, $sql104);
+            
+            // LINK FUND TO COMPANY
+            $sql105 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+            $query105 = mysqli_query($conn, $sql105);
 
-        header( "refresh: 5; url= portfolio-company.php" );
+            header( "refresh: 5; url= portfolio-company.php" );
 
         } else {
             echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
