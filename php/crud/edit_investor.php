@@ -122,7 +122,7 @@
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         $InvestorID             =$_REQUEST['InvestorID'];
-        // $ModifiedDate   =$_REQUEST['ModifiedDate'];
+        $Currency               =$_REQUEST['Currency'];
         $InvestorName           =$_REQUEST['InvestorName'];
         $FundName               =$_REQUEST['FundName'];
         $PortfolioCompanyName   =$_REQUEST['PortfolioCompanyName'];
@@ -135,7 +135,8 @@
         
         // ModifiedDate= DATE()
         // DescriptionID='".$Description."',
-        $update="UPDATE Investor SET ModifiedDate= NOW(), InvestorName='".$InvestorName."', Website='".$Website."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') where InvestorID='".$InvestorID."'";
+
+        $update="UPDATE Investor SET ModifiedDate = NOW(), CurrencyID = (select Currency.CurrencyID FROM Currency where Currency.Currency = '$Currency'), InvestorName='".$InvestorName."', Website='".$Website."', ImpactTag='".$ImpactTag."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') where InvestorID='".$InvestorID."'";
         mysqli_query($conn, $update) or die($conn->error);
 
         // LINK INVESTOR TO FUND 
@@ -149,7 +150,7 @@
         }
                   
         // LINK INVESTOR TO PORTFOLIO COMPANY 
-        $sql4 = "  INSERT INTO 
+        $sql4 = "  INSERT IGNORE INTO 
                         InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
                     VALUES 
                         (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
@@ -207,7 +208,7 @@
                 <input type="hidden" name="new" value="1" />
                 <input name="InvestorID" type="hidden" value="<?php echo $row['InvestorID'];?>" />
                 <p>
-                    <label for="InvestorName" class="form-label" >Investor Name </label> <br>
+                    <label for="InvestorName" class="form-label" >Investment Manager Name </label> <br>
                     <input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName"  value="<?php echo $row['InvestorName'];?>" />
                 </p>
                 <p>
@@ -271,7 +272,7 @@
                     <input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" />
                 </p>
                 <p>
-                    <label for="Headquarters" class="form-label" >Headquarters</label> <br>
+                    <label for="Headquarters" class="form-label" >Country</label> <br>
                     <select class="form-select" id="Headquarters" name="Headquarters" required>
                         <option value="<?php echo $row['Country'];?>"><?php echo $row['Country'];?> </option>
                         <?php
@@ -286,7 +287,6 @@
                     <label for="img" class="form-label">Logo</label>
                     <input type="file" class="form-control" id="img" name="img" >
                 </p>
-
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>
             <?php } ?>

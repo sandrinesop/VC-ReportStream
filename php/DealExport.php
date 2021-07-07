@@ -7,7 +7,7 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('NewsDate','NewsURL','PortfolioCompanyName','InvestorName', 'TotalInvestmentValue','Industry','Sector','FundName','InvestmentStage', 'Country'));
+        fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)', 'Total Investment Value','Industry','Sector','Fund Name','Investment Stage', 'Country'));
         $query = 
                 "SELECT 
                      News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, PortfolioCompany.TotalInvestmentValue,Industry.Industry, Sector.Sector, Fund.FundName, InvestmentStage.InvestmentStage, Country.Country 

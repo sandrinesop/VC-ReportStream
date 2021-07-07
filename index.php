@@ -51,7 +51,7 @@
                     </a>
                     <a href="./php/tabs/investor.php">
                         <div class=" Investors centered-nav">
-                            <h1>Investors</h1>
+                            <h1>Investment Managers</h1>
                             <div>
                                 <img src="./resources/Investor.png" alt="">
                             </div>

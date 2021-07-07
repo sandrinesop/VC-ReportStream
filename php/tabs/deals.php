@@ -307,7 +307,7 @@
                                     <th scope="col">Date</th>
                                     <th scope="col">News Link</th>
                                     <th scope="col">Portfolio Company</th>
-                                    <th scope="col">Investor(s)</th>
+                                    <th scope="col">Investment Manager(s)</th>
                                     <th scope="col">Fund(s)</th>
                                     <th scope="col">Value Of Investment</th>
                                     <th scope="col">Stake</th>

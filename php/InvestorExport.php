@@ -7,7 +7,7 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('','Investor','Website','Fund(s)','Portfolio Company List','Investor Note','Description','Currency','ImpactTag','YearFounded','Headquarters'));
+        fputcsv($output, array('','Investment Manager','Website','Fund(s)','Portfolio Company List','Note','Description','Currency','ImpactTag','YearFounded','Country'));
         $query = "  SELECT 
                         Investor.Deleted, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country 
                     FROM 

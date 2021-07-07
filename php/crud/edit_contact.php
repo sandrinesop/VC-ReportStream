@@ -84,15 +84,62 @@
             <form name="form" method="post" action="" class="form container"> 
                 <input type="hidden" name="new" value="1" />
                 <input name="UserDetailID" type="hidden" value="<?php echo $row['UserDetailID'];?>" />
-                <p><input class="form-control col" type="text" name="UserFullName" placeholder=" Enter UserFullName" required value="<?php echo $row['UserFullName'];?>" /></p>
-                <p><input class="form-control col" type="text" name="FirstName" placeholder="Enter FirstName"  value="<?php echo $row['FirstName'];?>" /></p>
-                <p><input class="form-control col" type="text" name="LastName" placeholder="Enter LastName"  value="<?php echo $row['LastName'];?>" /></p>
-                <p><input class="form-control col" type="text" name="ContactNumber1" placeholder="Enter ContactNumber1"  value="<?php echo $row['ContactNumber1'];?>" /></p>
-                <p><input class="form-control col" type="text" name="ContactNumber2" placeholder="Enter ContactNumber2"  value="<?php echo $row['ContactNumber2'];?>" /></p>
-                <p><input class="form-control col" type="text" name="Email" placeholder="Enter Email"  value="<?php echo $row['Email'];?>" /></p>
-                <p><input class="form-control col" type="text" name="RoleTypeID" placeholder="Enter RoleTypeID"  value="<?php echo $row2['RoleType'];?>" /></p>
-                <p><input class="form-control col" type="text" name="GenderID" placeholder="Enter GenderID"  value="<?php echo $row3['Gender'];?>" /></p>
-                <p><input class="form-control col" type="text" name="RaceID" placeholder="Enter RaceID"  value="<?php echo $row4['Race'];?>" /></p>
+                <p>
+                    <label for="UserFullName" class="form-label" >User Full Name </label> <br>
+                    <input class="form-control col" type="text" name="UserFullName" placeholder=" Enter UserFullName" required value="<?php echo $row['UserFullName'];?>" />
+                </p>
+                <p>
+                    <label for="FirstName" class="form-label" >First Name </label> <br>
+                    <input class="form-control col" type="text" name="FirstName" placeholder="Enter FirstName"  value="<?php echo $row['FirstName'];?>" />
+                </p>
+                <p>
+                    <label for="LastName" class="form-label" >Last Name </label> <br>
+                    <input class="form-control col" type="text" name="LastName" placeholder="Enter LastName"  value="<?php echo $row['LastName'];?>" /></p>
+                <p>
+                    <label for="ContactNumber1" class="form-label" >Contact Number 1 </label> <br>
+                    <input class="form-control col" type="text" name="ContactNumber1" placeholder="Enter ContactNumber1"  value="<?php echo $row['ContactNumber1'];?>" />
+                </p>
+                <p>
+                    <label for="ContactNumber2" class="form-label" >Contact Number 2</label> <br>
+                    <input class="form-control col" type="text" name="ContactNumber2" placeholder="Enter ContactNumber2"  value="<?php echo $row['ContactNumber2'];?>" />
+                    </p>
+                <p>
+                    <label for="Email" class="form-label" >Email </label> <br>
+                    <input class="form-control col" type="text" name="Email" placeholder="Enter Email"  value="<?php echo $row['Email'];?>" />
+                    </p>
+                <p>
+                    <label for="RoleType" class="form-label" >RoleType </label> <br>
+                    <!-- <input class="form-control col" type="text" name="RoleType" placeholder="Enter RoleType"  value="<?php echo $row2['RoleType'];?>" /> -->
+                    <select name="RoleType" class="form-select" id="RoleType" required>
+                        <option value="<?php echo $row2['RoleType'];?>" selected ><?php echo $row2['RoleType'];?></option>
+                        <option value="President">President</option>
+                        <option value="CEO">CEO</option>
+                        <option value="CFO">CFO</option>
+                        <option value="COO">COO</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="Gender" class="form-label" >Gender </label> <br>
+                    <!-- <input class="form-control col" type="text" name="Gender" placeholder="Enter Gender"  value="<?php echo $row3['Gender'];?>" /> -->
+                    <select name="Gender" class="form-select" id="Gender" required>
+                        <option value="<?php echo $row3['Gender'];?>" selected ><?php echo $row3['Gender'];?></option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="Race" class="form-label" >Race </label> <br>
+                    <!-- <input class="form-control col" type="text" name="Race" placeholder="Enter Race"  value="<?php echo $row4['Race'];?>" /> -->
+                    <select name="Race" class="form-select" id="Race" required>
+                        <option value="<?php echo $row4['Race'];?>" selected ><?php echo $row4['Race'];?></option>
+                        <option value="Black">Black</option>
+                        <option value="White">White</option>
+                        <option value="Asian">Asian</option>
+                        <option value="Indian">Indian</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                </p>
 
                 <p><input name="submit" type="submit" value="Update" /></p>
             </form>

@@ -1,8 +1,18 @@
 <?php 
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    $sql="      SELECT userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race FROM userdetail 
-
+    $sql="      SELECT 
+                    userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race 
+                FROM 
+                    userdetail 
+                LEFT JOIN 
+                    PortfolioCompanyUserDetail 
+                ON 
+                    PortfolioCompanyUserDetail.UserDetailID=userdetail.UserDetailID 
+                LEFT JOIN 
+                    PortfolioCompany
+                ON 
+                    PortfolioCompanyUserDetail.PortfolioCompanyID=PortfolioCompany.PortfolioCompanyID 
                 LEFT JOIN 
                     roletype 
                 ON 
@@ -19,12 +29,25 @@
                     race.RaceID =userdetail.RaceID
                 WHERE  
                     userdetail.Deleted = 0 
+                GROUP BY 
+                UserDetailID, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
     ";
-
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = $conn->query($sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
+
+
+    // POPULATING PORTFOLIO COMPANIES DROPDOWN
+    $sql101 = " SELECT DISTINCT 
+                    PortfolioCompanyName
+                FROM 
+                    PortfolioCompany 
+                WHERE 
+                    PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
+    ";
+    $result101 = mysqli_query($conn, $sql101);
+
     
     // $UserDetailID =$_REQUEST['UserDetailID'];
 
@@ -34,6 +57,7 @@
             $UserFullName           = $_POST['UserFullName'];
             $FirstName              = $_POST['FirstName'];
             $LastName               = $_POST['LastName'];
+            $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
             $ContactNumber1         = $_POST['ContactNumber1'];
             $ContactNumber2         = $_POST['ContactNumber2'];
             $Email                  = $_POST['Email'];
@@ -52,6 +76,17 @@
                 // header( "refresh: 5;url= contacts.php" );
             }else{
                 echo 'Oops! There was an error creating new contact';
+            }
+                              
+            // LINK CONTACT TO PORTFOLIO COMPANY 
+            $sql4 = "  INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+            VALUES (uuid(), now(), now(), 0, NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
+            $query4 = mysqli_query($conn, $sql4);
+            if($query4){
+                // echo '<script> Alert("Fund created successfully!")</script>';
+                // header( "refresh: 3; url= fund.php" );
+            } else {
+                echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
 
             
@@ -132,6 +167,18 @@
                                                         <input type="text" class="form-control" id="LastName" name="LastName" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                                                        <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
+                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName">
+                                                            <option> Select Company</option>
+                                                            <?php
+                                                                while ($row101 = mysqli_fetch_assoc($result101)) {
+                                                                    # code...
+                                                                    echo "<option>".$row101['PortfolioCompanyName']."</option>";
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Email" class="form-label">Email</label>
                                                         <input type="text" class="form-control" id="Email" name="Email" required>
                                                     </div> 
@@ -201,6 +248,7 @@
                                     <th scope="col">User Full Name</th>
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
+                                    <th scope="col">Company</th>
                                     <th scope="col">Contact Number 1</th>
                                     <th scope="col">Contact Number 2 </th>
                                     <th scope="col">Email</th>
@@ -218,6 +266,7 @@
                                         <td class="text-truncate"> <small><?php echo $rows['UserFullName'] ?></small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?></small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td>

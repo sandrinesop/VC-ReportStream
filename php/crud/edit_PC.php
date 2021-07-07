@@ -3,9 +3,25 @@
     // QUERY DATABASE FROM DATA
     $PortfolioCompanyID =$_REQUEST['PortfolioCompanyID'];
     $sql=" SELECT DISTINCT
-            portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
+            portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
             FROM 
                 portfoliocompany 
+            LEFT JOIN 
+                InvestorPortfolioCompany 
+            ON 
+                InvestorPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Investor 
+            ON 
+                Investor.InvestorID = InvestorPortfolioCompany.InvestorID 
+            LEFT JOIN 
+                FundPortfolioCompany 
+            ON 
+                FundPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Fund 
+            ON 
+                Fund.FundID = FundPortfolioCompany.FundID 
             LEFT JOIN 
                 currency 
             ON 
@@ -54,7 +70,7 @@
             WHERE 
                 PortfolioCompany.PortfolioCompanyID = '$PortfolioCompanyID'
             
-            GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo
+            GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo
     "; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
@@ -68,12 +84,13 @@
         $country = $row2['Country'];
     */
     // PULLING DATA INTO THE DROPDOWN ON THE EDIT/UPDATE SCREEN
-    $sql100 = "   SELECT DISTINCT 
-        Currency
-    FROM 
-        Currency 
-    WHERE 
-        Currency IS NOT NULL ORDER BY Currency ASC";
+    $sql100 = " SELECT DISTINCT 
+                    Currency
+                FROM 
+                    Currency 
+                WHERE 
+                    Currency IS NOT NULL ORDER BY Currency ASC
+    ";
     $result100 = mysqli_query($conn, $sql100);
 
     // COUNTRIES
@@ -84,24 +101,44 @@
                 WHERE 
                     Country IS NOT NULL ORDER BY Country ASC";
     $result101 = mysqli_query($conn, $sql101);
-    // INDUSTRY
-    // $sql99 = "   SELECT DISTINCT 
-    //     Industry
-    // FROM 
-    //     Industry 
-    // WHERE 
-    //     Industry IS NOT NULL ORDER BY Industry ASC";
-    // $result99 = mysqli_query($conn, $sql99);
+
+    // ACCESSING INVESTOR TO POPULATE INVESTOR DROPDOWN
+    $sql102 = "   SELECT DISTINCT 
+                    InvestorName
+                FROM 
+                    Investor 
+                WHERE 
+                    InvestorName IS NOT NULL ORDER BY InvestorName ASC";
+    $result102 = mysqli_query($conn, $sql102);
+   
+    // ACCESSING INVESTOR TO POPULATE INVESTOR DROPDOWN
+    $sql103 = "   SELECT DISTINCT 
+                    FundName
+                FROM 
+                    Fund 
+                WHERE 
+                    FundName IS NOT NULL ORDER BY FundName ASC";
+    $result103 = mysqli_query($conn, $sql103);
+
+    // ACCESSING Userdetail TO POPULATE Userdetail DROPDOWN
+    $sql104 = "   SELECT DISTINCT 
+                    UserFullName
+                FROM 
+                    Userdetail 
+                WHERE 
+                    UserFullName IS NOT NULL ORDER BY UserFullName ASC";
+    $result104 = mysqli_query($conn, $sql104); 
 
 
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
+        $InvestorName            = $_REQUEST['InvestorName'];
+        $FundName                = $_REQUEST['FundName'];
         $Currency                = $_REQUEST['Currency'];
         $Website                 = $_REQUEST['Website'];
-        $TotalInvestmentValue    = $_REQUEST['TotalInvestmentValue'];
-        $Stake                   = $_REQUEST['Stake'];
+        $UserFullName            = $_REQUEST['UserFullName'];
         $Details                 = $_REQUEST['Details'];
         $YearFounded             = $_REQUEST['YearFounded'];
         $Headquarters            = $_REQUEST['Headquarters'];
@@ -112,9 +149,51 @@
         // Company Logo Insert code
         // $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
-        $update="UPDATE PortfolioCompany SET ModifiedDate= NOW(),PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', TotalInvestmentValue='".$TotalInvestmentValue."', Stake='".$Stake."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
-
+        $update="UPDATE PortfolioCompany SET ModifiedDate= NOW(),PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
         mysqli_query($conn, $update) or die($conn->error);
+           
+        // LINK PORTFOLIO COMPANY TO INVESTOR
+        $sql4 = "  INSERT IGNORE INTO 
+                        InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
+                    VALUES 
+                        (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+        ";
+        $query4 = mysqli_query($conn, $sql4);
+
+        if($query4){
+            // DO NOTHING IF SUCCESSFULL
+        } else {
+            echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        } 
+
+        // LINK PORTFOLIO COMPANY TO FUND
+        $sql5 = "  INSERT IGNORE INTO 
+                        FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
+                    VALUES 
+                        (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+        ";
+        $query5 = mysqli_query($conn, $sql5);
+
+        if($query5){
+            // DO NOTHING IF SUCCESSFULL
+        } else {
+            echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
+        // LINK PORTFOLIO COMPANY TO CONTACT
+        $sql6 = "  INSERT IGNORE INTO 
+                        PortfolioCompanyUserdetail(PortfolioCompanyUserdetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserdetailID)
+                    VALUES 
+                        (uuid(), now(), now(), 0, NULL, (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$UserFullName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+        ";
+        $query6 = mysqli_query($conn, $sql6);
+
+        if($query6){
+            // DO NOTHING IF SUCCESSFULL
+        } else {
+            echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
@@ -167,11 +246,37 @@
                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company Name</label>
                         <input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>" />
                     </p>
+                    <!-- Investor Dropdown -->
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="InvestorName" class="form-label">Investment Manager(s)</label>
+                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                            <option value="<?php echo $row['InvestorName'];?>"> <?php echo $row['InvestorName'];?> </option>
+                            <?php
+                                while ($row102 = mysqli_fetch_assoc($result102)) {
+                                    # code...
+                                    echo "<option>".$row102['InvestorName']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
+                    <!-- Fund dropdown -->
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="FundName" class="form-label">Fund(s)</label>
+                        <select class="form-select" id="FundName" name="FundName" required>
+                            <option value="<?php echo $row['FundName'];?>"> <?php echo $row['FundName'];?> </option>
+                            <?php
+                                while ($row103 = mysqli_fetch_assoc($result103)) {
+                                    # code...
+                                    echo "<option>".$row103['FundName']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
                     <!-- Currency Dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Currency" class="form-label">Currency</label>
                         <select class="form-select" id="Currency" name="Currency" required>
-                            <option> Select Currency...</option>
+                            <option value="<?php echo $row['Currency'];?>"> <?php echo $row['Currency'];?> </option>
                             <?php
                                 while ($row100 = mysqli_fetch_assoc($result100)) {
                                     # code...
@@ -184,14 +289,23 @@
                         <label for="Website" class="form-label">Website</label>
                         <input class="form-control col" type="text" name="Website" placeholder="Enter Website"  value="<?php echo $row['Website'];?>" />
                     </p>
+                    <!-- userdetail dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        <label for="TotalInvestmentValue" class="form-label">Total Investment Value</label>
-                        <input class="form-control col" type="text" name="TotalInvestmentValue" placeholder="Enter TotalInvestmentValue"  value="<?php echo $row['TotalInvestmentValue'];?>" />
+                        <label for="UserFullName" class="form-label">Contact(s)</label>
+                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                            <option value="<?php echo $row['UserFullName'];?>"> <?php echo $row['UserFullName'];?> </option>
+                            <?php
+                                while ($row104 = mysqli_fetch_assoc($result104)) {
+                                    # code...
+                                    echo "<option>".$row104['UserFullName']."</option>";
+                                }
+                            ?>
+                        </select>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Industry" class="form-label">Industry</label>
                         <select id="Industry" name="Industry" class="form-select">
-                            <option>choose...</option>
+                            <option value="<?php echo $row['Industry'];?>"><?php echo $row['Industry'];?></option>
                             <option value="Artificial Intelligence">Artificial Intelligence</option>
                             <option value="Clothing Apparel">Clothing Apparel</option>
                             <option value="Administrative Services">Administrative Services</option>
@@ -248,11 +362,7 @@
                         </select> <br>
                         <small style="color:red;">First select an industry </small>
                     </p>
-                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        <label for="Stake" class="form-label">Stake</label>
-                        <input class="form-control col" type="text" name="Stake" placeholder="Enter Stake"  value="<?php echo $row['Stake'];?>" />
-                    </p>
-                    <p class="mb-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <p class="">
                         <label for="Details" class="form-label">Details</label>
                         <textarea class="form-control col" type="text" name="Details" placeholder="Enter Details"   > <?php echo $row['Details'];?></textarea>
                     </p>
@@ -262,9 +372,9 @@
                     </p>
                     <!-- Country dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        <label for="Headquarters" class="form-label">Headquarters</label>
+                        <label for="Headquarters" class="form-label">Country</label>
                         <select class="form-select" id="Headquarters" name="Headquarters" required>
-                            <option> Select Headquarters...</option>
+                            <option value="<?php echo $row['Country'];?>"> <?php echo $row['Country'];?> </option>
                             <?php
                                 while ($row101 = mysqli_fetch_assoc($result101)) {
                                     # code...

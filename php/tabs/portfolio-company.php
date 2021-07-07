@@ -2,7 +2,7 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT DISTINCT
-        portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
+        portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
         FROM 
             portfoliocompany 
         LEFT JOIN 
@@ -68,7 +68,7 @@
         WHERE 
             portfoliocompany.Deleted = 0
             
-        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
+        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
     "; 
     $result = $conn->query($sql) or die($conn->error);
     
@@ -278,10 +278,6 @@
                                                         <label for="Website" class="form-label">Company Website</label>
                                                         <input type="text" class="form-control" id="Website" name="Website" required>
                                                     </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="TotalInvestmentValue" class="form-label">Total Investment Value</label>
-                                                        <input type="number" class="form-control" id="TotalInvestmentValue" name="TotalInvestmentValue" required>
-                                                    </div>
                                                     <!--   INDUSTRY DROPDOWN  -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Industry" class="form-label">Industry</label>
@@ -345,10 +341,6 @@
                                                         <small style="color:red;">First select an industry </small>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="text" class="form-control" id="Stake" name="Stake">
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Details" class="form-label">Details</label>
                                                         <input type="text" class="form-control" id="Details" name="Details">
                                                     </div>
@@ -357,9 +349,9 @@
                                                         <input type="text" class="form-control" id="YearFounded" name="YearFounded" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Headquarters" class="form-label">Headquarters</label>
+                                                        <label for="Headquarters" class="form-label">Country</label>
                                                         <select class="form-select" id="Headquarters" name="Headquarters" required>
-                                                            <option> Select Headquarters...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row101 = mysqli_fetch_assoc($result101)) {
                                                                     # code...
@@ -381,9 +373,9 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorName" class="form-label">Investor(s)</label>
+                                                        <label for="InvestorName" class="form-label">Investment Manager(s)</label>
                                                         <select class="form-select" id="InvestorName" name="InvestorName">
-                                                            <option> Select Investor(s)...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row102 = mysqli_fetch_assoc($result102)) {
                                                                     # code...
@@ -437,17 +429,15 @@
                             <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;">
                                 <t> 
                                     <th scope="col" >Portfolio Company Name</th>
-                                    <th scope="col" >Investor(s) </th>
+                                    <th scope="col" >Investment Manager(s)</th>
                                     <th scope="col" >Fund(s)</th>
                                     <th scope="col" >Currency </th>
                                     <th scope="col" >Portfolio Company Website</th>
-                                    <th scope="col" >Total Investment Value</th>
                                     <th scope="col" >Industry</th>
                                     <th scope="col" >Sector</th>
-                                    <th scope="col" >Stake</th>
                                     <th scope="col" >Details</th>
                                     <th scope="col" >Year Founded</th>
-                                    <th scope="col" >Headquarters</th>
+                                    <th scope="col" >Country</th>
                                     <th scope="col" >CEO </th>
                                     <th scope="col" >CEO Gender</th>
                                     <th scope="col" >CEO Race</th>
@@ -464,11 +454,9 @@
                                         <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['TotalInvestmentValue'] ?> </small></td>
+                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Industry'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Stake'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>

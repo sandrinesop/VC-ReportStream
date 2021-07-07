@@ -412,11 +412,11 @@
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12"> 
                                                     <h5>
-                                                        Investor(s)
+                                                        Investment Manager(s)
                                                     </h5>
-                                                        <label for="InvestorName" class="form-label">Investor Name</label>        
+                                                        <label for="InvestorName" class="form-label"> Name</label>        
                                                         <select class="form-select" id="InvestorName" name="InvestorName" required>
-                                                            <option> InvestorName...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($rowA1 = mysqli_fetch_assoc($resultA1)) {
                                                                     # code...
@@ -427,11 +427,11 @@
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <h5>
-                                                            Investor Fund
+                                                            Fund
                                                         </h5>
                                                         <label for="FundName" class="form-label">Fund Name</label>
                                                         <select name="FundName" class="form-select" id="FundName"  required>
-                                                            <option value="">Select Fund...</option>
+                                                            <option value="">Select...</option>
                                                             <?php
                                                                 while($rowB = mysqli_fetch_assoc($resultB)){
                                                                     echo "<option>".$rowB['FundName']."</option>";
@@ -518,9 +518,9 @@
                                                         <h5>
                                                             Contact Person
                                                         </h5> 
-                                                        <label for="UserFullName1" class="form-label">Investor Contact</label>
+                                                        <label for="UserFullName1" class="form-label">Contact</label>
                                                         <select class="form-select" id="UserFullName1" name="UserFullName1" required>
-                                                            <option> Select Contact Person...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 mysqli_data_seek($result5, 0);
                                                                 while ($row5 = mysqli_fetch_assoc($result5)) {
@@ -563,7 +563,7 @@
                                     <th scope="col">Date</th>
                                     <th scope="col">News Link</th>
                                     <th scope="col">Portfolio Company</th>
-                                    <th scope="col">Investor(s)</th>
+                                    <th scope="col">Investment Manager(s)</th>
                                     <th scope="col">Fund(s)</th>
                                     <th scope="col">Value Of Investment</th>
                                     <th scope="col">Stake</th>
@@ -580,7 +580,7 @@
                                 ?>
                                 <tr>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
-                                    <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > News Link</small></a></td>
+                                    <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
                                     <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>

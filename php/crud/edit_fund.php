@@ -133,7 +133,7 @@
                     <input class="form-control col" type="text" name="FundName" placeholder="Enter FundName"  value="<?php echo $row['FundName'];?>" />
                 </p>
                 <p>
-                    <label for="InvestorName" class="form-label">Investor List </label>
+                    <label for="InvestorName" class="form-label">Investment Manager(s)</label>
                     <input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName"  value="<?php echo $row['InvestorName'];?>" />
                 </p>
                 <p>

@@ -237,25 +237,25 @@
                         <span class="col-6 col-md-4 col-lg-2">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                New Investor <img src="../../resources/icons/New.svg" alt="">
+                                Add New Manager  <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Create New Investor</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">New Investment Manager</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <form class="container" method="POST" enctype="multipart/form-data">
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorName" class="form-label">Investor Name</label>
+                                                        <label for="InvestorName" class="form-label"> Name</label>
                                                         <input list="Investors" type="text" class="form-control" id="InvestorName" name="InvestorName" required>
                                                     </div>  
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorWebsite" class="form-label">Investor Website</label>
+                                                        <label for="InvestorWebsite" class="form-label">Website</label>
                                                         <input type="text" class="form-control" id="InvestorWebsite" name="InvestorWebsite" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -283,7 +283,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorNote" class="form-label">Investor Note</label>
+                                                        <label for="InvestorNote" class="form-label"> Note</label>
                                                         <textarea class="form-control InvestorNote" aria-label="With textarea" id=" InvestorNote" name=" InvestorNote"></textarea>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -302,7 +302,7 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Currency" class="form-label">Currency</label>
                                                         <select class="form-select" id="Currency" name="Currency">
-                                                            <option> Select Currency...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row105 = mysqli_fetch_assoc($result105)) {
                                                                     # code...
@@ -314,7 +314,7 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="ImpactTag" class="form-label">Impact Tag</label>
                                                         <select class="form-select" id="ImpactTag" name="ImpactTag">
-                                                            <option> Select ImpactTag...</option>
+                                                            <option> Select..</option>
                                                             <?php
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
                                                                     # code...
@@ -328,9 +328,9 @@
                                                         <input type="text" class="form-control" id="YearFounded" name="YearFounded">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Headquarters" class="form-label">Headquarters</label>
+                                                        <label for="Headquarters" class="form-label">Country</label>
                                                         <select class="form-select" id="Headquarters" name="Headquarters">
-                                                            <option> Select Headquarters...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row104 = mysqli_fetch_assoc($result104)) {
                                                                     # code...
@@ -368,16 +368,16 @@
                         <div class="table-responsive" style="overflow-x:auto;">
                             <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 3600px; line-height: 18px; ">
                                 <t>
-                                    <th scope="col">Investor Name</th>
+                                    <th scope="col">Investment Manager</th>
                                     <th scope="col">Website</th>
-                                    <th scope="col">Investor Fund((s)</th>
+                                    <th scope="col">Fund((s)</th>
                                     <th scope="col">Portfolio Company List</th>
-                                    <th scope="col">Investor Note</th>
+                                    <th scope="col">Note</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Currency</th>
                                     <th scope="col">ImpactTag </th>
                                     <th scope="col">Year Founded</th>
-                                    <th scope="col">Headquarters</th>
+                                    <th scope="col">Country</th>
                                     <th scope="col">Logo</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
@@ -388,7 +388,7 @@
                                 ?>
                                     <tr>
                                         <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank">Website</a> </small></td>
+                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
                                         <td class="text-truncate"> <small> <?php echo $rows['Note'] ?> </small></td>

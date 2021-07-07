@@ -268,9 +268,9 @@
                                                     </div>
                                                     <!-- investors dropdown - populated from the database -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorName" class="form-label">Investor(S)</label>
+                                                        <label for="InvestorName" class="form-label">Investment Manager(s)</label>
                                                         <select class="form-select" id="InvestorName" name="InvestorName" required>
-                                                            <option> Select Investor...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row102 = mysqli_fetch_assoc($result102)) {
                                                                     # code...
@@ -283,7 +283,7 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
                                                         <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
-                                                            <option> Select Investor...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
                                                                     # code...
@@ -296,7 +296,7 @@
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Currency" class="form-label">Currency</label>
                                                         <select class="form-select" id="Currency" name="Currency" required>
-                                                            <option> Select Currency...</option>
+                                                            <option> Select...</option>
                                                             <?php
                                                                 while ($row100 = mysqli_fetch_assoc($result100)) {
                                                                     # code...
@@ -374,7 +374,7 @@
                             <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;">
                                 <t>
                                     <th scope="col">Fund Name</th>
-                                    <th scope="col">Investor(s)</th>
+                                    <th scope="col">Investment Manager(s)</th>
                                     <th scope="col">Portfolio Companies List</th>
                                     <th scope="col">Currency</th>
                                     <th scope="col">Committed Capital </th>

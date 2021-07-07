@@ -7,9 +7,9 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('Deleted','PortfolioCompanyName','Investor(s)','Fund(s)','Currency','Website','Industry','Sector','TotalInvestmentValue','Stake','Details','Year Founded','Headquarters','CEO','CEO Gender','CEO Race'));
+        fputcsv($output, array('Deleted','PortfolioCompanyName','Investment Manager(s)','Fund(s)','Currency','Website','Industry','Sector','Details','Year Founded','Country','CEO'));
         $query = "  SELECT DISTINCT
-                         portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName, gender.Gender, race.Race
+                         portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName
                     FROM 
                         portfoliocompany 
                     LEFT JOIN 
@@ -64,18 +64,10 @@
                         RoleType
                     ON 
                         RoleType.RoleTypeID = UserDetail.RoleTypeID
-                    LEFT JOIN 
-                        gender
-                    ON
-                        gender.GenderID = userdetail.GenderID
-                    LEFT JOIN 
-                        race 
-                    ON 
-                        race.RaceID =userdetail.RaceID
                     WHERE 
                         portfoliocompany.Deleted = 0
                         
-                    GROUP BY portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.TotalInvestmentValue, portfoliocompany.Stake, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName, gender.Gender, race.Race
+                    GROUP BY portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName
         ";
         $result = mysqli_query($conn, $query);
 
