@@ -7,24 +7,24 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)', 'Total Investment Value','Industry','Sector','Fund Name','Investment Stage', 'Country'));
+        fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)', 'Total Investment Value','Stake','Industry','Sector','Fund Name','Investment Stage', 'Country'));
         $query = 
                 "SELECT 
-                     News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, Investor.InvestorName, PortfolioCompany.TotalInvestmentValue,Industry.Industry, Sector.Sector, Fund.FundName, InvestmentStage.InvestmentStage, Country.Country 
+                     GROUP_CONCAT(DISTINCT NewsDate) AS NewsDate, News.NewsURL, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, Deals.InvestmentValue, GROUP_CONCAT(DISTINCT stake) AS stake,Industry.Industry, Deals.Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country 
                 FROM 
-                    PortfolioCompanyNews 
+                    Deals 
                 LEFT JOIN 
                     News -- Joining inorder to get news table data
                 ON
-                    News.NewsID = PortfolioCompanyNews.NewsID 
+                    News.NewsID = Deals.NewsID 
                 LEFT JOIN -- Joining inorder to get Portfolio Company table data 
                     PortfolioCompany
                 ON
-                    PortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
+                    PortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID 
                 LEFT JOIN -- Joining inorder to get link the Investor table 
                     InvestorNews
                 ON
-                    InvestorNews.NewsID = PortfolioCompanyNews.NewsID 
+                    InvestorNews.NewsID = Deals.NewsID 
                 LEFT JOIN -- Joining inorder to get the Investor table data
                     Investor
                 ON
@@ -32,7 +32,7 @@
                 LEFT JOIN -- Joining inorder to link the sector data
                     PortfolioCompanySector
                 ON
-                    PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
+                    PortfolioCompanySector.PortfolioCompanyID = Deals.PortfolioCompanyID 
                 LEFT JOIN -- Joining inorder to get the sector table data
                     Sector
                 ON
@@ -40,7 +40,7 @@
                 LEFT JOIN -- Joining inorder to link the Fund data
                     FundPortfolioCompany
                 ON
-                    FundPortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
+                    FundPortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID 
                 LEFT JOIN -- Joining inorder to get Fund table data 
                     Fund
                 ON
@@ -56,7 +56,7 @@
                 LEFT JOIN -- Joining inorder to link the PortfolioCompanyCountry data
                     PortfolioCompanyCountry
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
@@ -64,11 +64,13 @@
                 LEFT JOIN 
                     PortfolioCompanyIndustry
                 ON 
-                    PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    PortfolioCompanyIndustry.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Industry
                 ON 
                     Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
+
+                GROUP BY NewsURL, PortfolioCompanyName, InvestmentValue, Industry, Sector, Country
         ";
         
         $result = mysqli_query($conn, $query);
