@@ -2,7 +2,7 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
+	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
             FROM 
                 Fund 
                 -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -32,15 +32,6 @@
                 InvestmentStage 
             ON 
                InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID
-            --    JOINING FUNDINDUSTRY TO ACCESS LINKED INDUSTRY
-            LEFT JOIN 
-                FundIndustry 
-            ON 
-               FundIndustry.FundID = Fund.FundID
-            LEFT JOIN 
-                Industry 
-            ON 
-               Industry.IndustryID = FundIndustry.IndustryID
             --    JOINING FUNDNOTE TO ACCESS LINKED NOTE
             LEFT JOIN 
                 FundNote 
@@ -129,7 +120,6 @@
         $MinimumInvestment      = $_POST['MinimumInvestment'];
         $MaximumInvestment      = $_POST['MaximumInvestment'];
         $InvestmentStage        = $_POST['InvestmentStage'];
-        $Industry               = $_POST['Industry'];
         $FundNote               = $_POST['FundNote'];
         // FUND INSERTION QUERY
         $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
@@ -171,15 +161,6 @@
             echo 'Oops! There was an error on linking Fund and Companies. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
 
-        // LINK FUND TO INDUSTRY
-        $sql6 = "   INSERT INTO FundIndustry(FundIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, IndustryID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
-        $query6 = mysqli_query($conn, $sql6);
-        if($query6){
-            // Do nothing if success
-        } else {
-            echo 'Oops! There was an error on linking Fund and Industry. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
 
         // LINK FUND TO INVESTMENTSTAGE
         $sql6 = "   INSERT INTO FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
@@ -330,19 +311,6 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <!-- Industry dropdown -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Industry" class="form-label">Industry</label>
-                                                        <select class="form-select" id="Industry" name="Industry" required>
-                                                            <option> Select Investment Stage...</option>
-                                                            <?php
-                                                                while ($row105 = mysqli_fetch_assoc($result105)) {
-                                                                    # code...
-                                                                    echo "<option>".$row105['Industry']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundNote" class="form-label">Fund Note</label>
                                                         <textarea class="form-control FundNote" aria-label="With textarea" id=" FundNote" name="FundNote"></textarea>
@@ -381,7 +349,6 @@
                                     <th scope="col">Minimum Investment</th>
                                     <th scope="col">Maximum Investment</th>
                                     <th scope="col">Investment Stage</th>
-                                    <th scope="col">Industry</th>
                                     <th scope="col">Fund Note</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
@@ -399,7 +366,6 @@
                                     <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['Industry'] ?> </small></td>
                                     <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
                                     <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
                                     <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>

@@ -7,9 +7,9 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('Fund Name', 'Investment Manager(s)', 'Portfolio Companies', 'Currency', 'Committed Capital', 'Minimum Investment', 'Maximum Investment', 'Investment Stage', 'Industry', 'Note'));
+        fputcsv($output, array('Fund Name', 'Investment Manager(s)', 'Portfolio Companies', 'Currency', 'Committed Capital', 'Minimum Investment', 'Maximum Investment', 'Investment Stage', 'Note'));
         $query = " SELECT 
-                        Fund.Deleted, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
+                        Fund.Deleted, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage,  Note.Note
                     FROM 
                         Fund 
                         -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
