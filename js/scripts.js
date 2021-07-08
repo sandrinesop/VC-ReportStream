@@ -19,7 +19,10 @@ $(document).ready(function() {
             $("#Sector").append("<option value=\"Laundry and Dry-cleaning\">Laundry and Dry-cleaning</option>");
             $("#Sector").append("<option value=\"Lingerie\">Lingerie</option>");
             $("#Sector").append("<option value=\"Shoes\">Shoes</option>");
-        } else if (el.val() === "Administrative Services") {
+        } else if (el.val() == "Unknown") {
+            $('#Sector').find('option').remove().end().append('<option value="Unknown">choose...</option>');
+            $("#Sector").append("<option value=\"Unknown\">Unknown</option>");
+        }         else if (el.val() === "Administrative Services") {
             $('#Sector').find('option').remove().end().append('<option value="">choose...</option>');
             $("#Sector").append("<option value=\"Archiving Service\">Archiving Service</option>");
             $("#Sector").append("<option value=\"Call Center\">Call Center</option>");
