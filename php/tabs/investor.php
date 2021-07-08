@@ -325,7 +325,9 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="YearFounded" class="form-label">Year Founded</label>
-                                                        <input type="text" class="form-control" id="YearFounded" name="YearFounded">
+                                                        <select class="form-control" name="YearFounded" id="YearFounded"required>
+                                                                <option value=""> Select...</option>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Headquarters" class="form-label">Country</label>
@@ -416,5 +418,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../js/DateDropDown.js"></script>
     </body>
 </html>
