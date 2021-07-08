@@ -48,6 +48,36 @@
     ";
     $result101 = mysqli_query($conn, $sql101);
 
+    // POPULATING ROLETYPE DROPDOWN
+    $sqlRoleType = " SELECT DISTINCT 
+                    RoleType
+                FROM 
+                    RoleType 
+                WHERE 
+                    RoleType IS NOT NULL ORDER BY RoleType ASC
+    ";
+    $resultRoleType = mysqli_query($conn, $sqlRoleType);
+
+    // POPULATING GENDER DROPDOWN
+    $sqlGender = " SELECT DISTINCT 
+                    Gender
+                FROM 
+                    Gender 
+                WHERE 
+                    Gender IS NOT NULL ORDER BY Gender ASC
+    ";
+    $resultGender = mysqli_query($conn, $sqlGender);
+
+    // POPULATING RACE DROPDOWN
+    $sqlRace = " SELECT DISTINCT 
+                    Race
+                FROM 
+                    Race 
+                WHERE 
+                    Race IS NOT NULL ORDER BY Race ASC
+    ";
+    $resultRace = mysqli_query($conn, $sqlRace);
+
     
     // $UserDetailID =$_REQUEST['UserDetailID'];
 
@@ -168,7 +198,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
-                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName">
+                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
                                                             <option> Select Company</option>
                                                             <?php
                                                                 while ($row101 = mysqli_fetch_assoc($result101)) {
@@ -192,32 +222,38 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="RoleType" class="form-label">RoleType</label>
-                                                        <select name="RoleType" class="form-select" id="RoleType" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="President">President</option>
-                                                            <option value="CEO">CEO</option>
-                                                            <option value="CFO">CFO</option>
-                                                            <option value="COO">COO</option>
+                                                        <select class="form-select" id="RoleType" name="RoleType" required>
+                                                            <option> Select RoleType</option>
+                                                            <?php
+                                                                while ($rowRoleType = mysqli_fetch_assoc($resultRoleType)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowRoleType['RoleType']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Gender" class="form-label">Gender</label>
-                                                        <select name="Gender" class="form-select" id="Gender" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Male">Male</option>
-                                                            <option value="Female">Female</option>
-                                                            <option value="Unknown">Unknown</option>
+                                                        <select class="form-select" id="Gender" name="Gender" required>
+                                                            <option> Select Gender</option>
+                                                            <?php
+                                                                while ($rowGender = mysqli_fetch_assoc($resultGender)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowGender['Gender']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Race" class="form-label">Race</label>
-                                                        <select name="Race" class="form-select" id="Race" required>
-                                                            <option value="" selected >Choose...</option>
-                                                            <option value="Black">Black</option>
-                                                            <option value="White">White</option>
-                                                            <option value="Asian">Asian</option>
-                                                            <option value="Indian">Indian</option>
-                                                            <option value="Unknown">Unknown</option>
+                                                        <select class="form-select" id="Race" name="Race" required>
+                                                            <option> Select Race</option>
+                                                            <?php
+                                                                while ($rowRace = mysqli_fetch_assoc($resultRace)) {
+                                                                    # code...
+                                                                    echo "<option>".$rowRace['Race']."</option>";
+                                                                }
+                                                            ?>
                                                         </select>
                                                     </div>
                                                 </div>

@@ -120,6 +120,43 @@
                     FundName IS NOT NULL ORDER BY FundName ASC";
     $result103 = mysqli_query($conn, $sql103);
 
+    // POPULATING PORTFOLIO COMPANIES DROPDOWN
+    $sql104 = " SELECT DISTINCT 
+                    PortfolioCompanyName
+                FROM 
+                    PortfolioCompany 
+                WHERE 
+                    PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
+    ";
+    $result104 = mysqli_query($conn, $sql104);
+    // POPULATING ROLETYPE DROPDOWN
+    $sqlRoleType = " SELECT DISTINCT 
+                    RoleType
+                FROM 
+                    RoleType 
+                WHERE 
+                    RoleType IS NOT NULL ORDER BY RoleType ASC
+    ";
+    $resultRoleType = mysqli_query($conn, $sqlRoleType);
+    // POPULATING PORTFOLIO COMPANIES DROPDOWN
+    $sqlGender = " SELECT DISTINCT 
+                    Gender
+                FROM 
+                    Gender 
+                WHERE 
+                    Gender IS NOT NULL ORDER BY Gender ASC
+    ";
+    $resultGender = mysqli_query($conn, $sqlGender);
+    // POPULATING RACE DROPDOWN
+    $sqlRace = " SELECT DISTINCT 
+                    Race
+                FROM 
+                    Race 
+                WHERE 
+                    Race IS NOT NULL ORDER BY Race ASC
+    ";
+    $resultRace = mysqli_query($conn, $sqlRace);
+
     if ( isset($_POST['submit']))
     {
         // DEFINED VAR FOR THE SECOND TABLE
@@ -196,6 +233,34 @@
 
         } else {
             echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
+        }
+    }
+
+    
+    if(isset($_POST['NewContact'])){
+            
+        $UserFullName           = $_POST['UserFullName'];
+        $FirstName              = $_POST['FirstName'];
+        $LastName               = $_POST['LastName'];
+        $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
+        $ContactNumber1         = $_POST['ContactNumber1'];
+        $ContactNumber2         = $_POST['ContactNumber2'];
+        $Email                  = $_POST['Email'];
+        $RoleType               = $_POST['RoleType'];
+        $Gender                 = $_POST['Gender'];
+        $Race                   = $_POST['Race'];
+
+        $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
+        VALUES (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
+
+        $query3 = mysqli_query($conn, $sqlUser);
+        
+
+        if($query3){
+            echo '<script>alert("New Contact created Successfully!");</script>';
+            // header( "refresh: 5;url= contacts.php" );
+        }else{
+            echo '<br/>'.'Oops! There was an error creating new contact'.mysql_error($conn).'<br/>';
         }
     }
 ?>
@@ -361,6 +426,7 @@
                                                             ?>
                                                         </select>
                                                     </div>
+                                                    <!-- COMPANY CONTACT -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="UserFullName" class="form-label">Company Contact</label>
                                                         <select class="form-select" id="UserFullName" name="UserFullName" required>
@@ -372,6 +438,92 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <!-- New contact modal -->
+                                                        <div>
+                                                            <button type="button" class="btn btn-outline-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#ContactModal">
+                                                            New contact 
+                                                            </button>
+                                                        </div>
+                                                        <div style="background-color: #000000d6;" class="modal fade Modal" id="ContactModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ContactModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="ContactModalLabel">Create New Contact</h5>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="container" method="POST"  id="NewContactForm">
+                                                                        <div class="row">
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="UserFullName" class="form-label"><strong>Full Name</strong></label>
+                                                                                <input type="text" class="form-control" id="UserFullName" name="UserFullName" required>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="FirstName" class="form-label"><strong>First Name</strong></label>
+                                                                                <input type="text" class="form-control" id="FirstName" name="FirstName" required>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="LastName" class="form-label"><strong>Last Name</strong></label>
+                                                                                <input type="text" class="form-control" id="LastName" name="LastName" required>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="Email" class="form-label"><strong>Email</strong></label>
+                                                                                <input type="text" class="form-control" id="Email" name="Email" required>
+                                                                            </div> 
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="ContactNumber1" class="form-label"><strong>ContactNumber1</strong></label>
+                                                                                <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="ContactNumber2" class="form-label"><strong>ContactNumber2</strong></label>
+                                                                                <input type="text" class="form-control" id="ContactNumber2" name="ContactNumber2">
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="RoleType" class="form-label"><strong>RoleType</strong></label>
+                                                                                <select class="form-select" id="RoleType" name="RoleType" required>
+                                                                                    <option> Select RoleType</option>
+                                                                                    <?php
+                                                                                        while ($rowRoleType = mysqli_fetch_assoc($resultRoleType)) {
+                                                                                            # code...
+                                                                                            echo "<option>".$rowRoleType['RoleType']."</option>";
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="Gender" class="form-label"><strong>Gender</strong></label>
+                                                                                <select class="form-select" id="Gender" name="Gender" required>
+                                                                                    <option> Select Gender</option>
+                                                                                    <?php
+                                                                                        while ($rowGender = mysqli_fetch_assoc($resultGender)) {
+                                                                                            # code...
+                                                                                            echo "<option>".$rowGender['Gender']."</option>";
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                                                <label for="Race" class="form-label"><strong>Race</strong></label>
+                                                                                <select class="form-select" id="Race" name="Race" required>
+                                                                                    <option> Select Race</option>
+                                                                                    <?php
+                                                                                        while ($rowRace = mysqli_fetch_assoc($resultRace)) {
+                                                                                            # code...
+                                                                                            echo "<option>".$rowRace['Race']."</option>";
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary" name="NewContact" value="NewContact" form="NewContactForm" formmethod="POST">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary Close" onclick="$('#ContactModal').modal('hide');" aria-label="Close">Close</button>
+                                                                    <button type="button" class="btn btn-primary">Understood</button>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestorName" class="form-label">Investment Manager(s)</label>

@@ -146,7 +146,7 @@
                 // Echo 'DealID is:'.;
 
                 if($query99){
-                    echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
                 } else {
                     echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
                 }
@@ -159,6 +159,6 @@
         echo '<H3>Thanks for contibuting your data to the Deal Database!</H3> '
         .'<br/>'
         .'<small>You will be redirected shortly...</small>';
-        // header("Refresh:5; url=../tabs/NewDeals.php");
+        header("Refresh:5; url=../tabs/NewDeals.php");
     };
 ?>
