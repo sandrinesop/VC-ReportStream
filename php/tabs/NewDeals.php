@@ -412,6 +412,11 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <div class="my-1">
+                                                            <button onclick="openWin()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Contact
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!--    
@@ -421,9 +426,9 @@
                                                 -->
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12"> 
-                                                    <h5>
-                                                        Investment Manager(s)
-                                                    </h5>
+                                                        <h5>
+                                                            Investment Manager(s)
+                                                        </h5>
                                                         <label for="InvestorName" class="form-label"> Name</label>        
                                                         <select class="form-select" id="InvestorName" name="InvestorName" required>
                                                             <option> Select...</option>
@@ -434,6 +439,11 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <div class="my-1">
+                                                            <button onclick="openWin1()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Manager
+                                                            </button>
+                                                        </div>
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <h5>
@@ -448,6 +458,11 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <div class="my-1">
+                                                            <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Fund
+                                                            </button>
+                                                        </div>
                                                     </div> 
                                                     <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorWebsite" class="form-label">Investor Website</label>       
@@ -620,6 +635,26 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
+        <script>
+            var createWindow;
+            // open window
+            function openWin() {
+                createWindow = window.open("./SubFunctions/create_contact.php", "_blank", "width=920, height=500");
+            }
+
+            var createWindow1;
+            // open window
+            function openWin1() {
+                createWindow1 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
+            }
+
+            var createWindow2;
+            // open window
+            function openWin2() {
+                createWindow2 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
+            }
+        </script>
     </body>
 </html>
 
