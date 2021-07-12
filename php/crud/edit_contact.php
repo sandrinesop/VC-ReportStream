@@ -26,7 +26,6 @@
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
-        $ModifiedDate           = $_REQUEST['ModifiedDate'];
         $UserFullName           = $_REQUEST['UserFullName'];
         $FirstName              = $_REQUEST['FirstName'];
         $LastName               = $_REQUEST['LastName'];
@@ -111,7 +110,7 @@
                     <label for="RoleType" class="form-label" >RoleType </label> <br>
                     <!-- <input class="form-control col" type="text" name="RoleType" placeholder="Enter RoleType"  value="<?php echo $row2['RoleType'];?>" /> -->
                     <select name="RoleType" class="form-select" id="RoleType" required>
-                        <option value="<?php echo $row2['RoleType'];?>" selected ><?php echo $row2['RoleType'];?></option>
+                        <option selected ><?php echo $row2['RoleType'];?></option>
                         <option value="President">President</option>
                         <option value="CEO">CEO</option>
                         <option value="CFO">CFO</option>
@@ -122,7 +121,7 @@
                     <label for="Gender" class="form-label" >Gender </label> <br>
                     <!-- <input class="form-control col" type="text" name="Gender" placeholder="Enter Gender"  value="<?php echo $row3['Gender'];?>" /> -->
                     <select name="Gender" class="form-select" id="Gender" required>
-                        <option value="<?php echo $row3['Gender'];?>" selected ><?php echo $row3['Gender'];?></option>
+                        <option selected ><?php echo $row3['Gender'];?></option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Unknown">Unknown</option>
@@ -132,7 +131,7 @@
                     <label for="Race" class="form-label" >Race </label> <br>
                     <!-- <input class="form-control col" type="text" name="Race" placeholder="Enter Race"  value="<?php echo $row4['Race'];?>" /> -->
                     <select name="Race" class="form-select" id="Race" required>
-                        <option value="<?php echo $row4['Race'];?>" selected ><?php echo $row4['Race'];?></option>
+                        <option selected ><?php echo $row4['Race'];?></option>
                         <option value="Black">Black</option>
                         <option value="White">White</option>
                         <option value="Asian">Asian</option>

@@ -102,7 +102,7 @@
             
 
             if($query3){
-                echo 'Thanks for your contribution! You will be redirected in 5 sec...';
+                // echo ;
                 // header( "refresh: 5;url= contacts.php" );
             }else{
                 echo 'Oops! There was an error creating new contact';
@@ -119,10 +119,8 @@
                 echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
 
+            echo '<p> Thanks for your contribution! You will be redirected in 5 sec...</p>';
             
-            $status = "Record Updated Successfully. </br></br>
-            <a href='../tabs/contacts.php'>View Updated Record</a>";
-            echo '<p style="color:#FF0000;">'.$status.'</p>';
             header( "refresh: 5;url= ../tabs/contacts.php" );
     }
 ?>

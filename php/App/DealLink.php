@@ -142,7 +142,6 @@
 
                 $query99 = mysqli_query($conn, $sqlDealSector);
                 
-
                 // Echo 'DealID is:'.;
 
                 if($query99){

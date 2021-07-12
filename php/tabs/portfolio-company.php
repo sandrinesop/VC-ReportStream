@@ -138,7 +138,7 @@
                     RoleType IS NOT NULL ORDER BY RoleType ASC
     ";
     $resultRoleType = mysqli_query($conn, $sqlRoleType);
-    // POPULATING PORTFOLIO COMPANIES DROPDOWN
+    // POPULATING GENDER DROPDOWN
     $sqlGender = " SELECT DISTINCT 
                     Gender
                 FROM 
@@ -233,34 +233,6 @@
 
         } else {
             echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
-        }
-    }
-
-    
-    if(isset($_POST['NewContact'])){
-            
-        $UserFullName           = $_POST['UserFullName'];
-        $FirstName              = $_POST['FirstName'];
-        $LastName               = $_POST['LastName'];
-        $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-        $ContactNumber1         = $_POST['ContactNumber1'];
-        $ContactNumber2         = $_POST['ContactNumber2'];
-        $Email                  = $_POST['Email'];
-        $RoleType               = $_POST['RoleType'];
-        $Gender                 = $_POST['Gender'];
-        $Race                   = $_POST['Race'];
-
-        $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
-        VALUES (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
-
-        $query3 = mysqli_query($conn, $sqlUser);
-        
-
-        if($query3){
-            echo '<script>alert("New Contact created Successfully!");</script>';
-            // header( "refresh: 5;url= contacts.php" );
-        }else{
-            echo '<br/>'.'Oops! There was an error creating new contact'.mysql_error($conn).'<br/>';
         }
     }
 ?>
@@ -438,91 +410,11 @@
                                                                 }
                                                             ?>
                                                         </select>
-                                                        <!-- New contact modal -->
-                                                        <div>
-                                                            <button type="button" class="btn btn-outline-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#ContactModal">
-                                                            New contact 
+                                                        <!-- New contact-->
+                                                        <div class="my-1">
+                                                            <button onclick="openWin()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Contact
                                                             </button>
-                                                        </div>
-                                                        <div style="background-color: #000000d6;" class="modal fade Modal" id="ContactModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ContactModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="ContactModalLabel">Create New Contact</h5>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form class="container" method="POST"  id="NewContactForm">
-                                                                        <div class="row">
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="UserFullName" class="form-label"><strong>Full Name</strong></label>
-                                                                                <input type="text" class="form-control" id="UserFullName" name="UserFullName" required>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="FirstName" class="form-label"><strong>First Name</strong></label>
-                                                                                <input type="text" class="form-control" id="FirstName" name="FirstName" required>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="LastName" class="form-label"><strong>Last Name</strong></label>
-                                                                                <input type="text" class="form-control" id="LastName" name="LastName" required>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="Email" class="form-label"><strong>Email</strong></label>
-                                                                                <input type="text" class="form-control" id="Email" name="Email" required>
-                                                                            </div> 
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="ContactNumber1" class="form-label"><strong>ContactNumber1</strong></label>
-                                                                                <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="ContactNumber2" class="form-label"><strong>ContactNumber2</strong></label>
-                                                                                <input type="text" class="form-control" id="ContactNumber2" name="ContactNumber2">
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="RoleType" class="form-label"><strong>RoleType</strong></label>
-                                                                                <select class="form-select" id="RoleType" name="RoleType" required>
-                                                                                    <option> Select RoleType</option>
-                                                                                    <?php
-                                                                                        while ($rowRoleType = mysqli_fetch_assoc($resultRoleType)) {
-                                                                                            # code...
-                                                                                            echo "<option>".$rowRoleType['RoleType']."</option>";
-                                                                                        }
-                                                                                    ?>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="Gender" class="form-label"><strong>Gender</strong></label>
-                                                                                <select class="form-select" id="Gender" name="Gender" required>
-                                                                                    <option> Select Gender</option>
-                                                                                    <?php
-                                                                                        while ($rowGender = mysqli_fetch_assoc($resultGender)) {
-                                                                                            # code...
-                                                                                            echo "<option>".$rowGender['Gender']."</option>";
-                                                                                        }
-                                                                                    ?>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-1 col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
-                                                                                <label for="Race" class="form-label"><strong>Race</strong></label>
-                                                                                <select class="form-select" id="Race" name="Race" required>
-                                                                                    <option> Select Race</option>
-                                                                                    <?php
-                                                                                        while ($rowRace = mysqli_fetch_assoc($resultRace)) {
-                                                                                            # code...
-                                                                                            echo "<option>".$rowRace['Race']."</option>";
-                                                                                        }
-                                                                                    ?>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-primary" name="NewContact" value="NewContact" form="NewContactForm" formmethod="POST">Submit</button>
-                                                                    </form>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary Close" onclick="$('#ContactModal').modal('hide');" aria-label="Close">Close</button>
-                                                                    <button type="button" class="btn btn-primary">Understood</button>
-                                                                </div>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -536,6 +428,11 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <div class="my-1">
+                                                            <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Manager
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundName" class="form-label">Fund(s)</label>
@@ -548,6 +445,11 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <div class="my-1">
+                                                            <button onclick="openWin3()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                                Add new Fund
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
@@ -575,7 +477,7 @@
                         </span>
                     </div>
                 </div>
-                <!-- DISLAY TABLE OF ALL PORTFOLIO COMPANIES --> 
+                <!-- DISPLAY TABLE OF ALL PORTFOLIO COMPANIES --> 
                 <div class="card">
                     <div class="card-body bg-secondary">
                         <div class="table-responsive" style="overflow-x:auto;">
@@ -638,5 +540,24 @@
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/DateDropDown.js"></script>
+        <script>
+            var createWindow;
+            // open window
+            function openWin() {
+                createWindow = window.open("./SubFunctions/create_contact.php", "_blank", "width=920, height=500");
+            }
+
+            var createWindow2;
+            // open window
+            function openWin2() {
+                createWindow2 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
+            }
+
+            var createWindow3;
+            // open window
+            function openWin3() {
+                createWindow3 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
+            }
+        </script>
     </body>
 </html>

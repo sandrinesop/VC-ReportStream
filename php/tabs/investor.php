@@ -183,12 +183,16 @@
         VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Note.NoteID FROM Note where Note.Note = '$InvestorNote'))";
         $query5 = mysqli_query($conn, $sql5);
         if($query5){
-            echo '<script> Alert("Investor created successfully!");</script>';
+            // echo '<script> Alert("Investor created successfully!");</script>';
             // header( "refresh: 3; url= fund.php" );
         } else {
             echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
 
+        $conn->close();
+        echo '<H3>Thanks for your contibution!</H3>'
+        .'<br/>'
+        .'<small>You will be redirected shortly...</small>';
         header( "refresh: 3;url= Investor.php" );
     }
 ?>
@@ -307,18 +311,6 @@
                                                                 while ($row105 = mysqli_fetch_assoc($result105)) {
                                                                     # code...
                                                                     echo "<option>".$row105['Currency']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ImpactTag" class="form-label">Impact Tag</label>
-                                                        <select class="form-select" id="ImpactTag" name="ImpactTag">
-                                                            <option> Select..</option>
-                                                            <?php
-                                                                while ($row103 = mysqli_fetch_assoc($result103)) {
-                                                                    # code...
-                                                                    echo "<option>".$row103['ImpactTag']."</option>";
                                                                 }
                                                             ?>
                                                         </select>
