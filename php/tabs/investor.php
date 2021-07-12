@@ -263,8 +263,8 @@
                                                         <input type="text" class="form-control" id="InvestorWebsite" name="InvestorWebsite" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="FundName" class="form-label">Fund </label>
-                                                        <select class="form-select" id="FundName" name="FundName">
+                                                        <label for="FundName" class="form-label" >Fund </label>
+                                                        <select class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
                                                             <option> Select Fund...</option>
                                                             <?php
                                                                 while ($row100 = mysqli_fetch_assoc($result100)) {
@@ -273,10 +273,13 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                            Add new Fund
+                                                        </button>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company</label>
-                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName">
+                                                        <select class="form-select PortfolioCompanyName" id="PortfolioCompanyName" name="PortfolioCompanyName[]" multiple="true" required>
                                                             <option> Select Portfolio Company...</option>
                                                             <?php
                                                                 while ($row101 = mysqli_fetch_assoc($result101)) {
@@ -285,6 +288,9 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <button onclick="openWin()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                            Add new Company
+                                                        </button>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestorNote" class="form-label"> Note</label>
@@ -411,5 +417,19 @@
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/DateDropDown.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
+        <script>
+            var createWindow;
+            // open window
+            function openWin() {
+                createWindow = window.open("./SubFunctions/create_portfoliocompany.php", "_blank", "width=920, height=500");
+            }
+
+            var createWindow2;
+            // open window
+            function openWin2() {
+                createWindow2 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
+            }
+        </script>
     </body>
 </html>

@@ -250,7 +250,7 @@
                                                     <!-- investors dropdown - populated from the database -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                                                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                                                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
                                                             <option> Select...</option>
                                                             <?php
                                                                 while ($row102 = mysqli_fetch_assoc($result102)) {
@@ -259,11 +259,14 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <button onclick="openWin1()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                            Add new Investment Manager
+                                                        </button>
                                                     </div>
                                                     <!-- Portfolio Company dropdown - populated from the database -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                         <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
-                                                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
+                                                        <select class="form-select PortfolioCompanyName" id="PortfolioCompanyName" name="PortfolioCompanyName[]" multiple="true" required>
                                                             <option> Select...</option>
                                                             <?php
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
@@ -272,6 +275,9 @@
                                                                 }
                                                             ?>
                                                         </select>
+                                                        <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
+                                                            Add new Portfolio Company
+                                                        </button>
                                                     </div>
                                                     <!-- Actual Currencies as in the DB --> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -301,7 +307,7 @@
                                                     <!-- Investment Stage -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestmentStage" class="form-label">Investment Stage </label>
-                                                        <select class="form-select" id="InvestmentStage" name="InvestmentStage" required>
+                                                        <select class="form-select InvestmentStage" id="InvestmentStage" name="InvestmentStage[]" multiple="true" required>
                                                             <option> Select Investment Stage...</option>
                                                             <?php
                                                                 while ($row104 = mysqli_fetch_assoc($result104)) {
@@ -385,5 +391,19 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
+        <script>
+            var createWindow1;
+            // open window
+            function openWin1() {
+                createWindow1 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
+            }
+            var createWindow2;
+            // open window
+            function openWin2() {
+                createWindow2 = window.open("./SubFunctions/create_portfoliocompany.php", "_blank", "width=920, height=500");
+            }
+
+        </script>
     </body>
 </html>

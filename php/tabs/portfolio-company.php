@@ -371,7 +371,7 @@
                                                     <!-- SECTOR DROPDOWN | Data being fed through JQuery -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
                                                         <label for="Sector" class="form-label" >Sector </label>
-                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
+                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true" required>
                                                             <option>choose...</option>
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
@@ -401,7 +401,7 @@
                                                     <!-- COMPANY CONTACT -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="UserFullName" class="form-label">Company Contact</label>
-                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                        <select class="form-select UserFullName" id="UserFullName" name="UserFullName[]" multiple="true" required>
                                                             <option> Select Contact Person...</option>
                                                             <?php
                                                                 while ($row5 = mysqli_fetch_assoc($result5)) {
@@ -419,7 +419,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                                                        <select class="form-select" id="InvestorName" name="InvestorName">
+                                                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
                                                             <option> Select...</option>
                                                             <?php
                                                                 while ($row102 = mysqli_fetch_assoc($result102)) {
@@ -436,7 +436,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundName" class="form-label">Fund(s)</label>
-                                                        <select class="form-select" id="FundName" name="FundName">
+                                                        <select class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
                                                             <option> Select Fund(s)...</option>
                                                             <?php
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
@@ -540,6 +540,7 @@
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/DateDropDown.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
         <script>
             var createWindow;
             // open window
