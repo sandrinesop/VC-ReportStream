@@ -442,7 +442,7 @@
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
                                                                     # code...
                                                                     echo "<option>".$row103['FundName']."</option>";
-                                                                }
+                                                                } 
                                                             ?>
                                                         </select>
                                                         <div class="my-1">
