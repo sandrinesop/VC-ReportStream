@@ -138,6 +138,25 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../DataTables/datatables.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
+        <style>
+            .dataTables_wrapper,
+            .dataTables_length,
+            .dataTables_wrapper,
+            .dataTables_filter,
+            .dataTables_wrapper,
+            .dataTables_info,
+            .dataTables_wrapper,
+            .dataTables_processing,
+            .dataTables_wrapper,
+            .dataTables_paginate,
+            .dataTables_paginate #table_investmentManager_previous,
+            .dataTables_paginate #table_investmentManager_next {
+                color: #ffffff !important;
+            }
+        </style>
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
@@ -275,10 +294,10 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body"style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 18px;">
-                                <t>
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 18px;"id="table_Contacts">
+                                <thead>
                                     <th scope="col">User Full Name</th>
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
@@ -291,28 +310,30 @@
                                     <th scope="col">Race  </th>
                                     <th scope="col">Edit  </th>
                                     <th scope="col">Delete </th>
-                                </t>
-                                <?php
-                                    while($rows = mysqli_fetch_assoc($result))
-                                    {
-                                ?>
-                                    <tr>
-                                        <td class="text-truncate"> <small><?php echo $rows['UserFullName'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['RoleType'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['Gender'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['Race'] ?></small></td>
-                                        <td class="text-truncate"> <a href="../crud/edit_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Edit</a></td>
-                                        <td class="text-truncate"> <a href="../crud/delete_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Delete</a></td>
-                                    </tr>
-                                <?php 
-                                    }
-                                ?>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        while($rows = mysqli_fetch_assoc($result))
+                                        {
+                                    ?>
+                                        <tr>
+                                            <td class="text-truncate"> <small><?php echo $rows['UserFullName'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['RoleType'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['Gender'] ?></small></td>
+                                            <td class="text-truncate"> <small><?php echo $rows['Race'] ?></small></td>
+                                            <td class="text-truncate"> <a href="../crud/edit_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Edit</a></td>
+                                            <td class="text-truncate"> <a href="../crud/delete_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Delete</a></td>
+                                        </tr>
+                                    <?php 
+                                        }
+                                    ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -325,5 +346,13 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../DataTables/datatables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script>
+            // Initializing the datatable plugin
+            $(document).ready( function () {
+                $('#table_Contacts').DataTable();
+            });
+        </script>
     </body>
 </html>

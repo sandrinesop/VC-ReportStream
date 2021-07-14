@@ -223,6 +223,25 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../DataTables/datatables.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
+        <style>
+            .dataTables_wrapper,
+            .dataTables_length,
+            .dataTables_wrapper,
+            .dataTables_filter,
+            .dataTables_wrapper,
+            .dataTables_info,
+            .dataTables_wrapper,
+            .dataTables_processing,
+            .dataTables_wrapper,
+            .dataTables_paginate,
+            .dataTables_paginate #table_investmentManager_previous,
+            .dataTables_paginate #table_investmentManager_next {
+                color: #ffffff !important;
+            };
+        </style>
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
@@ -581,10 +600,10 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body " style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;">
-                                <t>
+                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;" id="table_Deals">
+                                <thead>
                                     <th scope="col">Date</th>
                                     <th scope="col">News Link</th>
                                     <th scope="col">Portfolio Company</th>
@@ -598,31 +617,33 @@
                                     <th scope="col">Company Contact(s)</th>
                                     <th scope="col">Role </th>
                                     <th scope="col">View More </th>
-                                </t>
-                                <?php
-                                    while(($rowAA = mysqli_fetch_assoc($resultAA)))
-                                    {
-                                ?>
-                                <tr>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
-                                    <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["InvestmentValue"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
-                                    <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
-                                    <td> 
-                                        <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
-                                    </td>
-                                </tr>
-                                <?php
-                                    }
-                                ?>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        while(($rowAA = mysqli_fetch_assoc($resultAA)))
+                                        {
+                                    ?>
+                                    <tr>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
+                                        <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["InvestmentValue"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
+                                        <td> 
+                                            <a href="../Views/DealView.php?NewsID=<?php echo $rowAA['NewsID'];?>">View Deal</a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                        }
+                                    ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -636,6 +657,8 @@
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/MultiSelect.js"></script>
+        <script src="../../DataTables/datatables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
             var createWindow;
             // open window
@@ -654,6 +677,11 @@
             function openWin2() {
                 createWindow2 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
             }
+        </script>
+        <script>
+            $(document).ready( function () {    // Initializing the datatable plugin
+                $('#table_Deals').DataTable();
+            } );
         </script>
     </body>
 </html>

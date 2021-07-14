@@ -228,6 +228,23 @@
         <link rel="stylesheet" href="../../css/main.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
+        <style>
+            .dataTables_wrapper,
+            .dataTables_length,
+            .dataTables_wrapper,
+            .dataTables_filter,
+            .dataTables_wrapper,
+            .dataTables_info,
+            .dataTables_wrapper,
+            .dataTables_processing,
+            .dataTables_wrapper,
+            .dataTables_paginate,
+            .dataTables_paginate #table_investmentManager_previous,
+            .dataTables_paginate #table_investmentManager_next {
+                color: #ffffff !important;
+            }
+        </style>
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
@@ -382,7 +399,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body bg-secondary">
+                    <div class="card-body" style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
                             <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 3600px; line-height: 18px; " id="table_investmentManager">
                                 <thead>
@@ -452,9 +469,10 @@
             }
         </script>
         <script>
+            // Initializing the datatable plugin
             $(document).ready( function () {
                 $('#table_investmentManager').DataTable();
-            } );
+            });
         </script>
     </body>
 </html>

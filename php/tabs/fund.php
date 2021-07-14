@@ -220,6 +220,25 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../DataTables/datatables.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
+        <style>
+            .dataTables_wrapper,
+            .dataTables_length,
+            .dataTables_wrapper,
+            .dataTables_filter,
+            .dataTables_wrapper,
+            .dataTables_info,
+            .dataTables_wrapper,
+            .dataTables_processing,
+            .dataTables_wrapper,
+            .dataTables_paginate,
+            .dataTables_paginate #table_investmentManager_previous,
+            .dataTables_paginate #table_investmentManager_next {
+                color: #ffffff !important;
+            }
+        </style>
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
@@ -364,10 +383,10 @@
                 </div>
                 <!-- TABLE OF ALL PORTFOLIO COMPANIES --> 
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;">
-                                <t>
+                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;" id="table_Fund">
+                                <thead>
                                     <th scope="col">Fund Name</th>
                                     <th scope="col">Investment Manager(s)</th>
                                     <th scope="col">Portfolio Companies List</th>
@@ -379,27 +398,29 @@
                                     <th scope="col">Fund Note</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
-                                </t>
-                                <?php
-                                    while($rows = mysqli_fetch_assoc($result))
-                                    {
-                                ?>
-                                <tr>
-                                    <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['CommittedCapital'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
-                                    <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
-                                    <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
-                                    <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>
-                                </tr>
-                                <?php 
-                                    }
-                                ?>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        while($rows = mysqli_fetch_assoc($result))
+                                        {
+                                    ?>
+                                    <tr>
+                                        <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['CommittedCapital'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
+                                        <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
+                                        <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>
+                                    </tr>
+                                    <?php 
+                                        }
+                                    ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -413,6 +434,8 @@
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/MultiSelect.js"></script>
+        <script src="../../DataTables/datatables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
             var createWindow1;
             // open window
@@ -425,6 +448,12 @@
                 createWindow2 = window.open("./SubFunctions/create_portfoliocompany.php", "_blank", "width=920, height=500");
             }
 
+        </script>
+        <script>
+            // Initializing the datatable plugin
+            $(document).ready( function () {
+                $('#table_Fund').DataTable();
+            });
         </script>
     </body>
 </html>

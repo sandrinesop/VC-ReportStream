@@ -275,6 +275,25 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../DataTables/datatables.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
+        <style>
+            .dataTables_wrapper,
+            .dataTables_length,
+            .dataTables_wrapper,
+            .dataTables_filter,
+            .dataTables_wrapper,
+            .dataTables_info,
+            .dataTables_wrapper,
+            .dataTables_processing,
+            .dataTables_wrapper,
+            .dataTables_paginate,
+            .dataTables_paginate #table_investmentManager_previous,
+            .dataTables_paginate #table_investmentManager_next {
+                color: #ffffff !important;
+            };
+        </style>
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
@@ -505,10 +524,10 @@
                 </div>
                 <!-- DISPLAY TABLE OF ALL PORTFOLIO COMPANIES --> 
                 <div class="card">
-                    <div class="card-body bg-secondary">
+                    <div class="card-body" style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;">
-                                <t> 
+                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;" id="table_PortfolioCompany">
+                                <thead> 
                                     <th scope="col" >Portfolio Company Name</th>
                                     <th scope="col" >Investment Manager(s)</th>
                                     <th scope="col" >Fund(s)</th>
@@ -525,34 +544,36 @@
                                     <th scope="col" >Logo</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
-                                </t>
-                                <?php
-                                    while($rows = mysqli_fetch_assoc($result))
-                                    {
-                                ?>
-                                    <tr>     
-                                        <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Industry'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['UserFullName'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Gender'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo $rows['Race'] ?> </small></td>
-                                        <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
-                                        <td class="text-truncate"> <small> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Edit</a></small></td>
-                                        <td class="text-truncate"> <small> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Delete</a></small></td>
-                                        <!-- <td> <?php echo $rows['IndustryID'] ?></td>
-                                        <td> <?php echo $rows['SectorID'] ?></td> -->
-                                    </tr>
-                                <?php 
-                                    }
-                                ?>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        while($rows = mysqli_fetch_assoc($result))
+                                        {
+                                    ?>
+                                        <tr>     
+                                            <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Industry'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['UserFullName'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Gender'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Race'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
+                                            <td class="text-truncate"> <small> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Edit</a></small></td>
+                                            <td class="text-truncate"> <small> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Delete</a></small></td>
+                                            <!-- <td> <?php echo $rows['IndustryID'] ?></td>
+                                            <td> <?php echo $rows['SectorID'] ?></td> -->
+                                        </tr>
+                                    <?php 
+                                        }
+                                    ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -567,24 +588,31 @@
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/DateDropDown.js"></script>
         <script src="../../js/MultiSelect.js"></script>
+        <script src="../../DataTables/datatables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
-            var createWindow;
-            // open window
-            function openWin() {
-                createWindow = window.open("./SubFunctions/create_contact.php", "_blank", "width=920, height=500");
-            }
+                var createWindow;
+                // open window
+                function openWin() {
+                    createWindow = window.open("./SubFunctions/create_contact.php", "_blank", "width=920, height=500");
+                };
 
-            var createWindow2;
-            // open window
-            function openWin2() {
-                createWindow2 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
-            }
+                var createWindow2;
+                // open window
+                function openWin2() {
+                    createWindow2 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
+                };
 
-            var createWindow3;
-            // open window
-            function openWin3() {
-                createWindow3 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
-            }
+                var createWindow3;
+                // open window
+                function openWin3() {
+                    createWindow3 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
+                };
+        </script>
+        <script>
+            $(document).ready( function () {    // Initializing the datatable plugin
+                $('#table_PortfolioCompany').DataTable();
+            } );
         </script>
     </body>
 </html>
