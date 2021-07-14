@@ -122,59 +122,78 @@
         $InvestmentStage        = $_POST['InvestmentStage'];
         $FundNote               = $_POST['FundNote'];
         // FUND INSERTION QUERY
-        $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
-                    VALUES (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
+        $sql = "    INSERT INTO 
+                        Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
+                    VALUES 
+                        (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')
+        ";
         $query = mysqli_query($conn, $sql);
-        // FUND NOTE INSERTION QUERY
-        $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
-                VALUES (uuid(), now(), now(), '$FundNote','fb450e57-7056-11eb-a66b-96000010b114' )";
+        // NOTE INSERTION QUERY
+        $sql2 = "INSERT INTO 
+                    Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
+                VALUES 
+                    (uuid(), now(), now(), '$FundNote','fb450e57-7056-11eb-a66b-96000010b114' )
+        ";
         $query2 = mysqli_query($conn, $sql2);
-        // FUND INVESTMENTSTAGE INSERTION QUERY
-        $sql3 = "INSERT INTO InvestmentStage(InvestmentStageID, CreatedDate, ModifiedDate, Deleted, InvestmentStage) 
-                VALUES (uuid(), now(), now(),0, '$InvestmentStage' )";
-        $query3 = mysqli_query($conn, $sql3);
 
-        if($query && $query2 && $query3){
-            // echo '<script> Alert(Fund created successfully!)</script>';
-            // header( "refresh: 3; url= fund.php" );
+        if($query && $query2 ){
+            // Do Nothing
         } else {
             echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
-         
-        // LINK FUND TO INVESTOR
-        $sql4 = "   INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
-        $query4 = mysqli_query($conn, $sql4);
-        if($query4){
-            // echo '<script> Alert("Fund created successfully!")</script>';
-            // header( "refresh: 3; url= fund.php" );
-        } else {
-            echo 'Oops! There was an error linking Fund to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        // ===========================================================
+        // LOOP TO INSERT INVESTORS ON FUND
+        // ===========================================================
+        foreach($InvestorName as $InvestmentManager) {
+            $sql4 = "   INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
+                        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'))
+            ";
+            $query4 = mysqli_query($conn, $sql4);
+            if($query4){
+                // Do nothing if success
+            } else {
+                echo 'Oops! There was an error linking Fund to Investment Manager. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
         }
-        // LINK FUND TO COMPANY
-        $sql5 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-        $query5 = mysqli_query($conn, $sql5);
-        if($query5){
-            // Do nothing if success
-        } else {
-            echo 'Oops! There was an error on linking Fund and Companies. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        // ===========================================================
+        // LOOP TO INSERT PORTFOLIO COMPANY ON FUND
+        // ===========================================================
+        foreach($PortfolioCompanyName as $Company) {
+            $sql5 = "   INSERT INTO 
+                            FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                        VALUES 
+                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$Company'))
+            ";
+            $query5 = mysqli_query($conn, $sql5);
+            if($query5){
+                // Do nothing if success
+            } else {
+                echo 'Oops! There was an error on linking Fund and Companies. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
         }
-
-
-        // LINK FUND TO INVESTMENTSTAGE
-        $sql6 = "   INSERT INTO FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$InvestmentStage'))";
-        $query6 = mysqli_query($conn, $sql6);
-        if($query6){
-            // Do nothing if success
-        } else {
-            echo 'Oops! There was an error on linking Fund and Industry. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        // ===========================================================
+        // LOOP TO INSERT INVESTMENT STAGE ON FUND
+        // ===========================================================
+        foreach($InvestmentStage as $Stage) {
+            $sql6 = "   INSERT INTO 
+                            FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
+                        VALUES 
+                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$Stage'))
+            ";
+            $query6 = mysqli_query($conn, $sql6);
+            if($query6){
+                // Do nothing if success
+            } else {
+                echo 'Oops! There was an error on linking Fund and Investment Stage. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
         }
-
-        // LINK FUND TO INVESTMENTSTAGE
-        $sql7 = "   INSERT INTO FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Note.NoteID FROM Note where Note.Note = '$FundNote'))";
+        
+        // LINK FUND TO NOTE
+        $sql7 = "   INSERT INTO 
+                        FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
+                    VALUES 
+                        (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Note.NoteID FROM Note where Note.Note = '$FundNote'))
+        ";
         $query7 = mysqli_query($conn, $sql7);
         if($query7){
             // Do nothing if success
@@ -182,9 +201,11 @@
             echo 'Oops! There was an error on linking Fund and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
 
+        // ===========================================================
+        // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
+        // ===========================================================
         header( "refresh: 5; url= fund.php" );
     }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
