@@ -1,45 +1,44 @@
 <?php 
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    // $NewsID =$_REQUEST['NewsID'];
+    $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
-    $sqlA1="    SELECT 
-                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue, GROUP_CONCAT(InvestorName) AS InvestorName,GROUP_CONCAT(Sector) AS Sector, GROUP_CONCAT(FundName) AS FundName, GROUP_CONCAT(InvestmentStage) AS InvestmentStage, Country.Country 
+    $sqlA1="    SELECT DISTINCT
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
-                    PortfolioCompanyNews 
+                    deals 
+                -- Include investor table data through the linking table dealsinvestor
+                LEFT JOIN
+                    DealsInvestor
+                ON 
+                    DealsInvestor.DealsID = Deals.DealsID
+                -- Include Investor table data
+                LEFT JOIN
+                    Investor
+                ON
+                    Investor.InvestorID = DealsInvestor.InvestorID
+                -- Include fund table data through the linking table dealsfund
+                LEFT JOIN
+                    DealsFund
+                ON 
+                    DealsFund.DealsID = Deals.DealsID 
+                -- include Fund table data
+                LEFT JOIN
+                    Fund
+                ON
+                    Fund.FundID = DealsFund.FundID 
+                -- Include News table data 
                 LEFT JOIN 
                     News 
                 ON
-                    News.NewsID = PortfolioCompanyNews.NewsID 
+                    News.NewsID = deals.NewsID 
                 LEFT JOIN 
+                -- Include PortfoliCompany table data
                     PortfolioCompany
                 ON
-                    PortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID 
+                    PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
                 LEFT JOIN 
-                    InvestorNews
-                ON
-                    InvestorNews.NewsID = PortfolioCompanyNews.NewsID 
-                LEFT JOIN 
-                    Investor
-                ON
-                    Investor.InvestorID = InvestorNews.InvestorID 
-                LEFT JOIN 
-                    PortfolioCompanySector
-                ON
-                    PortfolioCompanySector.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID         
-                LEFT JOIN 
-                    Sector          
-                ON
-                    Sector.SectorID = PortfolioCompanySector.SectorID      
-                LEFT JOIN 
-                    FundPortfolioCompany
-                ON
-                    FundPortfolioCompany.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
-                LEFT JOIN 
-                    Fund
-                ON
-                    Fund.FundID = FundPortfolioCompany.FundID 
-                LEFT JOIN 
+                -- Link investment stage to fund
                     FundInvestmentStage      
                 ON          
                     FundInvestmentStage.FundID = Fund.FundID 
@@ -50,13 +49,36 @@
                 LEFT JOIN 
                     PortfolioCompanyCountry
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = PortfolioCompanyNews.PortfolioCompanyID
+                    PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
-
-                GROUP BY News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, PortfolioCompany.TotalInvestmentValue,Country.Country ";
+                LEFT JOIN 
+                    Industry
+                ON 
+                    Industry.IndustryID = deals.IndustryID
+                LEFT JOIN 
+                    DealSector
+                ON 
+                    DealSector.DealsID = Deals.DealsID
+                LEFT JOIN 
+                    Sector
+                ON 
+                    Sector.SectorID = DealSector.SectorID
+                LEFT JOIN 
+                    UserDetail
+                ON 
+                    UserDetail.UserDetailID = Deals.UserDetailID1
+                LEFT JOIN 
+                    RoleType
+                ON 
+                    RoleType.RoleTypeID = UserDetail.RoleTypeID
+                WHERE 
+                    Deals.Deleted= 0 AND Deals.DealsID = '$DealsID'
+                
+                GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                ORDER BY  news.NewsDate ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
     $rowA1 = mysqli_fetch_assoc($resultA1);
 
@@ -98,15 +120,13 @@
         <main  class="my-5 ">
             <form name="form" method="post" action="" class="form container"> 
                 <input type="hidden" name="new" value="1" />
-                <input name="NewsID" type="hidden" value="<?php echo $rowA1['NewsID'];?>" />
+                <input name="DealsID" type="hidden" value="<?php echo $rowA1['DealsID'];?>"/>
                 <p><input class="form-control col" type="text" name="NewsDate" required value="<?php echo $rowA1['NewsDate'];?>" DISABLED/></p>
                 <p><input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Portfolio Company"  value="<?php echo $rowA1['PortfolioCompanyName'];?>" DISABLED/></p>
                 
                 <p><input class="form-control col" type="text" name="InvestorName" placeholder="Unknown Investor(s)"  value="<?php echo $rowA1['InvestorName'];?>" DISABLED/></p>
                 
                 <p><input class="form-control col" type="text" name="FundName" placeholder="Unknown Fund(s)"  value="<?php echo $rowA1['FundName'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="TotalInvestmentValue" placeholder="Undisclosed Amount"  value="<?php echo $rowA1['TotalInvestmentValue'];?>" DISABLED/></p>
                 
                 <p><input class="form-control col" type="text" name="InvestmentStage" placeholder="Unknown Investment Stage"  value="<?php echo $rowA1['InvestmentStage'];?>" DISABLED/></p>
                 
