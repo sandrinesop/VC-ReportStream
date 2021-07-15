@@ -3,9 +3,29 @@
     include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, Fund.FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
                     deals 
+                -- Include investor table data through the linking table dealsinvestor
+                LEFT JOIN
+                    DealsInvestor
+                ON 
+                    DealsInvestor.DealsID = Deals.DealsID
+                -- Include Investor table data
+                LEFT JOIN
+                    Investor
+                ON
+                    Investor.InvestorID = DealsInvestor.InvestorID
+                -- Include fund table data through the linking table dealsfund
+                LEFT JOIN
+                    DealsFund
+                ON 
+                    DealsFund.DealsID = Deals.DealsID 
+                -- include Fund table data
+                LEFT JOIN
+                    Fund
+                ON
+                    Fund.FundID = DealsFund.FundID 
                 -- Include News table data 
                 LEFT JOIN 
                     News 
@@ -16,16 +36,6 @@
                     PortfolioCompany
                 ON
                     PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
-                LEFT JOIN 
-                -- Include Invesor table data
-                    Investor
-                ON
-                    Investor.InvestorID = deals.InvestorID 
-                LEFT JOIN 
-                -- include Fund table data
-                    Fund
-                ON
-                    Fund.FundID = deals.FundID 
                 LEFT JOIN 
                 -- Link investment stage to fund
                     FundInvestmentStage      
@@ -410,18 +420,8 @@
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
                                                     </div>
-                                                </div>
-                                                <!--    
-                                                        =========================================================================
-                                                        ======================== STARTUP CONTACT SECTION ========================
-                                                        =========================================================================
-                                                -->
-                                                <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
-                                                        <h5>
-                                                            Contact Person
-                                                        </h5>
-                                                        <label for="UserFullName" class="form-label">Startup Contact</label>
+                                                        <label for="UserFullName" class="form-label">Contact Person</label>
                                                         <select class="form-select" id="UserFullName" name="UserFullName" required>
                                                             <option> Select Contact Person...</option>
                                                             <?php
@@ -440,6 +440,13 @@
                                                 </div>
                                                 <!--    
                                                         =========================================================================
+                                                        ======================== STARTUP CONTACT SECTION ========================
+                                                        =========================================================================
+                                                -->
+                                                <div class="row">
+                                                </div>
+                                                <!--    
+                                                        =========================================================================
                                                         ======================== INVESTOR SECTION ===============================
                                                         =========================================================================
                                                 -->
@@ -449,7 +456,7 @@
                                                             Investment Manager(s)
                                                         </h5>
                                                         <label for="InvestorName" class="form-label"> Name</label>        
-                                                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                                                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
                                                             <option> Select...</option>
                                                             <?php
                                                                 while ($rowA1 = mysqli_fetch_assoc($resultA1)) {
@@ -469,7 +476,7 @@
                                                             Fund
                                                         </h5>
                                                         <label for="FundName" class="form-label">Fund Name</label>
-                                                        <select name="FundName" class="form-select" id="FundName"  required>
+                                                        <select  class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
                                                             <option value="">Select...</option>
                                                             <?php
                                                                 while($rowB = mysqli_fetch_assoc($resultB)){
@@ -482,75 +489,7 @@
                                                                 Add new Fund
                                                             </button>
                                                         </div>
-                                                    </div> 
-                                                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorWebsite" class="form-label">Investor Website</label>       
-                                                        <select class="form-select" id="InvestorWebsite" name="InvestorWebsite" required>
-                                                            <option> Website...</option>
-                                                            <?php
-                                                                while ($rowA2 = mysqli_fetch_assoc($resultA2)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA2['Website']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
                                                     </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorNote" class="form-label">Investor Note</label>     
-                                                        <select class="form-select" id="InvestorNote" name="InvestorNote" required>
-                                                            <option> Select Note...</option>
-                                                            <?php
-                                                                while ($rowA3 = mysqli_fetch_assoc($resultA3)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA3['Note']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="ImpactTag" class="form-label">Impact Tag</label>     
-                                                        <select class="form-select" id="ImpactTag" name="ImpactTag" required>
-                                                            <option> Select Impact Tag...</option>
-                                                            <?php
-                                                                while ($rowA4 = mysqli_fetch_assoc($resultA4)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA4['ImpactTag']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="YearFounded" class="form-label">Year Founded</label>
-                                                        <input type="text" class="form-control" id="YearFounded" name="YearFounded">
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestorHeadquarters" class="form-label">Headquarters</label>     
-                                                        <select class="form-select" id="InvestorHeadquarters" name="InvestorHeadquarters" required>
-                                                            <option> Select Headquarters...</option>
-                                                            <?php
-                                                                while ($rowA5 = mysqli_fetch_assoc($resultA5)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA5['Country']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="img" class="form-label">Logo</label>
-                                                        <input type="file" class="form-control" id="img" name="img" required>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Description" class="form-label">Description</label>
-                                                        <select name="Description" class="form-select" id="Description" required>
-                                                            <option value="" selected >Select Description...</option>
-                                                            <?php
-                                                                while ($rowA6 = mysqli_fetch_assoc($resultA6)) {
-                                                                    # code...
-                                                                    echo "<option>".$rowA6['Description']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> -->
                                                 </div>
                                                 <!--    
                                                         =========================================================================
@@ -654,8 +593,8 @@
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-        <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../js/scripts.js"></script>
         <script src="../../js/MultiSelect.js"></script>
         <script src="../../DataTables/datatables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
