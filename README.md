@@ -1,4 +1,4 @@
-# African-VC-Database
+# VC-ReportStream
 
 Creating a php web interface to capture Data of investors, portfolio companies, and deals that are involved in the African Startup Ecosystem.
 All data will be stored into a MySQL database. 
