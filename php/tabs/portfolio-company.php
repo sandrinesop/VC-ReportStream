@@ -68,7 +68,7 @@
         WHERE 
             portfoliocompany.Deleted = 0
             
-        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo 
+        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo
     "; 
     $result = $conn->query($sql) or die($conn->error);
     

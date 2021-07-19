@@ -3,7 +3,7 @@
     include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
                     deals 
                 -- Include investor table data through the linking table dealsinvestor
@@ -74,7 +74,7 @@
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
                 GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate ";
+                ORDER BY  news.NewsDate";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
     $rowAA = mysqli_fetch_assoc($resultAA);
@@ -568,7 +568,7 @@
                                         <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["InvestmentValue"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo '$'.$rowAA["InvestmentValue"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>

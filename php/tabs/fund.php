@@ -2,7 +2,7 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
+	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency,currency.CurrencyCode, FORMAT(Fund.CommittedCapital, 'c', 'en-US') AS 'CommittedCapital' , FORMAT(Fund.MinimumInvestment, 'c', 'en-US') AS 'MinimumInvestment', FORMAT(Fund.MaximumInvestment, 'c', 'en-US') AS 'MaximumInvestment', GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
             FROM 
                 Fund 
                 -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -49,7 +49,7 @@
             WHERE  
                 Fund.Deleted = 0
 
-            GROUP BY FundID, Deleted, DeletedDate, FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note
+            GROUP BY FundID, Deleted, DeletedDate, FundName, Currency, CurrencyCode, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note
         ";
         
     $result = $conn->query($sql) or die($conn->error);
@@ -409,9 +409,9 @@
                                         <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['CommittedCapital'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['MinimumInvestment'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['MaximumInvestment'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['CommittedCapital'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MinimumInvestment'] ?> </small></td>
+                                        <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MaximumInvestment'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
                                         <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>

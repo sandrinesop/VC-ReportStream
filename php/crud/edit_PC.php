@@ -142,8 +142,8 @@
         $Details                 = $_REQUEST['Details'];
         $YearFounded             = $_REQUEST['YearFounded'];
         $Headquarters            = $_REQUEST['Headquarters'];
-        $Industry                = $_POST['Industry'];
-        $Sector                  = $_POST['Sector'];
+        $Industry                = $_REQUEST['Industry'];
+        $Sector                  = $_REQUEST['Sector'];
         // $Logo                    = $_FILES['img']['name'];
         // ,Logo='".$Logo."'
         // Company Logo Insert code
@@ -153,45 +153,66 @@
         mysqli_query($conn, $update) or die($conn->error);
            
         // LINK PORTFOLIO COMPANY TO INVESTOR
-        $sql4 = "  INSERT IGNORE INTO 
-                        InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
-                    VALUES 
-                        (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-        ";
-        $query4 = mysqli_query($conn, $sql4);
+        explode( ',', $InvestorName );
+        foreach($InvestorName as $InvestmentManager ){
+            $sql4 = "  INSERT INTO 
+                            InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
+                        VALUES 
+                            (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+            ";
+            $query4 = mysqli_query($conn, $sql4);
 
-        if($query4){
-            // DO NOTHING IF SUCCESSFULL
-        } else {
-            echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        } 
+            if($query4){
+                // DO NOTHING IF SUCCESSFULL
+            } else {
+                echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            } 
+        }
 
         // LINK PORTFOLIO COMPANY TO FUND
-        $sql5 = "  INSERT IGNORE INTO 
-                        FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
-                    VALUES 
-                        (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-        ";
-        $query5 = mysqli_query($conn, $sql5);
+        // explode( ',', $FundName );
+        foreach($FundName as $Fund ){
+            $sql5 = "  INSERT INTO 
+                            FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
+                        VALUES 
+                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+            ";
+            $query5 = mysqli_query($conn, $sql5);
 
-        if($query5){
-            // DO NOTHING IF SUCCESSFULL
-        } else {
-            echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            if($query5){
+                // DO NOTHING IF SUCCESSFULL
+            } else {
+                echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
         }
 
         // LINK PORTFOLIO COMPANY TO CONTACT
-        $sql6 = "  INSERT IGNORE INTO 
-                        PortfolioCompanyUserdetail(PortfolioCompanyUserdetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserdetailID)
-                    VALUES 
-                        (uuid(), now(), now(), 0, NULL, (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$UserFullName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-        ";
-        $query6 = mysqli_query($conn, $sql6);
+        // explode( ',', $UserFullName );
+        foreach($UserFullName as $Contact){
+            $sql6 = "  UPDATE 
+                            PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
+                            WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
+                        
+            ";
+            $query6 = mysqli_query($conn, $sql6);
 
-        if($query6){
-            // DO NOTHING IF SUCCESSFULL
-        } else {
-            echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            if($query6){
+                // DO NOTHING IF SUCCESSFULL
+            } else {
+                echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
+        }
+        // LINK PORTFOLIO COMPANY TO SECTORS
+        foreach($Sector AS $sects){
+            $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+                        VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+            $query99 = mysqli_query($conn, $sql99);
+
+            if($query99){
+                // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+            } else {
+                echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+            }
         }
 
         $status = "Record Updated Successfully. </br></br>
@@ -358,7 +379,7 @@
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Sector" class="form-label" >Sector </label> <br>
                         <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
-                            <option value="<?php echo $row['Sector'];?>"><?php echo $row['Sector'];?></option>
+                            <option value="<?php echo $row['Sector'];?>" selected><?php echo $row['Sector'];?></option>
                         </select> <br>
                         <small style="color:red;">First select an industry </small>
                     </p>
@@ -368,7 +389,9 @@
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="YearFounded" class="form-label">Year Founded</label>
-                        <input class="form-control col" type="text" name="YearFounded" placeholder="Enter YearFounded"  value="<?php echo $row['YearFounded'];?>" />
+                        <select class="form-control" name="YearFounded" id="YearFounded"required>
+                                <option value=""> Select...</option>
+                        </select>
                     </p>
                     <!-- Country dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
@@ -399,5 +422,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
+        <script src="../../js/DateDropDown.js"></script>
     </body>
 </html>
