@@ -122,6 +122,5 @@
                 fclose($csvFile);
             }
         }
-        header( "refresh: 5; url= ../tabs/NewDeals.php" );
     }
 ?>
