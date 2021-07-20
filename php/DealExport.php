@@ -7,12 +7,31 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)','Fund Name', 'Total Investment Value','Stake','Industry','Sector','Investment Stage', 'Country'));
-        $query = 
-                "SELECT DISTINCT
-                     News.NewsDate, News.NewsURL,PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, Fund.FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+        fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)','Fund(s)', 'Total Investment Value','Stake','Industry','Sector','Investment Stage', 'Country','Company Contact','Role Type'));
+        $query ="SELECT DISTINCT
+                   News.NewsDate, News.NewsURL,  PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
                     deals 
+                -- Include investor table data through the linking table dealsinvestor
+                LEFT JOIN
+                    DealsInvestor
+                ON 
+                    DealsInvestor.DealsID = Deals.DealsID
+                -- Include Investor table data
+                LEFT JOIN
+                    Investor
+                ON
+                    Investor.InvestorID = DealsInvestor.InvestorID
+                -- Include fund table data through the linking table dealsfund
+                LEFT JOIN
+                    DealsFund
+                ON 
+                    DealsFund.DealsID = Deals.DealsID 
+                -- include Fund table data
+                LEFT JOIN
+                    Fund
+                ON
+                    Fund.FundID = DealsFund.FundID 
                 -- Include News table data 
                 LEFT JOIN 
                     News 
@@ -23,16 +42,6 @@
                     PortfolioCompany
                 ON
                     PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
-                LEFT JOIN 
-                -- Include Invesor table data
-                    Investor
-                ON
-                    Investor.InvestorID = deals.InvestorID 
-                LEFT JOIN 
-                -- include Fund table data
-                    Fund
-                ON
-                    Fund.FundID = deals.FundID 
                 LEFT JOIN 
                 -- Link investment stage to fund
                     FundInvestmentStage      
@@ -55,24 +64,23 @@
                 ON 
                     Industry.IndustryID = deals.IndustryID
                 LEFT JOIN 
-                    DealSector
+                    DealsSector
                 ON 
-                    DealSector.DealsID = Deals.DealsID
+                    DealsSector.DealsID = Deals.DealsID
                 LEFT JOIN 
                     Sector
                 ON 
-                    Sector.SectorID = DealSector.SectorID
+                    Sector.SectorID = DealsSector.SectorID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = Deals.UserDetailID1
+                    UserDetail.UserDetailID = Deals.UserDetailID
                 LEFT JOIN 
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
-
                 GROUP BY NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate 
+                ORDER BY  news.NewsDate
         ";
         
         $result = mysqli_query($conn, $query);

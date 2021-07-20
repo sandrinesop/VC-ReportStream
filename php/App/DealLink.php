@@ -50,18 +50,23 @@
                     VALUES 
                         (uuid(), now(), now(),0,NULL,'$NewsDate', '$NewsURL')";
         $query = mysqli_query($conn, $sql);
+        
+        if ($query ){
+                // Success
+        } else {
+            echo 'Oops! There was an error saving News item. Please report bug to support.'.'<br/>'.mysqli_error($conn); 
+        }
         // Query End
-
         $sql2 = "   INSERT INTO 
                         Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
                     VALUES 
                         (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
         $query2 = mysqli_query($conn, $sql2);
 
-        if ($query && $query2 ){
+        if ($query2 ){
                 // Success
         } else {
-            echo 'Oops! There was an error saving news item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
         }
 
         // =====================================================
@@ -124,7 +129,7 @@
         // =====================================================================
         // =====================================================================
 
-        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, IndustryID, UserDetailID1, UserDetailID2)
+        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, IndustryID, UserDetailID, UserDetailID2)
                     VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
         $queryDLS = mysqli_query($conn, $sqlDLS);
         // DLS
@@ -135,7 +140,7 @@
             // =================================================================
             foreach($Sector as $sects){  
                 $sqlDealSector = "  INSERT INTO 
-                                        DealSector(DealSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, SectorID)
+                                        DealsSector(DealsSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, SectorID)
                                     VALUES 
                                         (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (SELECT S.SectorID FROM sector S WHERE S.Sector = '$sects'))
                 ";

@@ -58,17 +58,17 @@
                 ON 
                     Industry.IndustryID = deals.IndustryID
                 LEFT JOIN 
-                    DealSector
+                    DealsSector
                 ON 
-                    DealSector.DealsID = Deals.DealsID
+                    DealsSector.DealsID = Deals.DealsID
                 LEFT JOIN 
                     Sector
                 ON 
-                    Sector.SectorID = DealSector.SectorID
+                    Sector.SectorID = DealsSector.SectorID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = Deals.UserDetailID1
+                    UserDetail.UserDetailID = Deals.UserDetailID
                 LEFT JOIN 
                     RoleType
                 ON 
@@ -528,6 +528,13 @@
                         <!--  VIEW LEGACY DEALS -->
                         <span class="col">
                             <a href="./deals.php"><button class="btn new-button"> <small>View Legacy Deals</small> </button></a>
+                        </span>
+                        <!-- IMPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <form action="../Import/DealsImport.php" method="POST" enctype="multipart/form-data">
+                                <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
+                                <input type="file" name="file">
+                            </form>
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col"> 

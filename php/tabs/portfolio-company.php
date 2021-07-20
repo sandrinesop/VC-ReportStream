@@ -514,6 +514,13 @@
                                 </div>
                             </div>
                         </span>
+                        <!-- IMPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <form action="../Import/ImportPC.php" method="POST" enctype="multipart/form-data">
+                                <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
+                                <input type="file" name="file">
+                            </form>
+                        </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
                             <form action="../PCExport.php" method="POST">
