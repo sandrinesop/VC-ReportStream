@@ -187,7 +187,7 @@
         // LINKING COMPANY WITH SECTORS AND INDUSTRY
         if($query){
             // =============================================
-            // LOOP TO INSERT CONTACT PERSON ON P.COMPANY
+            // LOOP TO INSERT SECTORS ON P.COMPANY
             // =============================================
             foreach($Sector as $sects)  
             {  
@@ -208,8 +208,7 @@
             // =============================================
             // LOOP TO INSERT CONTACT PERSON ON P.COMPANY
             // =============================================
-            foreach($UserFullName as $Contact)  
-            {  
+            foreach($UserFullName as $Contact){  
                 $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
                             VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact'))";
                 $query4 = mysqli_query($conn, $sql4);
@@ -224,25 +223,22 @@
             // =============================================
             // LOOP TO INSERT INVESTORS ON P.COMPANY
             // =============================================
-            foreach($InvestorName as $InvestmentManager)  
-            {  
-                
+            foreach($InvestorName as $InvestmentManager){  
                 $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
                         VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
                 $query104 = mysqli_query($conn, $sql104);
 
-                    if($query104){
-                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-                    } else {
-                        echo 'Oops! There was an error saving the Investment Manager(s) from the array'.mysqli_error($conn).'<br/>';
-                    }
+                if($query104){
+                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                } else {
+                    echo 'Oops! There was an error saving the Investment Manager(s) from the array'.mysqli_error($conn).'<br/>';
+                }
             }
             
             // =============================================
             // LOOP TO FUNDS ON P.COMPANY
             // =============================================
-            foreach($FundName as $Fund)  
-            {  
+            foreach($FundName as $Fund){  
                 $sql105 = "     INSERT INTO 
                                     FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
                                 VALUES 
@@ -254,9 +250,8 @@
                     echo 'Oops! There was an error saving the Contacts from the array'.mysqli_error($conn).'<br/>';
                 }
             }
-
             header( "refresh: 5; url= portfolio-company.php" );
-
+            exit;
         } else {
             echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
         }
@@ -516,10 +511,13 @@
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-2"> 
-                            <form action="../Import/ImportPC.php" method="POST" enctype="multipart/form-data">
-                                <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
-                                <input type="file" name="file">
-                            </form>
+                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <div id="ImportFrm" class="mt-1" style="display:none;">
+                                <form action="../Import/ImportPC.php" method="POST" enctype="multipart/form-data">
+                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file">
+                                    <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
+                                </form>
+                            </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
@@ -620,6 +618,16 @@
             $(document).ready( function () {    // Initializing the datatable plugin
                 $('#table_PortfolioCompany').DataTable();
             } );
+        </script>
+        <script>
+            function formToggle(ID){
+                 var ImportFormReview = document.getElementById(ID);
+                 if(ImportFormReview.style.display === "none"){
+                    ImportFormReview.style.display ="block";
+                 }else{
+                    ImportFormReview.style.display ="none";
+                 }
+            };
         </script>
     </body>
 </html>
