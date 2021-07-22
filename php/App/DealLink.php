@@ -10,8 +10,8 @@
         // DECLARED AND SET VARIABLES
         // NEWS TABLE
         $NewsDate       = date('Y-m-d', strtotime($_POST['NewsDate']));
-        $NewsURL       = $_POST['NewsURL'];
-        $NewsNote       = $_POST['NewsNote'];
+        $NewsURL        = mysqli_real_escape_string($conn, $_POST['NewsURL']);
+        $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
         // PORTFOLIO COMPANY TABLE
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         $Stake                   = $_POST['Stake'];
@@ -20,12 +20,12 @@
         $Sector                  = $_POST['Sector'];
 
         // USER DETAIL TABLE
-        $StartUpContact       = $_POST['UserFullName'];
-        $InvestorContact       = $_POST['UserFullName1'];
+        $StartUpContact          = $_POST['UserFullName'];
+        $InvestorContact         = $_POST['UserFullName1'];
         // INVESTOR TABLE
-        $InvestorName           = $_POST['InvestorName'];
+        $InvestorName            = $_POST['InvestorName'];
         // FUND TABLE
-        $FundName               = $_POST['FundName'];
+        $FundName                = $_POST['FundName'];
         
         /* 
             ///////////////////////////////////////////////////

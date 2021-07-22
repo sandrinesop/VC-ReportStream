@@ -112,11 +112,11 @@
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit'])){
-            $InvestorName           = $_POST['InvestorName'];
-            $InvestorWebsite        = $_POST['InvestorWebsite'];
+            $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
+            $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
             $FundName               = $_POST['FundName'];
             $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-            $InvestorNote           = $_POST['InvestorNote'];
+            $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
             $Description            = $_POST['Description'];
             $Currency                = $_POST['Currency'];
             $YearFounded            = $_POST['YearFounded'];

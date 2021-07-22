@@ -161,15 +161,15 @@
     {
         // DEFINED VAR FOR THE SECOND TABLE
         // PORTFOLIO COMPANY TABLE
-        $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
+        $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = $_POST['Currency'];
-        $PortfolioCompanyWebsite = $_POST['Website'];
+        $PortfolioCompanyWebsite = mysqli_real_escape_string($conn, $_POST['Website']);
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
-        $Details                 = $_POST['Details'];
+        $Details                 = mysqli_real_escape_string($conn, $_POST['Details']);
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
-        $UserFullName            = $_POST['UserFullName'];
+        $UserFullName            = mysqli_real_escape_string($conn, $_POST['UserFullName']);
         $Logo                    = $_FILES['img']['name'];
         $InvestorName           = $_POST['InvestorName'];
         $FundName               = $_POST['FundName'];

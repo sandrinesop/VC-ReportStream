@@ -112,7 +112,7 @@
     {
         // Fund TABLE
 
-        $FundName               = $_POST['FundName'];
+        $FundName               = mysqli_real_escape_string($conn,$_POST['FundName']);
         $InvestorName           = $_POST['InvestorName'];
         $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
         $Currency               = $_POST['Currency'];
@@ -120,7 +120,7 @@
         $MinimumInvestment      = $_POST['MinimumInvestment'];
         $MaximumInvestment      = $_POST['MaximumInvestment'];
         $InvestmentStage        = $_POST['InvestmentStage'];
-        $FundNote               = $_POST['FundNote'];
+        $FundNote               = mysqli_real_escape_string($conn,$_POST['FundNote']);
         // FUND INSERTION QUERY
         $sql = "    INSERT INTO 
                         Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
@@ -373,6 +373,16 @@
                                 </div>
                             </div>
                         </span>
+                        <!-- IMPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <div id="ImportFrm" class="mt-1" style="display:none;">
+                                <form action="../Import/ImportFund.php" method="POST" enctype="multipart/form-data">
+                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file">
+                                    <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
+                                </form>
+                            </div>
+                        </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-2"> 
                             <form action="../FundExport.php" method="POST">
@@ -454,6 +464,17 @@
             $(document).ready( function () {
                 $('#table_Fund').DataTable();
             });
+        </script>
+        <!-- Display and Hide the import form with a button click -->
+        <script>
+            function formToggle(ID){
+                 var ImportFormReview = document.getElementById(ID);
+                 if(ImportFormReview.style.display === "none"){
+                    ImportFormReview.style.display ="block";
+                 }else{
+                    ImportFormReview.style.display ="none";
+                 }
+            };
         </script>
     </body>
 </html>

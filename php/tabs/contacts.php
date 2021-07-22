@@ -84,13 +84,13 @@
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
         {
-            $UserFullName           = $_POST['UserFullName'];
-            $FirstName              = $_POST['FirstName'];
-            $LastName               = $_POST['LastName'];
+            $UserFullName           = mysqli_real_escape_string($conn, $_POST['UserFullName']);
+            $FirstName              = mysqli_real_escape_string($conn, $_POST['FirstName']);
+            $LastName               = mysqli_real_escape_string($conn, $_POST['LastName']);
             $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
             $ContactNumber1         = $_POST['ContactNumber1'];
             $ContactNumber2         = $_POST['ContactNumber2'];
-            $Email                  = $_POST['Email'];
+            $Email                  = mysqli_real_escape_string($conn, $_POST['Email']);
             $RoleType               = $_POST['RoleType'];
             $Gender                 = $_POST['Gender'];
             $Race                   = $_POST['Race'];
@@ -231,11 +231,11 @@
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="ContactNumber1" class="form-label">ContactNumber1</label>
-                                                        <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
+                                                        <input type="tel" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="ContactNumber2" class="form-label">ContactNumber2</label>
-                                                        <input type="text" class="form-control" id="ContactNumber2" name="ContactNumber2">
+                                                        <input type="tel" class="form-control" id="ContactNumber2" name="ContactNumber2">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="RoleType" class="form-label">RoleType</label>
