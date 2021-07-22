@@ -91,7 +91,7 @@
                     echo
                     '<div style="color:green; font-size:20px;">
                         <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
-                        <a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                        <a href="../tabs/fund.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                     </div>';
                 }
                 // CLOSE CSV FILE

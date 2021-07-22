@@ -108,13 +108,28 @@
                 // NEXT UP, CREATE A VARIABLE AND THEN POPULATE IT WITH THE LENGHT OF THE ARRAY WHICH YOU WILL GET BY USING THE PHP COUNT() FUNCTION TO GET THE ARRAY LENGTH.
                 // ==================================================================
                 // print_r($msg);
-                echo '<p style="color:green; font-size:20px;">The following company/companies already exists in the database: <p/>';
                 $arrLength = count($msg);
-                for($i=0; $i<$arrLength; $i++){
-                    // Used the HTML elements and inlise CSS to format the output in a desirable way by making the font red. concatenated the varible $i which we initialzed if the for loop, added one to it and then appended that next to the value of the array to create an ordered-numbered list. Added an empty string to add space between.
-                    echo '<p style="color:red;">'.$i+'+1'.'. '.$msg[$i].'<p/>';
+                if($arrLength>0){
+                    echo'
+                        <p style="color:green; font-size:20px;">
+                            All unique records were imported successfully!
+                        <p/>
+                        <small>
+                            The following company/companies already exists in the database:
+                        </small>
+                        ';
+                    for($i=0; $i<$arrLength; $i++){
+                        // Used the HTML elements and inlise CSS to format the output in a desirable way by making the font red. concatenated the varible $i which we initialzed if the for loop, added one to it and then appended that next to the value of the array to create an ordered-numbered list. Added an empty string to add space between.
+                        echo '<p style="color:red;">'.$i+'+1'.'. '.$msg[$i].'<p/>';
+                    }
+                    echo '<br>'.'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
+                }else{
+                    echo
+                    '<div style="color:green; font-size:20px;">
+                        <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
+                        <a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                    </div>';
                 }
-                echo '<br>'.'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                 // CLOSE CSV FILE
                 fclose($csvFile);
             }else{
