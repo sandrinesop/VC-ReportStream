@@ -123,8 +123,7 @@
             $Headquarters           = $_POST['Headquarters'];
             $Logo                   = $_FILES['img']['name'];
 
-            // INVESTOR NOTE INSERT
-
+            // INSERT INVESTOR NOTE 
             $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
             VALUES (uuid(), now(), now(), '$InvestorNote','fb450b19-7056-11eb-a66b-96000010b114')";
             $query2 = mysqli_query($conn, $sql2);
@@ -132,14 +131,13 @@
             if($query2){
                 // echo 'Form 3 Submitted! => '.$query3.'<br/>';
             } else {
-                echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                echo 'Oops! There was an error saving investor note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             };
 
             /* $m = "../img/".$_FILES['img']['name'];
                 Use move_uploaded_file function to move files
                 move_uploaded_file($_FILES['img']['tmp_name'], $m);
             */
-
             $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
 
@@ -147,9 +145,9 @@
             // MAIN INSERT QUERY INTO INVESTOR TABLE
             // ========================================================
             $sql3 ="    INSERT INTO 
-                            Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, ImpactTag, YearFounded, Headquarters, Logo) 
+                            Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
                         VALUES 
-                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$ImpactTag', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')
+                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')
             ";
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -390,6 +388,16 @@
                                 </div>
                             </div>
                         </span>
+                        <!-- IMPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <div id="ImportFrm" class="mt-1" style="display:none;">
+                                <form action="../Import/ImportInvestmentManager.php" method="POST" enctype="multipart/form-data">
+                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file">
+                                    <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
+                                </form>
+                            </div>
+                        </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-6 col-md-4 col-lg-2"> 
                             <form action="../InvestorExport.php" method="POST">
@@ -473,6 +481,16 @@
             $(document).ready( function () {
                 $('#table_investmentManager').DataTable();
             });
+        </script>
+        <script>
+            function formToggle(ID){
+                 var ImportFormReview = document.getElementById(ID);
+                 if(ImportFormReview.style.display === "none"){
+                    ImportFormReview.style.display ="block";
+                 }else{
+                    ImportFormReview.style.display ="none";
+                 }
+            };
         </script>
     </body>
 </html>

@@ -73,6 +73,8 @@
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
+                WHERE 
+                    Deals.Deleted = 0
                 GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
                 ORDER BY  news.NewsDate";
 
@@ -563,6 +565,8 @@
                                     <th scope="col">Company Contact(s)</th>
                                     <th scope="col">Role </th>
                                     <th scope="col">View More </th>
+                                    <th scope="col">Edit  </th>
+                                    <th scope="col">Delete </th>
                                 </thead>
                                 <tbody>
                                     <?php
@@ -582,9 +586,9 @@
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
-                                        <td> 
-                                            <a href="../Views/DealView.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a>
-                                        </td>
+                                        <td> <a href="../Views/DealView.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
+                                        <td class="text-truncate"> <a href="../crud/edit_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Edit</a></td>
+                                        <td class="text-truncate"> <a href="../crud/delete_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Delete</a></td>
                                     </tr>
                                     <?php
                                         }
