@@ -3,7 +3,7 @@
     include_once('../App/DealLink.php');
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, GROUP_CONCAT(DISTINCT  InvestmentValue) AS InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Deals.Stake
+                    Deals.DealsID, News.NewsID, News.NewsURL,GROUP_CONCAT(DISTINCT  NewsDate) AS NewsDate, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, GROUP_CONCAT(DISTINCT  InvestmentValue) AS InvestmentValue, GROUP_CONCAT(DISTINCT  InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT Industry) AS Industry,GROUP_CONCAT(DISTINCT Sector) AS Sector, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Deals.Stake
                 FROM 
                     PortfolioCompanyNews 
                 -- Include News table data 
@@ -63,10 +63,10 @@
                     Country
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
-                LEFT JOIN 
-                    PortfolioCompanyInvestmentValue
-                ON 
-                    PortfolioCompanyInvestmentValue.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                -- LEFT JOIN 
+                --     PortfolioCompanyInvestmentValue
+                -- ON 
+                --     PortfolioCompanyInvestmentValue.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
                 -- LEFT JOIN 
                 --     InvestmentValue
                 -- ON 

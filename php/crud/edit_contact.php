@@ -139,8 +139,10 @@
                         <option value="Unknown">Unknown</option>
                     </select>
                 </p>
-
-                <p><input name="submit" type="submit" value="Update" /></p>
+                <p>
+                    <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
+                    <a href="../tabs/contacts.php" class="btn btn-danger" >Close</a>
+                </p>
             </form>
             <?php } ?>
         </main>

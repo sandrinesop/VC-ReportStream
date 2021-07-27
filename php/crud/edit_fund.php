@@ -168,7 +168,10 @@
                     <label for="Note" class="form-label">Note</label>
                     <input class="form-control col" type="text" name="Note" placeholder="Enter Note"  value="<?php echo $row['Note'];?>" />
                 </p>
-                <p><input name="submit" type="submit" value="Update" /></p>
+                <p>
+                    <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
+                    <a href="../tabs/fund.php" class="btn btn-danger" >Close</a>
+                </p>
             </form>
             <?php } ?>
         </main>

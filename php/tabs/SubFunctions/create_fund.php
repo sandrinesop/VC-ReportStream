@@ -15,14 +15,20 @@
         $FundNote               = $_POST['FundNote'];
         // FUND INSERTION QUERY
         $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
-                    VALUES (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
+                    VALUES (UUID(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
         $query = mysqli_query($conn, $sql);
+        if($query ){
+            // echo '<script> Alert(Fund created successfully!)</script>';
+            // header( "refresh: 3; url= fund.php" );
+        } else {
+            echo 'Oops! There was an error creating fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
         // FUND NOTE INSERTION QUERY
         $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
                 VALUES (uuid(), now(), now(), '$FundNote','fb450e57-7056-11eb-a66b-96000010b114' )";
         $query2 = mysqli_query($conn, $sql2);
 
-        if($query && $query2 ){
+        if($query2 ){
             // echo '<script> Alert(Fund created successfully!)</script>';
             // header( "refresh: 3; url= fund.php" );
         } else {

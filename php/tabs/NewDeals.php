@@ -5,7 +5,7 @@
     $sqlAA="    SELECT DISTINCT
                     Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
-                    deals 
+                    Deals 
                 -- Include investor table data through the linking table dealsinvestor
                 LEFT JOIN
                     DealsInvestor
@@ -75,7 +75,7 @@
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
                 WHERE 
                     Deals.Deleted = 0
-                GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
                 ORDER BY  news.NewsDate";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);

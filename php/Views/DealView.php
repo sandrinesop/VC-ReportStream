@@ -59,17 +59,17 @@
                 ON 
                     Industry.IndustryID = deals.IndustryID
                 LEFT JOIN 
-                    DealSector
+                    DealsSector
                 ON 
-                    DealSector.DealsID = Deals.DealsID
+                    DealsSector.DealsID = Deals.DealsID
                 LEFT JOIN 
                     Sector
                 ON 
-                    Sector.SectorID = DealSector.SectorID
+                    Sector.SectorID = DealsSector.SectorID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = Deals.UserDetailID1
+                    UserDetail.UserDetailID = Deals.UserDetailID
                 LEFT JOIN 
                     RoleType
                 ON 

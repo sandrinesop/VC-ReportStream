@@ -478,7 +478,10 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
+                <p>
+                    <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
+                    <a href="../tabs/NewDeals.php" class="btn btn-danger" >Close</a>
+                </p>
             </form>
             
         </main>

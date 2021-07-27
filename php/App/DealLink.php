@@ -84,7 +84,7 @@
         if ($queryA1 ){
             // Success
         } else {
-            echo 'Oops! There was an error on linking Portfolio Company News. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+            echo 'Oops! There was an error on linking w.. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         }
 
         // =======================

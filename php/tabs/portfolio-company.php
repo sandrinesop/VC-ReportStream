@@ -164,12 +164,12 @@
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = $_POST['Currency'];
         $PortfolioCompanyWebsite = mysqli_real_escape_string($conn, $_POST['Website']);
-        $Industry                = $_POST['Industry'];
+        $Industries                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
         $Details                 = mysqli_real_escape_string($conn, $_POST['Details']);
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
-        $UserFullName            = mysqli_real_escape_string($conn, $_POST['UserFullName']);
+        $UserFullName            = $_POST['UserFullName'];
         $Logo                    = $_FILES['img']['name'];
         $InvestorName           = $_POST['InvestorName'];
         $FundName               = $_POST['FundName'];
@@ -201,9 +201,21 @@
                     echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
                 }
             }
-            $sql3 = "   INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
-                        VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
-            $query3 = mysqli_query($conn, $sql3);
+
+            $IndustryList = explode(",", $Industries);
+            foreach($IndustryList AS $Industry){ 
+                $sql98 = "   INSERT INTO 
+                                PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                            VALUES 
+                                (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+                $query98 = mysqli_query($conn, $sql98);
+                if($query98){
+                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                } else {
+                    echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
+                    print_r($IndustryList);
+                }
+            }
 
             // =============================================
             // LOOP TO INSERT CONTACT PERSON ON P.COMPANY
@@ -253,7 +265,8 @@
             header( "refresh: 5; url= portfolio-company.php" );
             exit;
         } else {
-            echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
+            //echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.
+            mysqli_error($conn).'<br/>';
         }
     }
 ?>
@@ -555,7 +568,7 @@
                                         while($rows = mysqli_fetch_assoc($result))
                                         {
                                     ?>
-                                        <tr>     
+                                        <tr data-href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">     
                                             <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
@@ -628,6 +641,13 @@
                     ImportFormReview.style.display ="none";
                  }
             };
+        </script>
+        <script>
+            $(document).ready(function(){
+                $(document.body).on("dblclick", "tr[data-href]", function (){
+                    window.location.href = this.dataset.href;
+                })
+            });
         </script>
     </body>
 </html>

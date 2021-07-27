@@ -133,87 +133,148 @@
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
-        $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
-        $InvestorName            = $_REQUEST['InvestorName'];
-        $FundName                = $_REQUEST['FundName'];
-        $Currency                = $_REQUEST['Currency'];
-        $Website                 = $_REQUEST['Website'];
-        $UserFullName            = $_REQUEST['UserFullName'];
-        $Details                 = $_REQUEST['Details'];
-        $YearFounded             = $_REQUEST['YearFounded'];
-        $Headquarters            = $_REQUEST['Headquarters'];
-        $Industry                = $_REQUEST['Industry'];
-        $Sector                  = $_REQUEST['Sector'];
+        $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_REQUEST['PortfolioCompanyName']);
+        $InvestorName            = mysqli_real_escape_string($conn, $_REQUEST['InvestorName']);
+        $FundName                = mysqli_real_escape_string($conn, $_REQUEST['FundName']);
+        $Currency                = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
+        $Website                 = mysqli_real_escape_string($conn, $_REQUEST['Website']);
+        $UserFullName            = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
+        $Details                 = mysqli_real_escape_string($conn,  $_REQUEST['Details']);
+        $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
+        $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
+        $Industry                = mysqli_real_escape_string($conn, $_REQUEST['Industry']);
+        $Sectors                 =  $_REQUEST['Sector'];
         // $Logo                    = $_FILES['img']['name'];
         // ,Logo='".$Logo."'
         // Company Logo Insert code
         // $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
-        $update="UPDATE PortfolioCompany SET ModifiedDate= NOW(),PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
-        mysqli_query($conn, $update) or die($conn->error);
-           
-        // LINK PORTFOLIO COMPANY TO INVESTOR
-        explode( ',', $InvestorName );
-        foreach($InvestorName as $InvestmentManager ){
-            $sql4 = "  INSERT INTO 
-                            InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
-                        VALUES 
-                            (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-            ";
-            $query4 = mysqli_query($conn, $sql4);
-
-            if($query4){
-                // DO NOTHING IF SUCCESSFULL
-            } else {
-                echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            } 
+        // $update="UPDATE PortfolioCompany SET ModifiedDate= NOW(),PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
+        // mysqli_query($conn, $update) or die($conn->error);
+        
+        $updates = array();
+        if(!empty($PortfolioCompanyName)){
+            $updates[] ='PortfolioCompanyName="'.$PortfolioCompanyName.'"';
         }
+        if(!empty($Currency)){
+            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency')";
+        }
+        if(!empty($Website)){
+            $updates[] ='Website="'.$Website.'"';
+        }
+        if(!empty($Details)){
+            $updates[] ='Details="'.$Details.'"';
+        }
+        if(!empty($YearFounded)){
+            $updates[] ='YearFounded="'.$YearFounded.'"';
+        }
+        if(!empty($Headquarters)){
+            $updates[] ="Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters')";
+        };
+        
+        $updateString = implode(', ', $updates);
+
+        $updateCompany = "UPDATE PortfolioCompany SET ModifiedDate= NOW(), $updateString WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
+        $resultUpdate = mysqli_query($conn, $updateCompany) or die($conn->error);
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND SECTOR ALREADY EXISTS
+        $msg = array();
+        // $SectorList = explode(",", $Sectors);
+        if(!empty($Sectors)){
+            foreach($Sectors AS $sector){
+                $prevQuery = "  SELECT 
+                                    SectorID 
+                                FROM 
+                                    PortfolioCompanySector
+                                WHERE 
+                                    PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    $msg[] =$sector;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE COMPANY ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM PortfolioCompanySector WHERE (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')";
+                    mysqli_query($conn, $deleteQuery);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE SECTOR, WE WILL THEN CREATE A NEW LINK BETWEEN THAT SECTOR AND THE COMPANY.
+                    $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+                                VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sector'))";
+                    $query99 = mysqli_query($conn, $sql99);
+
+                    // if($query99){
+                    //     echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                    // } else {
+                    //     echo 'Oops! There was an error inserting the sector ID of '.$sector.' from the array'.mysqli_error($conn).'<br/>';
+                    //     print_r($Sectors);
+                    // }
+                }
+            };
+        }
+        // print_r($msg);
+
+        // echo $updateString;
+        // print_r($updates);
+        // LINK PORTFOLIO COMPANY TO INVESTOR
+        // explode( ',', $InvestorName );
+        // foreach($InvestorName as $InvestmentManager ){
+        //     $sql4 = "  INSERT INTO 
+        //                     InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
+        //                 VALUES 
+        //                     (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+        //     ";
+        //     $query4 = mysqli_query($conn, $sql4);
+
+        //     if($query4){
+        //         // DO NOTHING IF SUCCESSFULL
+        //     } else {
+        //         echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        //     } 
+        // }
 
         // LINK PORTFOLIO COMPANY TO FUND
         // explode( ',', $FundName );
-        foreach($FundName as $Fund ){
-            $sql5 = "  INSERT INTO 
-                            FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
-                        VALUES 
-                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-            ";
-            $query5 = mysqli_query($conn, $sql5);
+        // foreach($FundName as $Fund ){
+        //     $sql5 = "  INSERT INTO 
+        //                     FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
+        //                 VALUES 
+        //                     (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
+        //     ";
+        //     $query5 = mysqli_query($conn, $sql5);
 
-            if($query5){
-                // DO NOTHING IF SUCCESSFULL
-            } else {
-                echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-        }
+        //     if($query5){
+        //         // DO NOTHING IF SUCCESSFULL
+        //     } else {
+        //         echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        //     }
+        // }
 
         // LINK PORTFOLIO COMPANY TO CONTACT
         // explode( ',', $UserFullName );
-        foreach($UserFullName as $Contact){
-            $sql6 = "  UPDATE 
-                            PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
-                            WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
+        // foreach($UserFullName as $Contact){
+        //     $sql6 = "  UPDATE 
+        //                     PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
+        //                     WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
                         
-            ";
-            $query6 = mysqli_query($conn, $sql6);
+        //     ";
+        //     $query6 = mysqli_query($conn, $sql6);
 
-            if($query6){
-                // DO NOTHING IF SUCCESSFULL
-            } else {
-                echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-        }
+        //     if($query6){
+        //         // DO NOTHING IF SUCCESSFULL
+        //     } else {
+        //         echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        //     }
+        // }
         // LINK PORTFOLIO COMPANY TO SECTORS
-        foreach($Sector AS $sects){
-            $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                        VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
-            $query99 = mysqli_query($conn, $sql99);
+        // foreach($Sector AS $sects){
+        //     $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+        //                 VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+        //     $query99 = mysqli_query($conn, $sql99);
 
-            if($query99){
-                // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-            } else {
-                echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
-            }
-        }
+        //     if($query99){
+        //         // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+        //     } else {
+        //         echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+        //     }
+        // }
 
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
@@ -270,7 +331,7 @@
                     <!-- Investor Dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                        <select class="form-select" id="InvestorName" name="InvestorName" required>
+                        <select class="form-select" id="InvestorName" name="InvestorName" >
                             <option value="<?php echo $row['InvestorName'];?>"> <?php echo $row['InvestorName'];?> </option>
                             <?php
                                 while ($row102 = mysqli_fetch_assoc($result102)) {
@@ -283,7 +344,7 @@
                     <!-- Fund dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="FundName" class="form-label">Fund(s)</label>
-                        <select class="form-select" id="FundName" name="FundName" required>
+                        <select class="form-select" id="FundName" name="FundName" >
                             <option value="<?php echo $row['FundName'];?>"> <?php echo $row['FundName'];?> </option>
                             <?php
                                 while ($row103 = mysqli_fetch_assoc($result103)) {
@@ -296,7 +357,7 @@
                     <!-- Currency Dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Currency" class="form-label">Currency</label>
-                        <select class="form-select" id="Currency" name="Currency" required>
+                        <select class="form-select" id="Currency" name="Currency" >
                             <option value="<?php echo $row['Currency'];?>"> <?php echo $row['Currency'];?> </option>
                             <?php
                                 while ($row100 = mysqli_fetch_assoc($result100)) {
@@ -313,7 +374,7 @@
                     <!-- userdetail dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="UserFullName" class="form-label">Contact(s)</label>
-                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                        <select class="form-select" id="UserFullName" name="UserFullName" >
                             <option value="<?php echo $row['UserFullName'];?>"> <?php echo $row['UserFullName'];?> </option>
                             <?php
                                 while ($row104 = mysqli_fetch_assoc($result104)) {
@@ -389,14 +450,14 @@
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="YearFounded" class="form-label">Year Founded</label>
-                        <select class="form-control" name="YearFounded" id="YearFounded"required>
+                        <select class="form-control" name="YearFounded" id="YearFounded">
                                 <option value=""> Select...</option>
                         </select>
                     </p>
                     <!-- Country dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Headquarters" class="form-label">Country</label>
-                        <select class="form-select" id="Headquarters" name="Headquarters" required>
+                        <select class="form-select" id="Headquarters" name="Headquarters" >
                             <option value="<?php echo $row['Country'];?>"> <?php echo $row['Country'];?> </option>
                             <?php
                                 while ($row101 = mysqli_fetch_assoc($result101)) {
@@ -411,8 +472,10 @@
                         <input type="file" class="form-control" id="img" name="img" >
                     </p>
                 </div>
-
-                <p><input name="submit" type="submit" value="Update" /></p>
+                <p>
+                    <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
+                    <a href="../tabs/portfolio-company.php" class="btn btn-danger" >Close</a>
+                </p> 
             </form>
             <?php } ?>
         </main>

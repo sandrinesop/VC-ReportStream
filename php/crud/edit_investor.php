@@ -287,7 +287,10 @@
                     <label for="img" class="form-label">Logo</label>
                     <input type="file" class="form-control" id="img" name="img" >
                 </p>
-                <p><input name="submit" type="submit" value="Update" /></p>
+                <p>
+                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
+                    <a href="../tabs/investor.php" class="btn btn-danger" >Close</a>
+                </p>
             </form>
             <?php } ?>
         </main>
