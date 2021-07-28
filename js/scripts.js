@@ -13,7 +13,7 @@ $(document).ready(function() {
             $("#Sector").append("<option value=\"Machine Learning\">Machine Learning</option>");
             $("#Sector").append("<option value=\"Natural Language Processing\">Natural Language Processing</option>");
             $("#Sector").append("<option value=\"Predictive Analytics\">Predictive Analytics</option>");
-        } else if (el.val() === "Clothing Apparel") {
+        } else if (el.val() === "Clothing and Apparel") {
             $('#Sector').find('option').remove().end().append('<option value="whatever">choose...</option>');
             $("#Sector").append("<option value=\"Fashion\">Fashion</option>");
             $("#Sector").append("<option value=\"Laundry and Dry-cleaning\">Laundry and Dry-cleaning</option>");

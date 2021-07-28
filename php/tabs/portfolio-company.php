@@ -372,7 +372,7 @@
                                                         <select id="Industry" name="Industry" class="form-select">
                                                             <option>choose...</option>
                                                             <option value="Artificial Intelligence">Artificial Intelligence</option>
-                                                            <option value="Clothing Apparel">Clothing Apparel</option>
+                                                            <option value="Clothing and Apparel">Clothing Apparel</option>
                                                             <option value="Administrative Services">Administrative Services</option>
                                                             <option value="Advertising">Advertising</option>
                                                             <option value="Agriculture and Farming">Agriculture and Farming</option>
@@ -602,11 +602,11 @@
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script src="../../DataTables/datatables.js"></script>
         <script src="../../js/scripts.js"></script>
         <script src="../../js/select2.min.js"></script>
         <script src="../../js/DateDropDown.js"></script>
         <script src="../../js/MultiSelect.js"></script>
-        <script src="../../DataTables/datatables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
                 var createWindow;

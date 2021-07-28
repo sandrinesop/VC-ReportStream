@@ -233,7 +233,7 @@
                             <select id="Industry" name="Industry" class="form-select">
                                 <option>choose...</option>
                                 <option value="Artificial Intelligence">Artificial Intelligence</option>
-                                <option value="Clothing Apparel">Clothing Apparel</option>
+                                <option value="Clothing and Apparel">Clothing and Apparel</option>
                                 <option value="Administrative Services">Administrative Services</option>
                                 <option value="Advertising">Advertising</option>
                                 <option value="Agriculture and Farming">Agriculture and Farming</option>
