@@ -142,8 +142,12 @@
         $Details                 = mysqli_real_escape_string($conn,  $_REQUEST['Details']);
         $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
         $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
-        $Industry                = mysqli_real_escape_string($conn, $_REQUEST['Industry']);
-        $Sectors                 =  $_REQUEST['Sector'];
+        if(isset($Sectors)){
+            $Sectors                 =  $_REQUEST['Sector'];
+        }else {
+            error_reporting(0);
+        }
+        $Industries              = mysqli_real_escape_string($conn, $_REQUEST['Industry']);
         // $Logo                    = $_FILES['img']['name'];
         // ,Logo='".$Logo."'
         // Company Logo Insert code
@@ -176,8 +180,10 @@
 
         $updateCompany = "UPDATE PortfolioCompany SET ModifiedDate= NOW(), $updateString WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
         $resultUpdate = mysqli_query($conn, $updateCompany) or die($conn->error);
+        // ===================================================================================
         // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND SECTOR ALREADY EXISTS
-        $msg = array();
+        // ===================================================================================
+        // $msg = array();
         // $SectorList = explode(",", $Sectors);
         if(!empty($Sectors)){
             foreach($Sectors AS $sector){
@@ -190,7 +196,7 @@
                         ";
                 $prevResult = mysqli_query($conn,$prevQuery);
                 if($prevResult->num_rows>0){
-                    $msg[] =$sector;
+                    // $msg[] =$sector;
                     // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE COMPANY ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
                     $deleteQuery = "DELETE FROM PortfolioCompanySector WHERE (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')";
                     mysqli_query($conn, $deleteQuery);
@@ -208,11 +214,45 @@
                     // }
                 }
             };
+        }else{
+            // IGNORE
         }
-        // print_r($msg);
+        // CREATE AN EMPTY ARRAY TO STORE INDUSTRIES FROM 
+        // $msg = array();
+        if(!empty($Industries)){
+            $IndustryList = explode(",", $Industries);
+            foreach($IndustryList AS $Industry){ 
+                // CHECK IF SELECTED INDUSTRY ALREADY EXISTS IN THE DB OR NOT 
+                $prevQuery = "  SELECT 
+                                    IndustryID 
+                                FROM 
+                                    PortfolioCompanyIndustry
+                                WHERE 
+                                    PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND IndustryID = (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // $msg[] = $Industry;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INDUSTRY AND THE COMPANY ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM PortfolioCompanyIndustry WHERE (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND IndustryID = (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')";
+                    mysqli_query($conn, $deleteQuery);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE INDUSTRY, WE WILL THEN CREATE A NEW LINK BETWEEN THAT INDUSTRY AND THE COMPANY.
+                    $sql98 = "   INSERT INTO 
+                                    PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+                    $query98 = mysqli_query($conn, $sql98);
+                    if($query98){
+                        // Do nothing
+                    } else {
+                        echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+            };
+        };
+        // echo 'the industries array is: '.print_r($msg);
 
-        // echo $updateString;
-        // print_r($updates);
         // LINK PORTFOLIO COMPANY TO INVESTOR
         // explode( ',', $InvestorName );
         // foreach($InvestorName as $InvestmentManager ){
