@@ -414,7 +414,7 @@
                                         while($rows = mysqli_fetch_assoc($result))
                                         {
                                     ?>
-                                    <tr>
+                                    <tr data-href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">
                                         <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
@@ -460,9 +460,14 @@
 
         </script>
         <script>
-            // Initializing the datatable plugin
             $(document).ready( function () {
+                // Initializing the datatable plugin
                 $('#table_Fund').DataTable();
+                
+                // Trigger the double tap to edit function
+                $(document.body).on("dblclick", "tr[data-href]", function (){
+                    window.location.href = this.dataset.href;
+                });
             });
         </script>
         <!-- Display and Hide the import form with a button click -->

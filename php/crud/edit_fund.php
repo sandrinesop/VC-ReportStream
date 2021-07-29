@@ -23,7 +23,7 @@
             LEFT JOIN 
                 PortfolioCompany 
             ON 
-            PortfolioCompany.PortfolioCompanyID = FundPortfolioCompany.PortfolioCompanyID
+                PortfolioCompany.PortfolioCompanyID = FundPortfolioCompany.PortfolioCompanyID
             --    JOINING FUNDPINVESTMENTSTAGE TO ACCESS LINKED INVESTMENTSTAGE
             LEFT JOIN 
                 FundInvestmentStage 
@@ -65,29 +65,184 @@
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
-    // $tempCurrency = $row['CurrencyID'];
-    // $sql3 = " Select Currency from Currency where CurrencyID = '$tempCurrency' ";
-    // $result3 = mysqli_query($conn, $sql3) or die($conn->error);
-    // $row3 = mysqli_fetch_assoc($result3);
+    // PULLING DATA INTO THE DROPDOWN ON THE EDIT/UPDATE SCREEN
+    $sql100 = " SELECT DISTINCT 
+                    Currency
+                FROM 
+                    Currency 
+                WHERE 
+                    Currency IS NOT NULL ORDER BY Currency ASC
+    ";
+    $result100 = mysqli_query($conn, $sql100);
+    // INVESTMENT STAGES
+    $sql101 = " SELECT DISTINCT 
+                    InvestmentStage
+                FROM 
+                    InvestmentStage 
+                WHERE 
+                    InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC
+    ";
+    $result101 = mysqli_query($conn, $sql101);
 
+    // ACCESSING INVESTOR TO POPULATE INVESTOR DROPDOWN
+    $sql102 = "  SELECT DISTINCT 
+                    InvestorName
+                FROM 
+                    Investor 
+                WHERE 
+                    InvestorName IS NOT NULL ORDER BY InvestorName ASC
+    ";
+    $result102 = mysqli_query($conn, $sql102);
+
+    // ACCESSING P.C TO POPULATE INVESTOR DROPDOWN
+    $sql103 = "  SELECT DISTINCT 
+                    PortfolioCompanyName
+                FROM 
+                    PortfolioCompany 
+                WHERE 
+                    PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
+    ";
+    $result103 = mysqli_query($conn, $sql103);
+    // ======================================================
+    // THE BEGINNING OF THE UPDATE FUND QUERY
+    // ======================================================
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
-        $FundName                   = $_REQUEST['FundName'];
-        $InvestorName               = $_REQUEST['InvestorName'];
-        $PortfolioCompanyName       = $_REQUEST['PortfolioCompanyName'];
-        $Currency                   = $_REQUEST['Currency'];
-        $CommittedCapital           = $_REQUEST['CommittedCapital'];
-        $MinimumInvestment          = $_REQUEST['MinimumInvestment'];
-        $MaximumInvestment          = $_REQUEST['MaximumInvestment'];
-
-        $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), CommittedCapitalOfFund='".$CommittedCapitalOfFund."', CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
-
-        mysqli_query($conn, $update) or die($conn->error);
+        // mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/fund.php'>View Updated Record</a>";
-        echo '<p style="color:#FF0000;">'.$status.'</p>';
+        echo '<p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12" style="color:#FF0000;">'.$status.'</p>';
         header( "refresh: 3;url= ../tabs/fund.php" );
+
+        $FundName                   = mysqli_real_escape_string($conn, $_REQUEST['FundName']);
+        $Currency                   = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
+        $CommittedCapital           = mysqli_real_escape_string($conn, $_REQUEST['CommittedCapital']);
+        $MinimumInvestment          = mysqli_real_escape_string($conn, $_REQUEST['MinimumInvestment']);
+        $MaximumInvestment          = mysqli_real_escape_string($conn, $_REQUEST['MaximumInvestment']);
+
+        if(isset($_REQUEST['InvestorName'])){ 
+            $Investors          = $_REQUEST['InvestorName'];
+        }else {
+            // error_reporting(0);
+        }
+
+        if(isset($_REQUEST['PortfolioCompanyName'])){ 
+            $Companies          = $_REQUEST['PortfolioCompanyName'];
+        }else {
+            // error_reporting(0);
+        }
+
+        // $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
+
+        //  BUILDING A DYNAMIC MYSQL UPDATE QUERY BY CREATING AN EMPTY ARRAY AND THEN SETTING CONDITIONAL STATEMENTS TO CHECK IF A VARIABLE IS NOT EMPTY FIRST, IF EMPTY DO NOTHING AND IF SET, THE APPEND IT TO THE ARRAY. THERE ON EXPLODE THE ARRAY TO CONVERT IT INOT A STRING THEN APPEND STRING TO THE UPDATE STATEMENT.
+        $updates = array();
+
+        if(!empty($FundName)){
+            $updates[] ='FundName="'.$FundName.'"';
+        }
+
+        if(!empty($Currency)){
+            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency')";
+        }
+
+        if(!empty($CommittedCapital)){
+            $updates[] ='CommittedCapital="'.$CommittedCapital.'"';
+        }
+        
+        if(!empty($MinimumInvestment)){
+            $updates[] ='MinimumInvestment="'.$MinimumInvestment.'"';
+        }
+
+        if(!empty($MaximumInvestment)){
+            $updates[] ='MaximumInvestment="'.$MaximumInvestment.'"';
+        }
+
+        $updateString = implode(', ', $updates);
+
+        $updateFund = "UPDATE Fund SET ModifiedDate= NOW(), $updateString WHERE FundID='".$FundID."'";
+        $resultUpdate = mysqli_query($conn, $updateFund) or die($conn->error);
+
+
+        // ===================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN FUND AND INVESTORS ALREADY EXISTS
+        // ===================================================================================
+        // $msg = array();
+        if(!empty($Investors)){
+            foreach($Investors AS $Investor){
+                $prevQuery = "  SELECT 
+                                    InvestorID 
+                                FROM 
+                                    FundInvestor
+                                WHERE 
+                                FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND InvestorID = (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor')
+                ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INVESTOR AND THE FUND ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM 
+                                        FundInvestor WHERE FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND InvestorID = (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor') 
+                    ";
+                    $resultDelete = mysqli_query($conn, $deleteQuery);
+                    if($resultDelete){
+                        // do nothing
+                    }else{
+                        echo'There was an error deleting this link: '.mysqli_error($conn);
+                    }
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE INVESTOR, WE WILL THEN CREATE A NEW LINK BETWEEN THAT INVESTOR AND THE COMPANY.
+                    $sql4 = "   INSERT INTO 
+                                    FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor'))
+                    ";
+                    $query4 = mysqli_query($conn, $sql4);
+                }
+            };
+        };
+
+        // ===================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN FUND AND COMPANIES ALREADY EXISTS
+        // ===================================================================================
+        if(!empty($Companies)){
+            foreach($Companies AS $PortfolioCompany){
+                $prevQuery = "  SELECT 
+                                    PortfolioCompanyID 
+                                FROM 
+                                    FundPortfolioCompany
+                                WHERE 
+                                    FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany  where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompany')
+                ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INVESTOR AND THE FUND ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM 
+                                        FundPortfolioCompany WHERE FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany  where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompany')
+                    ";
+                    $resultDelete = mysqli_query($conn, $deleteQuery);
+                    if($resultDelete){
+                        // do nothing
+                    }else{
+                        echo'There was an error deleting this link: '.mysqli_error($conn);
+                    }
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
+                    $sql5 = "   INSERT INTO 
+                                    FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany  where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompany'))
+                    ";
+                    echo $sql5;
+                    $query5 = mysqli_query($conn, $sql5);
+
+                    if($query5){
+                        // do nothing
+                    }else{
+                        echo'There was an error creating this link: '.$PortfolioCompany.mysqli_error($conn);
+                    }
+                }
+            };
+        }
     }else {
 ?>
 <!DOCTYPE html>
@@ -99,6 +254,9 @@
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>Update Record </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="../../css/select2.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
     </head>
     <body>
@@ -126,48 +284,78 @@
         </nav>
         <main  class="my-5 ">
             <form name="form" method="post" action="" class="form container">
-                <input type="hidden" name="new" value="1" />
-                <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['FundID'];?>"/>
-                <p>
-                    <label for="Website" class="form-label"> Fund Name </label>
-                    <input class="form-control col" type="text" name="FundName" placeholder="Enter FundName"  value="<?php echo $row['FundName'];?>" />
-                </p>
-                <p>
-                    <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                    <input class="form-control col" type="text" name="InvestorName" placeholder="Enter InvestorName"  value="<?php echo $row['InvestorName'];?>" />
-                </p>
-                <p>
-                    <label for="PortfolioCompanyName" class="form-label">Portfolio Company List</label>
-                    <input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Enter PortfolioCompanyName"  value="<?php echo $row['PortfolioCompanyName'];?>"/>
-                </p>
-                <p>
-                    <label for="Currency" class="form-label">currency</label>
-                    <input class="form-control col" type="text" name="Currency" placeholder="Enter Currency" value="<?php echo $row['Currency'];?>"/>
-                </p>
-                <p>
-                    <label for="CommittedCapital" class="form-label">Committed Capital</label>
-                    <input class="form-control col" type="text" name="CommittedCapital" placeholder="Enter CommittedCapital" value="<?php echo $row['CommittedCapital'];?>"/>
-                </p>
-                <p>
-                    <label for="MinimumInvestment" class="form-label">Minimum Investment</label>
-                    <input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>"/>
-                </p>
-                <p>
-                    <label for="MaximumInvestment" class="form-label">Maximum Investment</label>
-                    <input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>"/>
-                </p>
-                <p>
-                    <label for="InvestmentStage" class="form-label">Investment Stage</label>
-                    <input class="form-control col" type="text" name="InvestmentStage" placeholder="Enter InvestmentStage"  value="<?php echo $row['InvestmentStage'];?>" />
-                </p>
-                <p>
-                    <label for="Industry" class="form-label">Industry</label>
-                    <input class="form-control col" type="text" name="Industry" placeholder="Enter Industry"  value="<?php echo $row['Industry'];?>" />
-                </p>
-                <p>
-                    <label for="Note" class="form-label">Note</label>
-                    <input class="form-control col" type="text" name="Note" placeholder="Enter Note"  value="<?php echo $row['Note'];?>" />
-                </p>
+                <div class="row">
+                    <input type="hidden" name="new" value="1" />
+                    <input name="FundID" type="hidden" value="<?php echo $row['FundID'];?>"/>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="Website" class="form-label"> Fund Name </label>
+                        <input class="form-control col" type="text" name="FundName" placeholder="Enter FundName"  value="<?php echo $row['FundName'];?>" />
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="InvestorName" class="form-label">Investment Manager(s)</label>
+                        <select  class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" >
+                            <option value="<?php echo $row['InvestorName'];?>"> <?php echo $row['InvestorName'];?> </option>
+                            <?php
+                                while ($row102 = mysqli_fetch_assoc($result102)) {
+                                    # code...
+                                    echo "<option>".$row102['InvestorName']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="PortfolioCompanyName" class="form-label">Portfolio Company List</label>
+                        <select class="form-control PortfolioCompanyName" name="PortfolioCompanyName[]" multiple="true" id="PortfolioCompanyName">
+                            <option value="<?php echo $row['PortfolioCompanyName'];?>"> <?php echo $row['PortfolioCompanyName'];?> </option>
+                            <?php
+                                while ($row103 = mysqli_fetch_assoc($result103)) {
+                                    # code...
+                                    echo "<option>".$row103['PortfolioCompanyName']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="Currency" class="form-label">currency</label>
+                        <select class="form-select" id="Currency" name="Currency" >
+                            <option value="<?php echo $row['Currency'];?>"> <?php echo $row['Currency'];?> </option>
+                            <?php
+                                while ($row100 = mysqli_fetch_assoc($result100)) {
+                                    # code...
+                                    echo "<option>".$row100['Currency']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="CommittedCapital" class="form-label">Committed Capital</label>
+                        <input class="form-control col" type="text" name="CommittedCapital" placeholder="Enter CommittedCapital" value="<?php echo $row['CommittedCapital'];?>"/>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="MinimumInvestment" class="form-label">Minimum Investment</label>
+                        <input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>"/>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="MaximumInvestment" class="form-label">Maximum Investment</label>
+                        <input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>"/>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <label for="InvestmentStage" class="form-label">Investment Stage</label>
+                        <select class="form-select InvestmentStage" id="InvestmentStage" name="InvestmentStage[]" multiple="true" >
+                            <option value="<?php echo $row['InvestmentStage'];?>"> <?php echo $row['InvestmentStage'];?> </option>
+                            <?php
+                                while ($row101 = mysqli_fetch_assoc($result101)) {
+                                    # code...
+                                    echo "<option>".$row101['InvestmentStage']."</option>";
+                                }
+                            ?>
+                        </select>
+                    </p>
+                    <p class="mb-3 ">
+                        <label for="Note" class="form-label">Note</label>
+                        <textarea class="form-control col" type="text" name="Note" placeholder="Enter Note"> <?php echo $row['Note'];?></textarea>
+                    </p>
+                </div>
                 <p>
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
                     <a href="../tabs/fund.php" class="btn btn-danger" >Close</a>
@@ -175,5 +363,13 @@
             </form>
             <?php } ?>
         </main>
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script src="../../js/scripts.js"></script>
+        <script src="../../js/select2.min.js"></script>
+        <script src="../../js/MultiSelect.js"></script>
+        <script src="../../js/DateDropDown.js"></script>
     </body>
 </html>

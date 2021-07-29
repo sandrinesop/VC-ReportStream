@@ -124,6 +124,12 @@
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
+        // HEADERS ARE SENT BEFORE ANYTHING ELSE OTHERWISE THEY WON'T WORK
+        $status = "Record Updated Successfully. </br></br>
+        <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
+        echo '<p style="color:#FF0000;">'.$status.'</p>';
+        header( "refresh: 5;url= ../tabs/portfolio-company.php" );
+
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_REQUEST['PortfolioCompanyName']);
         $Currency                = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
         $Website                 = mysqli_real_escape_string($conn, $_REQUEST['Website']);
@@ -132,35 +138,39 @@
         $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
         $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
   
+        $logo = $_FILES['img']['name'];
+        if($_FILES['img']['size']>0):
+            // echo'file uploaded' .$logo;
+            $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+        else:
+            // echo 'Image not set';
+        endif;
+        
+
         if(isset($_REQUEST['InvestorName'])){ 
             $Investors          = $_REQUEST['InvestorName'];
         }else {
-            error_reporting(0);
+            // error_reporting(0);
         }
 
         if(isset($_REQUEST['FundName'])){ 
             $Funds                   = $_REQUEST['FundName'];
         }else {
-            error_reporting(0);
+            // error_reporting(0);
         }
 
         if(isset($_REQUEST['Industry'])){ 
             $Industries              = mysqli_real_escape_string($conn, $_REQUEST['Industry']);
         }else {
-            error_reporting(0);
+            // error_reporting(0);
         }
         
         if(isset($_REQUEST['Sector'])){ 
             $Sectors                 =  $_REQUEST['Sector'];
         }else {
-            error_reporting(0);
+            // error_reporting(0);
         }
-
-        if(isset($_FILES['img']['name'])){
-            $logo = mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
-        }
-
-        // BUILD A QUERY TO UPDATE THE RECORDS WITH ONLY VARIABLES THAT HAVE BEEN SET.
+        //  BUILDING A DYNAMIC MYSQL UPDATE QUERY BY CREATING AN EMPTY ARRAY AND THEN SETTING CONDITIONAL STATEMENTS TO CHECK IF A VARIABLE IS NOT EMPTY FIRST, IF EMPTY DO NOTHING AND IF SET, THE APPEND IT TO THE ARRAY. THERE ON EXPLODE THE ARRAY TO CONVERT IT INOT A STRING THEN APPEND STRING TO THE UPDATE STATEMENT.
         $updates = array();
         if(!empty($PortfolioCompanyName)){
             $updates[] ='PortfolioCompanyName="'.$PortfolioCompanyName.'"';
@@ -181,7 +191,6 @@
             $updates[] ="Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters')";
         };
 
-        
         if(!empty($logo)){
             $updates[] ='Logo="'.$logo.'"';
         };
@@ -191,7 +200,7 @@
         $updateCompany = "UPDATE PortfolioCompany SET ModifiedDate= NOW(), $updateString WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
         $resultUpdate = mysqli_query($conn, $updateCompany) or die($conn->error);
         // ===================================================================================
-        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND SECTOR ALREADY EXISTS
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND INVESTORS ALREADY EXISTS
         // ===================================================================================
         // $msg = array();
         if(!empty($Investors)){
@@ -292,8 +301,11 @@
         }else{
             // Do nothing
         }
-        // CREATE AN EMPTY ARRAY TO STORE INDUSTRIES FROM 
-        $msg = array();
+        // =======================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND INDUSTRIES ALREADY EXISTS
+        // =======================================================================================
+        // CREATE AN EMPTY ARRAY TO STORE INDUSTRIES 
+        // $msg = array();
         if(!empty($Industries)){
             $IndustryList = explode(",", $Industries);
             foreach($IndustryList AS $Industry){ 
@@ -327,76 +339,24 @@
             };
         };
         // echo 'the industries array is: '.print_r($msg);
+        /* 
+            LINK PORTFOLIO COMPANY TO CONTACT
+            explode( ',', $UserFullName );
+            foreach($UserFullName as $Contact){
+                $sql6 = "  UPDATE 
+                                PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
+                                WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
+                            
+                ";
+                $query6 = mysqli_query($conn, $sql6);
 
-        // echo $updateString;
-        // print_r($updates);
-        // LINK PORTFOLIO COMPANY TO INVESTOR
-        // explode( ',', $InvestorName );
-        // foreach($InvestorName as $InvestmentManager ){
-        //     $sql4 = "  INSERT INTO 
-        //                     InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
-        //                 VALUES 
-        //                     (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-        //     ";
-        //     $query4 = mysqli_query($conn, $sql4);
-
-        //     if($query4){
-        //         // DO NOTHING IF SUCCESSFULL
-        //     } else {
-        //         echo 'Oops! There was an error Updating link of Company to Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        //     } 
-        // }
-
-        // LINK PORTFOLIO COMPANY TO FUND
-        // explode( ',', $FundName );
-        // foreach($FundName as $Fund ){
-        //     $sql5 = "  INSERT INTO 
-        //                     FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,FundID, PortfolioCompanyID)
-        //                 VALUES 
-        //                     (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))
-        //     ";
-        //     $query5 = mysqli_query($conn, $sql5);
-
-        //     if($query5){
-        //         // DO NOTHING IF SUCCESSFULL
-        //     } else {
-        //         echo 'Oops! There was an error Updating link of Company to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        //     }
-        // }
-
-        // LINK PORTFOLIO COMPANY TO CONTACT
-        // explode( ',', $UserFullName );
-        // foreach($UserFullName as $Contact){
-        //     $sql6 = "  UPDATE 
-        //                     PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
-        //                     WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
-                        
-        //     ";
-        //     $query6 = mysqli_query($conn, $sql6);
-
-        //     if($query6){
-        //         // DO NOTHING IF SUCCESSFULL
-        //     } else {
-        //         echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        //     }
-        // }
-        // LINK PORTFOLIO COMPANY TO SECTORS
-        // foreach($Sector AS $sects){
-        //     $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-        //                 VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
-        //     $query99 = mysqli_query($conn, $sql99);
-
-        //     if($query99){
-        //         // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-        //     } else {
-        //         echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
-        //     }
-        // }
-
-        $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
-        echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 5;url= ../tabs/portfolio-company.php" );
+                if($query6){
+                    DO NOTHING IF SUCCESSFULL
+                } else {
+                    echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                }
+            }
+        */
     }else {
 ?>
 <!DOCTYPE html>

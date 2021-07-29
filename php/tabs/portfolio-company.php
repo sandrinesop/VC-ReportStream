@@ -628,8 +628,14 @@
                 };
         </script>
         <script>
-            $(document).ready( function () {    // Initializing the datatable plugin
+            $(document).ready( function () {    
+                // Initializing the datatable plugin
                 $('#table_PortfolioCompany').DataTable();
+                
+                // Trigger the double tap to edit function
+                $(document.body).on("dblclick", "tr[data-href]", function (){
+                    window.location.href = this.dataset.href;
+                })
             } );
         </script>
         <script>
@@ -641,13 +647,6 @@
                     ImportFormReview.style.display ="none";
                  }
             };
-        </script>
-        <script>
-            $(document).ready(function(){
-                $(document.body).on("dblclick", "tr[data-href]", function (){
-                    window.location.href = this.dataset.href;
-                })
-            });
         </script>
     </body>
 </html>
