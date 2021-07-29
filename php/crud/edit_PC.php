@@ -75,14 +75,6 @@
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
-    /* 
-        $tempHeadquarter = $row['Headquarters'];
-        $sql2 = " Select Country from Country where CountryID = '$tempHeadquarter' ";
-        $result2 = mysqli_query($conn, $sql2) or die($conn->error);
-        $row2 = mysqli_fetch_assoc($result2);
-        echo 'Headquaters =>'.$row2['Country'];
-        $country = $row2['Country'];
-    */
     // PULLING DATA INTO THE DROPDOWN ON THE EDIT/UPDATE SCREEN
     $sql100 = " SELECT DISTINCT 
                     Currency
@@ -129,7 +121,6 @@
                     UserFullName IS NOT NULL ORDER BY UserFullName ASC";
     $result104 = mysqli_query($conn, $sql104); 
 
-
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
@@ -140,7 +131,7 @@
         $Details                 = mysqli_real_escape_string($conn,  $_REQUEST['Details']);
         $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
         $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
-
+  
         if(isset($_REQUEST['InvestorName'])){ 
             $Investors          = $_REQUEST['InvestorName'];
         }else {
@@ -164,14 +155,12 @@
         }else {
             error_reporting(0);
         }
-        // $Logo                    = $_FILES['img']['name'];
-        // ,Logo='".$Logo."'
-        // Company Logo Insert code
-        // $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
-        // $update="UPDATE PortfolioCompany SET ModifiedDate= NOW(),PortfolioCompanyName='".$PortfolioCompanyName."', CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency' ), Website='".$Website."', Details='".$Details."', YearFounded='".$YearFounded."', Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters') WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
-        // mysqli_query($conn, $update) or die($conn->error);
-        
+        if(isset($_FILES['img']['name'])){
+            $logo = mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+        }
+
+        // BUILD A QUERY TO UPDATE THE RECORDS WITH ONLY VARIABLES THAT HAVE BEEN SET.
         $updates = array();
         if(!empty($PortfolioCompanyName)){
             $updates[] ='PortfolioCompanyName="'.$PortfolioCompanyName.'"';
@@ -191,7 +180,12 @@
         if(!empty($Headquarters)){
             $updates[] ="Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters')";
         };
+
         
+        if(!empty($logo)){
+            $updates[] ='Logo="'.$logo.'"';
+        };
+
         $updateString = implode(', ', $updates);
 
         $updateCompany = "UPDATE PortfolioCompany SET ModifiedDate= NOW(), $updateString WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
@@ -443,7 +437,7 @@
             </div>
         </nav>
         <main  class="my-5 ">
-            <form name="form" method="post" action="" class="form container"> 
+            <form name="form" method="POST" enctype="multipart/form-data" action="" class="form container"> 
                 <div class="row">
                     <input type="hidden" name="new" value="1" />
                     <input name="PortfolioCompanyID" type="hidden" value="<?php echo $row['PortfolioCompanyID'];?>" />
