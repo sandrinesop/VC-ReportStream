@@ -132,6 +132,11 @@
         }else {
             // error_reporting(0);
         }
+        if(isset($_REQUEST['InvestmentStage'])){ 
+        $InvestmentStages           = $_REQUEST['InvestmentStage'];
+        }else {
+            // error_reporting(0);
+        }
 
         // $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
 
@@ -243,6 +248,49 @@
                 }
             };
         }
+
+        // ===================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN FUND AND COMPANIES ALREADY EXISTS
+        // ===================================================================================
+        if(!empty($InvestmentStages)){
+            foreach($InvestmentStages AS $InvestmentStage){
+                $prevQuery = "  SELECT 
+                                    InvestmentStageID 
+                                FROM 
+                                    FundInvestmentStage
+                                WHERE 
+                                    FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND InvestmentStageID = (select InvestmentStage.InvestmentStageID FROM InvestmentStage  where InvestmentStage.InvestmentStage = '$InvestmentStage')
+                ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INVESTOR AND THE FUND ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM 
+                                        FundInvestmentStage WHERE FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$FundName') AND InvestmentStageID = (select InvestmentStage.InvestmentStageID FROM InvestmentStage  where InvestmentStage.InvestmentStage = '$InvestmentStage')
+                    ";
+                    $resultDelete = mysqli_query($conn, $deleteQuery);
+                    if($resultDelete){
+                        // do nothing
+                    }else{
+                        echo'There was an error deleting this link: '.mysqli_error($conn);
+                    }
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
+                    $sql6 = "   INSERT INTO 
+                                    FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$InvestmentStage'))
+                    ";
+                    $query6 = mysqli_query($conn, $sql6);
+
+                    if($query6){
+                        // do nothing
+                    }else{
+                        echo'There was an error creating this link: '.mysqli_error($conn);
+                    }
+                }
+            };
+        }
+
     }else {
 ?>
 <!DOCTYPE html>
