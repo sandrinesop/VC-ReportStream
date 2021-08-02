@@ -573,7 +573,7 @@
                                         while(($rowAA = mysqli_fetch_assoc($resultAA)))
                                         {
                                     ?>
-                                    <tr>
+                                    <tr data-href="../crud/edit_deals.php?DealsID=<?php echo $rowAA['DealsID'];?>">
                                         <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
                                         <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
@@ -629,9 +629,15 @@
             }
         </script>
         <script>
-            $(document).ready( function () {    // Initializing the datatable plugin
+            $(document).ready( function () {    
+                // Initializing the datatable plugin
                 $('#table_Deals').DataTable();
-            } );
+
+                // Trigger the double tap to edit function
+                $(document.body).on("dblclick", "tr[data-href]", function (){
+                    window.location.href = this.dataset.href;
+                })
+            });
         </script>
     </body>
 </html>
