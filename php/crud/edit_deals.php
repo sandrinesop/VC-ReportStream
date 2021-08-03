@@ -3,80 +3,84 @@
     // QUERY DATABASE FROM DATA
     $DealsID =$_REQUEST['DealsID'];
     $sql=" SELECT DISTINCT
-            Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
-                FROM 
-                    deals 
-                -- Include investor table data through the linking table dealsinvestor
-                LEFT JOIN
-                    DealsInvestor
-                ON 
-                    DealsInvestor.DealsID = Deals.DealsID
-                -- Include Investor table data
-                LEFT JOIN
-                    Investor
-                ON
-                    Investor.InvestorID = DealsInvestor.InvestorID
-                -- Include fund table data through the linking table dealsfund
-                LEFT JOIN
-                    DealsFund
-                ON 
-                    DealsFund.DealsID = Deals.DealsID 
-                -- include Fund table data
-                LEFT JOIN
-                    Fund
-                ON
-                    Fund.FundID = DealsFund.FundID 
-                -- Include News table data 
-                LEFT JOIN 
-                    News 
-                ON
-                    News.NewsID = deals.NewsID 
-                LEFT JOIN 
-                -- Include PortfoliCompany table data
-                    PortfolioCompany
-                ON
-                    PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
-                LEFT JOIN 
-                -- Link investment stage to fund
-                    FundInvestmentStage      
-                ON          
-                    FundInvestmentStage.FundID = Fund.FundID 
-                LEFT JOIN
-                    InvestmentStage
-                ON
-                    InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
-                LEFT JOIN 
-                    PortfolioCompanyCountry
-                ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
-                LEFT JOIN 
-                    Country
-                ON 
-                    Country.CountryID = PortfolioCompanyCountry.CountryID
-                LEFT JOIN 
-                    Industry
-                ON 
-                    Industry.IndustryID = deals.IndustryID
-                LEFT JOIN 
-                    DealsSector
-                ON 
-                    DealsSector.DealsID = Deals.DealsID
-                LEFT JOIN 
-                    Sector
-                ON 
-                    Sector.SectorID = DealsSector.SectorID
-                LEFT JOIN 
-                    UserDetail
-                ON 
-                    UserDetail.UserDetailID = Deals.UserDetailID
-                LEFT JOIN 
-                    RoleType
-                ON 
-                    RoleType.RoleTypeID = UserDetail.RoleTypeID
-                WHERE 
-                    Deals.Deleted = 0
-                GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate
+                Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+            FROM 
+                Deals 
+            -- Include investor table data through the linking table dealsinvestor
+            LEFT JOIN
+                DealsInvestor
+            ON 
+                DealsInvestor.DealsID = Deals.DealsID
+            -- Include Investor table data
+            LEFT JOIN
+                Investor
+            ON
+                Investor.InvestorID = DealsInvestor.InvestorID
+            -- Include fund table data through the linking table dealsfund
+            LEFT JOIN
+                DealsFund
+            ON 
+                DealsFund.DealsID = Deals.DealsID 
+            -- include Fund table data
+            LEFT JOIN
+                Fund
+            ON
+                Fund.FundID = DealsFund.FundID 
+            -- Include News table data 
+            LEFT JOIN 
+                News 
+            ON
+                News.NewsID = deals.NewsID 
+            LEFT JOIN 
+            -- Include PortfoliCompany table data
+                PortfolioCompany
+            ON
+                PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
+            LEFT JOIN 
+            -- Link investment stage to fund
+                FundInvestmentStage      
+            ON          
+                FundInvestmentStage.FundID = Fund.FundID 
+            LEFT JOIN
+                InvestmentStage
+            ON
+                InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
+            LEFT JOIN 
+                PortfolioCompanyCountry
+            ON
+                PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
+            LEFT JOIN 
+                Country
+            ON 
+                Country.CountryID = PortfolioCompanyCountry.CountryID
+            LEFT JOIN 
+                DealsIndustry
+            ON 
+                DealsIndustry.DealsID = deals.DealsID
+            LEFT JOIN 
+                Industry
+            ON 
+                Industry.IndustryID = DealsIndustry.IndustryID
+            LEFT JOIN 
+                DealsSector
+            ON 
+                DealsSector.DealsID = Deals.DealsID
+            LEFT JOIN 
+                Sector
+            ON 
+                Sector.SectorID = DealsSector.SectorID
+            LEFT JOIN 
+                UserDetail
+            ON 
+                UserDetail.UserDetailID = Deals.UserDetailID
+            LEFT JOIN 
+                RoleType
+            ON 
+                RoleType.RoleTypeID = UserDetail.RoleTypeID
+            WHERE 
+                Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
+            GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+            ORDER BY  news.NewsDate
     "; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
@@ -221,6 +225,269 @@
                     InvestmentStage
                 WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
     $resultB1 = mysqli_query($conn, $sqlB1);
+    // THE CODE SKELETON FOR EDITING AND UPDATING DEALS
+    if(isset($_POST['new']) && $_POST['new']==1)
+    {
+        // HEADERS ARE SENT BEFORE ANYTHING ELSE OTHERWISE THEY WON'T WORK
+        $status = "Record Updated Successfully. </br></br>
+        <a href='../tabs/NewDeals.php'>View Updated Record</a>";
+        echo '<p style="color:#FF0000;">'.$status.'</p>';
+        header( "refresh: 5;url= ../tabs/NewDeals.php" );
+
+        /*
+            // -------------------------------------------------------------------------//
+            //                           UPDATE THE NEWS TABLE                          //
+            // -------------------------------------------------------------------------//
+        */ 
+        if(isset($_REQUEST['NewsDate'])){ 
+            $NewsDate       = date('Y-m-d', strtotime($_REQUEST['NewsDate']));
+        }else {
+            // error_reporting(0);
+        }   
+
+        if(isset($_REQUEST['NewsURL'])){ 
+            $NewsURL        = mysqli_real_escape_string($conn, $_REQUEST['NewsURL']);
+        }else {
+            // error_reporting(0);
+        }
+        // Build a dynamic query to update news table
+        $updateNews = array();
+
+        if(!empty($NewsDate)){
+            $updateNews[] ='NewsDate="'.$NewsDate.'"';
+        }
+
+        if(!empty($NewsURL)){
+            $updateNews[] ='NewsURL="'.$NewsURL.'"';
+        }
+        // CONVERT THE NEWS ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
+        $updateNewsString = implode(', ', $updateNews);
+        // THE NEWS UPDATE QUERY
+        $updateNewsQuery = "UPDATE News SET ModifiedDate= NOW(), $updateNewsString WHERE NewsID=(select distinct Deals.NewsID FROM Deals where Deals.DealsID = '$DealsID')";
+        $resultNewsUpdate = mysqli_query($conn, $updateNewsQuery) or die($conn->error);
+
+        if($resultNewsUpdate){
+            // echo 'Success!';
+        }else{
+            echo 'Error Updating the Deal Date or Link: '.mysqli_error($conn);
+        }
+        /*
+            // -------------------------------------------------------------------------//
+            //                            UPDATE THE DEALS TABLE                        //
+            // -------------------------------------------------------------------------//
+        */
+        if(isset($_REQUEST['PortfolioCompanyName'])){ 
+            $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
+        }else {
+            // error_reporting(0);
+        }
+
+        if(isset($_REQUEST['Stake'])){ 
+            $Stake               = mysqli_real_escape_string($conn, $_REQUEST['Stake']);
+        }else {
+            // error_reporting(0);
+        }
+
+        if(isset($_REQUEST['InvestmentValue'])){ 
+            $InvestmentValue     = mysqli_real_escape_string($conn, $_REQUEST['InvestmentValue']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_REQUEST['UserFullName'])){ 
+            $StartUpContact     = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
+        }else {
+            // error_reporting(0);
+        }
+
+        // Build the dynamic query
+        $updateDeal = array();
+
+        if(!empty($PortfolioCompanyName)){
+            $updateDeal[] ="PortfolioCompanyID= (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName')";
+        }
+
+        if(!empty($Stake)){
+            $updateDeal[] ='stake="'.$Stake.'"';
+        }
+
+        if(!empty($InvestmentValue)){
+            $updateDeal[] ='InvestmentValue="'.$InvestmentValue.'"';
+        }
+        
+        if(!empty($StartUpContact)){
+            $updateDeal[] ="UserDetailID= (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact')";
+        }
+        print_r($updateDeal);
+        // CONVERT THE NEWS ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
+        $updateDealString = implode(', ', $updateDeal);
+        // THE NEWS UPDATE QUERY
+        $updateDealsQuery = "UPDATE Deals SET ModifiedDate= NOW(), $updateDealString WHERE DealsID = '".$DealsID."'";
+        $resultDealsUpdate = mysqli_query($conn, $updateDealsQuery);
+
+        if($resultDealsUpdate){
+            // echo 'Success!';
+        }else{
+            echo 'Error Updating the Deal: '.mysqli_error($conn);
+        }
+        // $NewsNote       = mysqli_real_escape_string($conn, $_REQUEST['NewsNote']);
+
+        if(isset($_REQUEST['InvestorName'])){ 
+            $Investors          = $_REQUEST['InvestorName'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_REQUEST['FundName'])){ 
+            $Funds                   = $_REQUEST['FundName'];
+        }else {
+            // error_reporting(0);
+        }
+
+        if(isset($_REQUEST['Industry'])){ 
+            $Industries              =  $_REQUEST['Industry'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_REQUEST['Sector'])){ 
+            $Sectors                 =  $_REQUEST['Sector'];
+        }else {
+            // error_reporting(0);
+        }
+        /*  
+            ==============================================================================
+                UPDATE LINKINGS BETWEEN DEALS AND INSETORS, FUNDS, INDUSTRY AND SECTOR
+            ==============================================================================
+        */
+        if(!empty($Investors)){
+            foreach($Investors AS $Investor){
+                $prevQuery = "  SELECT 
+                                    InvestorID 
+                                FROM 
+                                    DealsInvestor
+                                WHERE 
+                                    DealsID = '$DealsID' AND InvestorID = (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // $msg[] =$sector;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INVESTOR AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM DealsInvestor WHERE DealsID = '$DealsID' AND InvestorID = (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor')   ";
+                    $resultDelete = mysqli_query($conn, $deleteQuery);
+                    if($resultDelete){
+                        // do nothing
+                    }else{
+                        echo'There is an error here '.mysqli_error($conn);
+                    }
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A DEAL AND THE INVESTOR, WE WILL THEN CREATE A NEW LINK BETWEEN THAT INVESTOR AND THE DEAL.
+                    $sql4 = "   INSERT IGNORE INTO 
+                                    DealsInvestor(DealsInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, InvestorID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, '$DealsID', (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor'))
+                    ";
+                    $query4 = mysqli_query($conn, $sql4);
+                }
+            };
+        }
+        // ===================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND FUND ALREADY EXISTS
+        // ===================================================================================
+        // $msg = array();
+        if(!empty($Funds)){
+            foreach($Funds AS $Fund){
+                $prevQuery1 = "  SELECT 
+                                    FundID 
+                                FROM 
+                                    DealsFund
+                                WHERE 
+                                    DealsID = '$DealsID' AND FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$Fund')
+                ";
+                $prevResult1 = mysqli_query($conn,$prevQuery1);
+                if($prevResult1 !== false && $prevResult1-> num_rows>0){
+                    // $msg[] =$Fund;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE COMPANY ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery1 = "DELETE FROM DealsFund WHERE DealsID = '$DealsID' AND FundID = (select Fund.FundID FROM Fund where Fund.FundName = '$Fund')";
+                    mysqli_query($conn, $deleteQuery1);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
+                    $sql105 = "     INSERT IGNORE INTO 
+                                        DealsFund(DealsFundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, FundID)
+                                    VALUES 
+                                        (uuid(), now(), now(), 0, NULL, '$DealsID', (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'))";
+                    $query105 = mysqli_query($conn, $sql105);
+                }
+            };
+        };
+        // ===================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEAL AND SECTOR ALREADY EXISTS
+        // ===================================================================================
+        // $msg = array();
+        // $SectorList = explode(",", $Sectors);
+        if(!empty($Sectors)){
+            foreach($Sectors AS $sector){
+                $prevQuery = "  SELECT 
+                                    SectorID 
+                                FROM 
+                                    DealsSector
+                                WHERE 
+                                    DealsID = '$DealsID' AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // $msg[] =$sector;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM DealsSector WHERE DealsID = '$DealsID' AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')";
+                    mysqli_query($conn, $deleteQuery);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A DEAL AND THE SECTOR, WE WILL THEN CREATE A NEW LINK BETWEEN THAT SECTOR AND THE DEAL.
+                    $sql99 = "  INSERT IGNORE INTO DealsSector(DealsSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, SectorID)
+                                VALUES (uuid(), now(), now(), 0, NULL,'$DealsID', (select S.SectorID FROM sector S where S.Sector = '$sector'))";
+                    $query99 = mysqli_query($conn, $sql99);
+                }
+            };
+        }else{
+            // Do nothing
+        }
+        // =======================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEAL AND INDUSTRIES ALREADY EXISTS
+        // =======================================================================================
+        // CREATE AN EMPTY ARRAY TO STORE INDUSTRIES 
+        // $msg = array();
+        if(!empty($Industries)){
+            $IndustryList = explode(",", $Industries);
+            foreach($IndustryList AS $Industry){ 
+                // CHECK IF SELECTED INDUSTRY ALREADY EXISTS IN THE DB OR NOT 
+                $prevQuery = "  SELECT 
+                                    IndustryID 
+                                FROM 
+                                    DealsIndustry
+                                WHERE 
+                                    DealsID = '$DealsID' AND IndustryID = (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // $msg[] = $Industry;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INDUSTRY AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM DealsIndustry WHERE DealsID = '$DealsID'  AND IndustryID = (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')";
+                    mysqli_query($conn, $deleteQuery);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A DEAL AND THE INDUSTRY, WE WILL THEN CREATE A NEW LINK BETWEEN THAT INDUSTRY AND THE DEAL.
+                    $sql98 = "   INSERT IGNORE INTO 
+                                    DealsIndustry(DealsIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, IndustryID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL,'$DealsID', (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+                    $query98 = mysqli_query($conn, $sql98);
+                    if($query98){
+                        // Do nothing
+                    } else {
+                        echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+            };
+        };
+        
+    }else {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -260,12 +527,10 @@
             </div>
         </nav>
         <main  class="my-5 ">
-            <form class="container" action="../App/DealLink.php" method="POST" enctype="multipart/form-data">
-                <!--    
-                        =========================================================================
-                        ======================== NEWS SECTION ===================================
-                        =========================================================================
-                -->
+            <form class="container" action="" method="POST" enctype="multipart/form-data">
+               
+                <input type="hidden" name="new" value="1" />
+                <input name="DealsID" type="hidden" value="<?php echo $row['DealsID'];?>" />
                 <div class="row"> 
                     <h5>
                         News 
@@ -294,8 +559,8 @@
                     </h5>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
-                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
-                            <option >Company: <?php echo $row['PortfolioCompanyName'];?></option>
+                        <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" >
+                            <option > <?php echo $row['PortfolioCompanyName'];?></option>
                             <?php
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     # code...
@@ -306,16 +571,28 @@
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Stake" class="form-label">Stake</label>
-                        <input type="text" class="form-control" id="Stake" name="Stake" value="" required>
+                        <input type="text" class="form-control" id="Stake" name="Stake" value="" >
                         <small style="color:red;">Place a zero if stake not disclosed </small>
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" required>
+                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" >
+                    </div>
+                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
+                        <label for="UserFullName" class="form-label">Contact Person</label>
+                        <select class="form-select" id="UserFullName" name="UserFullName" >
+                            <option> Select Contact Person...</option>
+                            <?php
+                                while ($row5 = mysqli_fetch_assoc($result5)) {
+                                    # code...
+                                    echo "<option>".$row5['UserFullName']."</option>";
+                                }
+                            ?>
+                        </select>
                     </div>
                     <!-- 
                         /////////////////////
-                            INDUSTRY DROPDOWN
+                         INDUSTRY DROPDOWN
                         /////////////////////
                     -->
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
@@ -378,36 +655,12 @@
                         /////////////////////
                     -->
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
-                        <label for="Sector" class="form-label" >Sector </label>
+                        <label for="Sector" class="form-label" >Sector </label> <br/>
                         <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
                             <option>choose...</option>
-                        </select>
+                        </select> <br/>
                         <small style="color:red;">First select an industry </small>
                     </div>
-                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
-                        <label for="UserFullName" class="form-label">Contact Person</label>
-                        <select class="form-select" id="UserFullName" name="UserFullName" required>
-                            <option> Select Contact Person...</option>
-                            <?php
-                                while ($row5 = mysqli_fetch_assoc($result5)) {
-                                    # code...
-                                    echo "<option>".$row5['UserFullName']."</option>";
-                                }
-                            ?>
-                        </select>
-                        <div class="my-1">
-                            <button onclick="openWin()" target="_blank" class="btn btn-outline-success btn-sm">
-                                Add new Contact
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!--    
-                        =========================================================================
-                        ======================== STARTUP CONTACT SECTION ========================
-                        =========================================================================
-                -->
-                <div class="row">
                 </div>
                 <!--    
                         =========================================================================
@@ -420,7 +673,7 @@
                             Investment Manager(s)
                         </h5>
                         <label for="InvestorName" class="form-label"> Name</label>        
-                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
+                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" >
                             <option> Select...</option>
                             <?php
                                 while ($rowA1 = mysqli_fetch_assoc($resultA1)) {
@@ -440,7 +693,7 @@
                             Fund
                         </h5>
                         <label for="FundName" class="form-label">Fund Name</label>
-                        <select  class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
+                        <select  class="form-select FundName" id="FundName" name="FundName[]" multiple="true" >
                             <option value="">Select...</option>
                             <?php
                                 while($rowB = mysqli_fetch_assoc($resultB)){
@@ -460,13 +713,13 @@
                         ======================== INVESTOR CONTACT SECTION ====================
                         =========================================================================
                 -->
-                <div class="row">
+                <!-- <div class="row">
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                         <h5>
                             Contact Person
                         </h5> 
                         <label for="UserFullName1" class="form-label">Contact</label>
-                        <select class="form-select" id="UserFullName1" name="UserFullName1" required>
+                        <select class="form-select" id="UserFullName1" name="UserFullName1" >
                             <option> Select...</option>
                             <?php
                                 mysqli_data_seek($result5, 0);
@@ -477,12 +730,13 @@
                             ?>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <p>
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
                     <a href="../tabs/NewDeals.php" class="btn btn-danger" >Close</a>
                 </p>
             </form>
+            <?php } ?>
             
         </main>
         <!-- Scripts -->

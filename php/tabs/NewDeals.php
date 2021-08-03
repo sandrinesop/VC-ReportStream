@@ -54,9 +54,13 @@
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
                 LEFT JOIN 
+                    DealsIndustry
+                ON 
+                    DealsIndustry.DealsID = deals.DealsID
+                LEFT JOIN 
                     Industry
                 ON 
-                    Industry.IndustryID = deals.IndustryID
+                    Industry.IndustryID = DealsIndustry.IndustryID
                 LEFT JOIN 
                     DealsSector
                 ON 
@@ -76,7 +80,8 @@
                 WHERE 
                     Deals.Deleted = 0
                 GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate";
+                ORDER BY  news.NewsDate
+    ";
 
     $resultAA = $conn->query($sqlAA) or die($conn->error);
     $rowAA = mysqli_fetch_assoc($resultAA);
@@ -498,7 +503,7 @@
                                                         ======================== INVESTOR CONTACT SECTION ====================
                                                         =========================================================================
                                                 -->
-                                                <div class="row">
+                                                <!-- <div class="row">
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                                                         <h5>
                                                             Contact Person
@@ -515,7 +520,7 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
                                             </form>
                                         </div>
@@ -533,10 +538,13 @@
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-2"> 
-                            <form action="../Import/DealsImport.php" method="POST" enctype="multipart/form-data">
-                                <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
-                                <input type="file" name="file">
-                            </form>
+                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <div id="ImportFrm" class="my-1" style="display:none;">
+                                <form action="../Import/DealsImport.php" method="POST" enctype="multipart/form-data">
+                                    <input type="file" name="file">
+                                    <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
+                                </form>
+                            </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col"> 
@@ -636,8 +644,18 @@
                 // Trigger the double tap to edit function
                 $(document.body).on("dblclick", "tr[data-href]", function (){
                     window.location.href = this.dataset.href;
-                })
+                });
             });
+        </script>                
+        <script>
+            function formToggle(ID){
+                 var ImportFormReview = document.getElementById(ID);
+                 if(ImportFormReview.style.display === "none"){
+                    ImportFormReview.style.display ="block";
+                 }else{
+                    ImportFormReview.style.display ="none";
+                 }
+            };
         </script>
     </body>
 </html>

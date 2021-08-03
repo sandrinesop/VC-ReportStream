@@ -21,7 +21,7 @@
 
         // USER DETAIL TABLE
         $StartUpContact          = $_POST['UserFullName'];
-        $InvestorContact         = $_POST['UserFullName1'];
+        // $InvestorContact         = $_POST['UserFullName1'];
         // INVESTOR TABLE
         $InvestorName            = $_POST['InvestorName'];
         // FUND TABLE

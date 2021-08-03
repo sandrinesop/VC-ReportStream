@@ -179,10 +179,12 @@
         // Company Logo Insert code
         $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
-        // PORTFOLIO COMPANY NOTE INSERT
-        $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
-            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
-            $query = mysqli_query($conn, $sql);
+        // PORTFOLIO COMPANY INSERT
+        $sql = "INSERT INTO 
+                    PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
+                VALUES 
+                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
+        $query = mysqli_query($conn, $sql);
 
         // LINKING COMPANY WITH SECTORS AND INDUSTRY
         if($query){

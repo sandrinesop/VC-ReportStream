@@ -4,9 +4,9 @@
     $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
     $sqlA1="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, deals.InvestmentValue, deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
                 FROM 
-                    deals 
+                    Deals 
                 -- Include investor table data through the linking table dealsinvestor
                 LEFT JOIN
                     DealsInvestor
@@ -55,9 +55,13 @@
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
                 LEFT JOIN 
+                    DealsIndustry
+                ON 
+                    DealsIndustry.DealsID = deals.DealsID
+                LEFT JOIN 
                     Industry
                 ON 
-                    Industry.IndustryID = deals.IndustryID
+                    Industry.IndustryID = DealsIndustry.IndustryID
                 LEFT JOIN 
                     DealsSector
                 ON 
@@ -75,10 +79,10 @@
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
                 WHERE 
-                    Deals.Deleted= 0 AND Deals.DealsID = '$DealsID'
-                
-                GROUP BY NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate ";
+                    Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
+                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                ORDER BY  news.NewsDate
+    ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
     $rowA1 = mysqli_fetch_assoc($resultA1);
 

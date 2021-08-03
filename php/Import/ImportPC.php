@@ -12,7 +12,7 @@
                 // SKIP THE FIRST LINE
                 fgetcsv($csvFile);
                 // PARSE DATA FROM CSV FILE, LINE BY LINE USING A WHILE LOOP
-                // DEFINE AN ARRAY OUTSIDE TEH LOOP AND THEN POPULATE IT WITH VALUES FROM THE WHILE LOOP WITH EVERY ITERATION AND THEN USE IT TO OUTOUT A LIST WITH NAMES OF TEH COMPANIES WWHICH ALREADY EXIST IN THE DB.
+                // DEFINE AN ARRAY OUTSIDE TEH LOOP AND THEN POPULATE IT WITH VALUES FROM THE WHILE LOOP WITH EVERY ITERATION AND THEN USE IT TO OUTOUT A LIST WITH NAMES OF THE COMPANIES WWHICH ALREADY EXIST IN THE DB.
                 $msg = array();
                 while(($line = fgetcsv($csvFile))!== FALSE){
                     $PortfolioCompanyName              = $line[0];
@@ -96,11 +96,6 @@
                             </div>';
                             exit;
                         };
-                        // echo
-                        // '<div style="color:green; font-size:20px;">
-                        //     <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
-                        //     <a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
-                        // </div>';
                     }
                 }
                 // ==================================================================
