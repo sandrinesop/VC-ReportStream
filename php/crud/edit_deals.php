@@ -3,7 +3,7 @@
     // QUERY DATABASE FROM DATA
     $DealsID =$_REQUEST['DealsID'];
     $sql=" SELECT DISTINCT
-                Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName,Note.Note, Roletype.RoleType
             FROM 
                 Deals 
             -- Include investor table data through the linking table dealsinvestor
@@ -74,12 +74,20 @@
             ON 
                 UserDetail.UserDetailID = Deals.UserDetailID
             LEFT JOIN 
+                DealsNote
+            ON 
+                DealsNote.DealsID = Deals.DealsID
+            LEFT JOIN 
+                Note
+            ON 
+                Note.NoteID = DealsNote.NoteID
+            LEFT JOIN 
                 RoleType
             ON 
                 RoleType.RoleTypeID = UserDetail.RoleTypeID
             WHERE 
                 Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
-            GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+            GROUP BY Deals.DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, Deals.InvestmentValue, Deals.stake, Country, UserFullName, RoleType
             ORDER BY  news.NewsDate
     "; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
@@ -92,13 +100,13 @@
     //========== | PORTFOLIO COMPANY TABLE | =============
     //====================================================
     // PORTFOLIO COMPANY DETAILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
-    $sql = " SELECT DISTINCT 
+    $sql1 = " SELECT DISTINCT 
                 PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
             JOIN 
                 Country ON country.CountryID = PortfolioCompany.Headquarters 
             WHERE Website IS NOT NULL AND Details IS NOT NULL";
             
-    $result = mysqli_query($conn, $sql);
+    $result1 = mysqli_query($conn, $sql1);
     $sql3 = "   SELECT DISTINCT 
                     Country 
                 FROM 
@@ -250,7 +258,12 @@
         }else {
             // error_reporting(0);
         }
-        // Build a dynamic query to update news table
+        
+        // ===========================================================
+        // ===========================================================
+        // BUILDING A DYNAMIC QUERY TO UPDATE THE NEWS TABLE
+        // ===========================================================
+        // ===========================================================
         $updateNews = array();
 
         if(!empty($NewsDate)){
@@ -272,9 +285,9 @@
             echo 'Error Updating the Deal Date or Link: '.mysqli_error($conn);
         }
         /*
-            // -------------------------------------------------------------------------//
-            //                            UPDATE THE DEALS TABLE                        //
-            // -------------------------------------------------------------------------//
+            // ==========================================================================//
+            //                            UPDATE THE DEALS TABLE                         //
+            // ==========================================================================//
         */
         if(isset($_REQUEST['PortfolioCompanyName'])){ 
             $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
@@ -299,7 +312,17 @@
             // error_reporting(0);
         }
 
-        // Build the dynamic query
+        // if(isset($_REQUEST['NewsNote'])){ 
+        //     $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
+        // }else {
+        //     // error_reporting(0);
+        // }
+
+        // ===========================================================
+        // ===========================================================
+        // BUILDING A DYNAMIC QUERY TO UPDATE THE COMPANIES TABLE
+        // ===========================================================
+        // ===========================================================
         $updateDeal = array();
 
         if(!empty($PortfolioCompanyName)){
@@ -317,7 +340,7 @@
         if(!empty($StartUpContact)){
             $updateDeal[] ="UserDetailID= (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact')";
         }
-        print_r($updateDeal);
+        // print_r($updateDeal);
         // CONVERT THE NEWS ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
         $updateDealString = implode(', ', $updateDeal);
         // THE NEWS UPDATE QUERY
@@ -486,6 +509,25 @@
                 }
             };
         };
+        // ===================================================================================
+        // A CODE BLOCK TO UPDATE THE News/Deal NOTE
+        // ===================================================================================
+        // $msg = array();
+        // $updates2 = array();
+        // if(!empty($NewsNote)){
+        //     $updates2[] ="Note='".$NewsNote."'";
+        // };
+        // // print_r($updates2);
+        // $updateString2 = implode(', ', $updates2);
+        // // echo $updateString2;
+        // $updateNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE Note.NoteID = (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID = '$DealsID')";
+        // echo $updateNote;
+        // $resultUpdate2 = mysqli_query($conn, $updateNote) ;
+        // if($resultUpdate2){
+        //     // do nothing
+        // }else{
+        //     echo 'error: '.mysqli_error($conn); 
+        // }
         
     }else {
 ?>
@@ -562,26 +604,26 @@
                         <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" >
                             <option > <?php echo $row['PortfolioCompanyName'];?></option>
                             <?php
-                                while ($row = mysqli_fetch_assoc($result)) {
+                                while ($row1 = mysqli_fetch_assoc($result1)) {
                                     # code...
-                                    echo "<option>".$row['PortfolioCompanyName']."</option>";
+                                    echo "<option>".$row1['PortfolioCompanyName']."</option>";
                                 }
                             ?>
                         </select>
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Stake" class="form-label">Stake</label>
-                        <input type="text" class="form-control" id="Stake" name="Stake" value="" >
+                        <input type="number" class="form-control" id="Stake" name="Stake"  value="<?php echo $row['stake'];?>">
                         <small style="color:red;">Place a zero if stake not disclosed </small>
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" >
+                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" value="<?php echo $row['InvestmentValue']?>">
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                         <label for="UserFullName" class="form-label">Contact Person</label>
                         <select class="form-select" id="UserFullName" name="UserFullName" >
-                            <option> Select Contact Person...</option>
+                            <option value="<?php echo $row['UserFullName'];?>"> <?php echo $row['UserFullName'];?> </option>
                             <?php
                                 while ($row5 = mysqli_fetch_assoc($result5)) {
                                     # code...
@@ -590,6 +632,10 @@
                             ?>
                         </select>
                     </div>
+                    <!-- <div class="mb-3 "> 
+                        <label for="Note" class="form-label">Note</label>
+                        <textarea class="form-control col" type="text" name="Note" placeholder="Enter Note"> <?php echo $row['Note'];?></textarea>
+                    </div> -->
                     <!-- 
                         /////////////////////
                          INDUSTRY DROPDOWN
@@ -672,7 +718,7 @@
                         <h5>
                             Investment Manager(s)
                         </h5>
-                        <label for="InvestorName" class="form-label"> Name</label>        
+                        <label for="InvestorName" class="form-label"> Name</label>        <br/>
                         <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" >
                             <option> Select...</option>
                             <?php
@@ -682,17 +728,12 @@
                                 }
                             ?>
                         </select>
-                        <div class="my-1">
-                            <button onclick="openWin1()" target="_blank" class="btn btn-outline-success btn-sm">
-                                Add new Manager
-                            </button>
-                        </div>
                     </div> 
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <h5>
                             Fund
                         </h5>
-                        <label for="FundName" class="form-label">Fund Name</label>
+                        <label for="FundName" class="form-label">Fund Name</label><br/>
                         <select  class="form-select FundName" id="FundName" name="FundName[]" multiple="true" >
                             <option value="">Select...</option>
                             <?php
@@ -701,11 +742,6 @@
                                 }
                             ?>
                         </select>
-                        <div class="my-1">
-                            <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
-                                Add new Fund
-                            </button>
-                        </div>
                     </div>
                 </div>
                 <!--    

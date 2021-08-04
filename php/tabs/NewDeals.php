@@ -363,7 +363,7 @@
                                                     -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Industry" class="form-label">Industry</label>
-                                                        <select id="Industry" name="Industry" class="form-select">
+                                                        <select id="Industry" name="Industry[]" class="form-select">
                                                             <option>choose...</option>
                                                             <option value="Artificial Intelligence">Artificial Intelligence</option>
                                                             <option value="Clothing Apparel">Clothing Apparel</option>
@@ -531,10 +531,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </span>
-                        <!--  VIEW LEGACY DEALS -->
-                        <span class="col">
-                            <a href="./deals.php"><button class="btn new-button"> <small>View Legacy Deals</small> </button></a>
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-2"> 

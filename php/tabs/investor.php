@@ -429,7 +429,7 @@
                                         while($rows = mysqli_fetch_assoc($result) )
                                         {
                                     ?>
-                                        <tr>
+                                        <tr data-href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?>">
                                             <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
@@ -480,6 +480,11 @@
             // Initializing the datatable plugin
             $(document).ready( function () {
                 $('#table_investmentManager').DataTable();
+
+            // Trigger the double tap to edit function
+            $(document.body).on("dblclick", "tr[data-href]", function (){
+                window.location.href = this.dataset.href;
+            })
             });
         </script>
         <script>

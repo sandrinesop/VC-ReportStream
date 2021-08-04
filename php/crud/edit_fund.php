@@ -115,6 +115,7 @@
         echo '<p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12" style="color:#FF0000;">'.$status.'</p>';
         header( "refresh: 3;url= ../tabs/fund.php" );
 
+        // DECLARE VARIABLES
         $FundName                   = mysqli_real_escape_string($conn, $_REQUEST['FundName']);
         $Currency                   = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
         $CommittedCapital           = mysqli_real_escape_string($conn, $_REQUEST['CommittedCapital']);
@@ -137,8 +138,12 @@
         }else {
             // error_reporting(0);
         }
-
-        // $update=" UPDATE Fund SET ModifiedDate='uuid()',FundName='".$FundName."', CurrencyID=(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),CommittedCapital='".$CommittedCapital."', MinimumInvestment='".$MinimumInvestment."', MaximumInvestment='".$MaximumInvestment."' WHERE FundID='".$FundID."'";
+        
+        if(isset($_REQUEST['Note'])){ 
+            $Note           =   mysqli_real_escape_string($conn, $_POST['Note']);
+        }else {
+            // error_reporting(0);
+        }
 
         //  BUILDING A DYNAMIC MYSQL UPDATE QUERY BY CREATING AN EMPTY ARRAY AND THEN SETTING CONDITIONAL STATEMENTS TO CHECK IF A VARIABLE IS NOT EMPTY FIRST, IF EMPTY DO NOTHING AND IF SET, THE APPEND IT TO THE ARRAY. THERE ON EXPLODE THE ARRAY TO CONVERT IT INOT A STRING THEN APPEND STRING TO THE UPDATE STATEMENT.
         $updates = array();
@@ -290,6 +295,19 @@
                 }
             };
         }
+        // ===================================================================================
+        // A CODE BLOCK TO UPDATE THE FUND NOTE
+        // ===================================================================================
+        // $msg = array();
+        $updates2 = array();
+        if(!empty($Note)){
+            $updates2[] ='Note="'.$Note.'"';
+        };
+        // print_r($updates2);
+        $updateString2 = implode(', ', $updates2);
+        // echo $updateString2;
+        $updateNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE NoteID= (SELECT FundNote.NoteID FROM FundNote WHERE FundNote.FundID='".$FundID."')";
+        $resultUpdate2 = mysqli_query($conn, $updateNote) or die($conn->error);
 
     }else {
 ?>

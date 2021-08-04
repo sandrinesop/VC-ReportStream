@@ -133,19 +133,24 @@
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_REQUEST['PortfolioCompanyName']);
         $Currency                = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
         $Website                 = mysqli_real_escape_string($conn, $_REQUEST['Website']);
-        $UserFullName            = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
+        $Contact            = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
         $Details                 = mysqli_real_escape_string($conn,  $_REQUEST['Details']);
         $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
         $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
   
-        $logo = $_FILES['img']['name'];
-        if($_FILES['img']['size']>0):
-            // echo'file uploaded' .$logo;
-            $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
-        else:
-            // echo 'Image not set';
-        endif;
-        
+        if(isset($_FILES['img']['name'])){ 
+            $logoName = $_FILES['img']['name'];
+            $logoSize = $_FILES['img']['size'];
+
+            if($logoSize>0):
+                // echo'file uploaded' .$logo;
+                $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+            else:
+                // echo 'Image not set';
+            endif;
+        }else {
+            // error_reporting(0);
+        }
 
         if(isset($_REQUEST['InvestorName'])){ 
             $Investors          = $_REQUEST['InvestorName'];
@@ -339,24 +344,21 @@
             };
         };
         // echo 'the industries array is: '.print_r($msg);
-        /* 
-            LINK PORTFOLIO COMPANY TO CONTACT
-            explode( ',', $UserFullName );
-            foreach($UserFullName as $Contact){
-                $sql6 = "  UPDATE 
-                                PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact'
-                                WHERE PortfolioCompanyID='".$PortfolioCompanyID."'
-                            
-                ";
-                $query6 = mysqli_query($conn, $sql6);
+        
+        //LINK PORTFOLIO COMPANY TO CONTACT
+        
+        $sql6 = "  UPDATE 
+                        PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact')
+                    WHERE PortfolioCompanyID= '$PortfolioCompanyID'   
+        ";
+        $query6 = mysqli_query($conn, $sql6);
 
-                if($query6){
-                    DO NOTHING IF SUCCESSFULL
-                } else {
-                    echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-                }
-            }
-        */
+        if($query6){
+        //    DO NOTHING IF SUCCESSFULL
+        } else {
+            echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        }
+        
     }else {
 ?>
 <!DOCTYPE html>
@@ -464,7 +466,7 @@
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Industry" class="form-label">Industry</label>
                         <select id="Industry" name="Industry" class="form-select">
-                            <option value="<?php echo $row['Industry'];?>">Choose...</option>
+                            <option disabled selected>choose...</option>
                             <option value="Artificial Intelligence">Artificial Intelligence</option>
                             <option value="Clothing and Apparel">Clothing and Apparel</option>
                             <option value="Administrative Services">Administrative Services</option>

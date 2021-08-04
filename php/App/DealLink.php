@@ -16,7 +16,7 @@
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         $Stake                   = $_POST['Stake'];
         $InvestmentValue         = $_POST['InvestmentValue'];
-        $Industry                = $_POST['Industry'];
+        $Industries              = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
 
         // USER DETAIL TABLE
@@ -33,17 +33,8 @@
             ///////////////////////////////////////////////////
         */
 
-        // foreach($Sector as $sects)  
-        // {  
-        //     $sectors.= $sects.",";  
-        // }  
-
-        // ====================================================================================================================================================
-        // ====================================================================================================================================================
-        // BELOW ARE THE INSERT STATEMENTS TO THE NEWS AND NOTE TABLE. THIS IS ONE OF THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
-        // ====================================================================================================================================================
-        // ====================================================================================================================================================
         // ===============================
+        // BELOW ARE THE INSERT STATEMENTS TO THE NEWS AND NOTE TABLE. THIS IS ONE OF THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
         // ===============================
         $sql = "    INSERT INTO 
                         News(NewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsDate, NewsURL) 
@@ -74,6 +65,9 @@
         // ***** INSERT STATEMENTS FOR THE MAPPING TABLES ******
         // =====================================================
         // =====================================================
+
+        // ===============================
+        // ===============================
         // PortfolioCompany Mapping tables
         // ===============================
         // ===============================
@@ -84,24 +78,7 @@
         if ($queryA1 ){
             // Success
         } else {
-            echo 'Oops! There was an error on linking w.. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-        }
-
-        // =======================
-        // =======================
-        // INVESTOR MAPPING TABLES
-        // =======================
-        // =======================
-        foreach($InvestorName as $InvestmentManager){ 
-            $sqlC2 = "  INSERT INTO InvestorUserDetail(InvestorUserDetailID, CreatedDate, ModifiedDate,Deleted, DeletedDate, InvestorID, UserDetailID)
-                        VALUES (uuid(), now(), now(),0,NULL,(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
-            $queryC2 = mysqli_query($conn, $sqlC2);
-    
-            if ( $queryC2){
-                //  Success - do nothing
-            } else{
-                echo 'Oops! There was an error on linking Investor and contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
+            echo 'Oops! There was an error on linking Company and News. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
         }
 
         // ===================
@@ -129,14 +106,30 @@
         // =====================================================================
         // =====================================================================
 
-        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, IndustryID, UserDetailID, UserDetailID2)
-                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'), (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$InvestorContact'))";
+        $sqlDLS = "  INSERT INTO Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, UserDetailID)
+                    VALUES (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))";
         $queryDLS = mysqli_query($conn, $sqlDLS);
         // DLS
         if ($queryDLS){
             // IF THE QUERY ABOVE IS A SUCCESS THEN EXECUTE BELOW CODE
             // =================================================================
-            // LOOP TO INSERT INVESTMENT MANAGERS TO THE LINKING TABLE ON DEALS
+            // LOOP TO INSERT INDUSTRIES TO THE LINKING TABLE ON DEALS
+            // =================================================================
+            foreach($Industries as $Industry){  
+                $sqlDealIndustry = "  INSERT INTO 
+                                        DealsIndustry(DealsIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, IndustryID)
+                                    VALUES 
+                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')
+                ";
+                $queryIndustry = mysqli_query($conn, $sqlDealIndustry);
+                if($queryIndustry){
+                    // Do nothing
+                } else {
+                    echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
+                }
+            }
+            // =================================================================
+            // LOOP TO INSERT SECTORS TO THE LINKING TABLE ON DEALS
             // =================================================================
             foreach($Sector as $sects){  
                 $sqlDealSector = "  INSERT INTO 
@@ -186,6 +179,23 @@
                 } else {
                     echo 'Oops! There was an error saving links between Funds and Deals from the array'.mysqli_error($conn).'<br/>';
                 }
+            }
+                    
+            // ===============================
+            // ===============================
+            // Deal Note Mapping tables
+            // ===============================
+            // ===============================
+            $sqlDealsNote = "   INSERT INTO 
+                                    DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
+                                VALUES 
+                                    (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+            ";
+            $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
+            if ($queryDealsNote ){
+            // Success
+            } else {
+            echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
             }
 
         } else {
