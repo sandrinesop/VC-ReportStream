@@ -87,7 +87,7 @@
                 RoleType.RoleTypeID = UserDetail.RoleTypeID
             WHERE 
                 Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
-            GROUP BY Deals.DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, Deals.InvestmentValue, Deals.stake, Country, UserFullName, RoleType
+            GROUP BY Deals.DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, Deals.InvestmentValue, Deals.stake, Country, UserFullName, RoleType, Note
             ORDER BY  news.NewsDate
     "; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
@@ -247,14 +247,14 @@
             //                           UPDATE THE NEWS TABLE                          //
             // -------------------------------------------------------------------------//
         */ 
-        if(isset($_REQUEST['NewsDate'])){ 
-            $NewsDate       = date('Y-m-d', strtotime($_REQUEST['NewsDate']));
+        if(isset($_POST['NewsDate'])){ 
+            $NewsDate       = date('Y-m-d', strtotime($_POST['NewsDate']));
         }else {
             // error_reporting(0);
         }   
 
-        if(isset($_REQUEST['NewsURL'])){ 
-            $NewsURL        = mysqli_real_escape_string($conn, $_REQUEST['NewsURL']);
+        if(isset($_POST['NewsURL'])){ 
+            $NewsURL        = mysqli_real_escape_string($conn, $_POST['NewsURL']);
         }else {
             // error_reporting(0);
         }
@@ -289,34 +289,34 @@
             //                            UPDATE THE DEALS TABLE                         //
             // ==========================================================================//
         */
-        if(isset($_REQUEST['PortfolioCompanyName'])){ 
-            $PortfolioCompanyName    = $_REQUEST['PortfolioCompanyName'];
+        if(isset($_POST['PortfolioCompanyName'])){ 
+            $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         }else {
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['Stake'])){ 
-            $Stake               = mysqli_real_escape_string($conn, $_REQUEST['Stake']);
+        if(isset($_POST['Stake'])){ 
+            $Stake               = mysqli_real_escape_string($conn, $_POST['Stake']);
         }else {
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['InvestmentValue'])){ 
-            $InvestmentValue     = mysqli_real_escape_string($conn, $_REQUEST['InvestmentValue']);
+        if(isset($_POST['InvestmentValue'])){ 
+            $InvestmentValue     = mysqli_real_escape_string($conn, $_POST['InvestmentValue']);
         }else {
             // error_reporting(0);
         }        
-        if(isset($_REQUEST['UserFullName'])){ 
-            $StartUpContact     = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
+        if(isset($_POST['UserFullName'])){ 
+            $StartUpContact     = mysqli_real_escape_string($conn, $_POST['UserFullName']);
         }else {
             // error_reporting(0);
         }
 
-        // if(isset($_REQUEST['NewsNote'])){ 
-        //     $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
-        // }else {
-        //     // error_reporting(0);
-        // }
+        if(isset($_POST['NewsNote'])){ 
+            $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
+        }else {
+            // error_reporting(0);
+        }
 
         // ===========================================================
         // ===========================================================
@@ -352,28 +352,28 @@
         }else{
             echo 'Error Updating the Deal: '.mysqli_error($conn);
         }
-        // $NewsNote       = mysqli_real_escape_string($conn, $_REQUEST['NewsNote']);
+        // $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
 
-        if(isset($_REQUEST['InvestorName'])){ 
-            $Investors          = $_REQUEST['InvestorName'];
+        if(isset($_POST['InvestorName'])){ 
+            $Investors          = $_POST['InvestorName'];
         }else {
             // error_reporting(0);
         }
         
-        if(isset($_REQUEST['FundName'])){ 
-            $Funds                   = $_REQUEST['FundName'];
+        if(isset($_POST['FundName'])){ 
+            $Funds                   = $_POST['FundName'];
         }else {
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['Industry'])){ 
-            $Industries              =  $_REQUEST['Industry'];
+        if(isset($_POST['Industry'])){ 
+            $Industries              =  $_POST['Industry'];
         }else {
             // error_reporting(0);
         }
         
-        if(isset($_REQUEST['Sector'])){ 
-            $Sectors                 =  $_REQUEST['Sector'];
+        if(isset($_POST['Sector'])){ 
+            $Sectors                 =  $_POST['Sector'];
         }else {
             // error_reporting(0);
         }
@@ -513,21 +513,21 @@
         // A CODE BLOCK TO UPDATE THE News/Deal NOTE
         // ===================================================================================
         // $msg = array();
-        // $updates2 = array();
-        // if(!empty($NewsNote)){
-        //     $updates2[] ="Note='".$NewsNote."'";
-        // };
-        // // print_r($updates2);
-        // $updateString2 = implode(', ', $updates2);
-        // // echo $updateString2;
-        // $updateNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE Note.NoteID = (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID = '$DealsID')";
+        $updatesNote = array();
+        if(!empty($NewsNote)){
+            $updatesNote[] ="Note='".$NewsNote."'";
+        };
+
+        $updatesNoteString = implode(', ', $updatesNote);
+        
+        $updateNoteQuery = "UPDATE Note SET ModifiedDate= NOW(), $updatesNoteString  WHERE NoteID= (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID='".$DealsID."')";
         // echo $updateNote;
-        // $resultUpdate2 = mysqli_query($conn, $updateNote) ;
-        // if($resultUpdate2){
-        //     // do nothing
-        // }else{
-        //     echo 'error: '.mysqli_error($conn); 
-        // }
+        $resultNoteUpdate = mysqli_query($conn, $updateNoteQuery);
+        if($resultNoteUpdate){
+            // do nothing
+        }else{
+            echo 'error: '.mysqli_error($conn); 
+        }
         
     }else {
 ?>
@@ -585,10 +585,10 @@
                         <label for="NewsURL" class="form-label">News Link</label>
                         <input type="text" class="form-control" id="NewsURL" name="NewsURL" value="<?php echo $row['NewsURL'];?>">
                     </div>
-                    <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="NewsNote" class="form-label">News Note</label>
-                        <textarea class="form-control" aria-label="With textarea" id="NewsNote" name="NewsNote" value=""></textarea>
-                    </div>   -->
+                        <textarea class="form-control" aria-label="With textarea" id="NewsNote" name="NewsNote" ><?php echo $row['Note'];?></textarea>
+                    </div>  
                 </div>
                 <!--    
                         =========================================================================

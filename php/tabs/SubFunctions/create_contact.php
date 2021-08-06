@@ -4,17 +4,58 @@
     // INVESTOR INSERTS
     if ( isset($_POST['submit']))
         {
-            $UserFullName           = $_POST['UserFullName'];
-            $FirstName              = $_POST['FirstName'];
-            $LastName               = $_POST['LastName'];
-            // $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-            $ContactNumber1         = $_POST['ContactNumber1'];
-            $ContactNumber2         = $_POST['ContactNumber2'];
-            $Email                  = $_POST['Email'];
-            $RoleType               = $_POST['RoleType'];
-            $Gender                 = $_POST['Gender'];
-            $Race                   = $_POST['Race'];
 
+            if(isset($_REQUEST['UserFullName'])){ 
+                $UserFullName           = mysqli_real_escape_string($conn,$_POST['UserFullName']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['FirstName'])){ 
+                $FirstName              = mysqli_real_escape_string($conn,$_POST['FirstName']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['LastName'])){ 
+                $LastName               = mysqli_real_escape_string($conn,$_POST['LastName']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['ContactNumber1'])){ 
+                $ContactNumber1         = mysqli_real_escape_string($conn,$_POST['ContactNumber1']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['ContactNumber2'])){ 
+                $ContactNumber2         = mysqli_real_escape_string($conn,$_POST['ContactNumber2']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['Email'])){ 
+                $Email                  = mysqli_real_escape_string($conn,$_POST['Email']);
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['RoleType'])){ 
+                $RoleType               = $_POST['RoleType'];
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['Gender'])){ 
+                $Gender                 = $_POST['Gender'];
+            }else {
+                // error_reporting(0);
+            }
+            if(isset($_REQUEST['Race'])){ 
+                $Race                   = $_POST['Race'];
+            }else {
+                // error_reporting(0);
+            }
+            //  BUILDING A DYNAMIC MYSQL UPDATE QUERY BY CREATING AN EMPTY ARRAY AND THEN SETTING CONDITIONAL STATEMENTS TO CHECK IF A VARIABLE IS NOT EMPTY FIRST, IF EMPTY DO NOTHING AND IF SET, THE APPEND IT TO THE ARRAY. THERE ON EXPLODE THE ARRAY TO CONVERT IT INOT A STRING THEN APPEND STRING TO THE UPDATE STATEMENT.
+            // $updates = array();
+            // if(!empty($PortfolioCompanyName)){
+            //     $updates[] ='PortfolioCompanyName="'.$PortfolioCompanyName.'"';
+            // }
+            
             $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
             VALUES (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
 
@@ -127,25 +168,13 @@
                             <label for="LastName" class="form-label">Last Name</label>
                             <input type="text" class="form-control" id="LastName" name="LastName" required>
                         </div>
-                        <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                            <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
-                            <select class="form-select" id="PortfolioCompanyName" name="PortfolioCompanyName" required>
-                                <option> Select Company</option>
-                                <?php
-                                    while ($row101 = mysqli_fetch_assoc($result101)) {
-                                        # code...
-                                        echo "<option>".$row101['PortfolioCompanyName']."</option>";
-                                    }
-                                ?>
-                            </select>
-                        </div> -->
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                             <label for="Email" class="form-label">Email</label>
-                            <input type="text" class="form-control" id="Email" name="Email" required>
+                            <input type="text" class="form-control" id="Email" name="Email" >
                         </div> 
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                             <label for="ContactNumber1" class="form-label">ContactNumber1</label>
-                            <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
+                            <input type="text" class="form-control" id="ContactNumber1" name="ContactNumber1" >
                         </div>
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                             <label for="ContactNumber2" class="form-label">ContactNumber2</label>

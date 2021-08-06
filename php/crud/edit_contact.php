@@ -26,23 +26,116 @@
     $status = "";
     if(isset($_POST['new']) && $_POST['new']==1)
     {
-        $UserFullName           = $_REQUEST['UserFullName'];
-        $FirstName              = $_REQUEST['FirstName'];
-        $LastName               = $_REQUEST['LastName'];
-        $ContactNumber1         = $_REQUEST['ContactNumber1'];
-        $ContactNumber2         = $_REQUEST['ContactNumber2'];
-        $Email                  = $_REQUEST['Email'];
-        $RoleType               = $_REQUEST['RoleTypeID'];
-        $Gender                 = $_REQUEST['GenderID'];
-        $Race                   = $_REQUEST['RaceID'];
-        
-        // DescriptionID='".$Description."',
-        $update="UPDATE UserDetail SET ModifiedDate=UUID(),UserFullName='".$UserFullName."', FirstName='".$FirstName."', LastName='".$LastName."', ContactNumber1='".$ContactNumber1."', ContactNumber2='".$ContactNumber2."', Email='".$Email."', RoleTypeID =  (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), GenderID =(select Gender.GenderID FROM Gender where Gender.Gender = '$Gender'), RaceID = (select Race.RaceID FROM Race where Race.Race = '$Race') where UserDetailID='".$UserDetailID."'";
-        mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
         <a href='../tabs/contacts.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 3;url= ../tabs/contacts.php" );
+        header( "refresh: 5;url= ../tabs/contacts.php" );
+        
+        // CHECK IF VARIABLES ARE SET OR NOT BEFORE WORKING WITH THEM IN THE UPDATE QUERY
+        // ALSO USE STRING ESCAPE TO ESCAPE OUT ALL SPECIAL CHARACTERS AND AVOID SQL INJECTION
+        
+        if(isset($_POST['UserFullName'])){ 
+            $UserFullName          = mysqli_real_escape_string($conn, $_POST['UserFullName']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['FirstName'])){ 
+            $FirstName              = mysqli_real_escape_string($conn, $_POST['FirstName']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['LastName'])){ 
+            $LastName               = mysqli_real_escape_string($conn, $_POST['LastName']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['ContactNumber1'])){ 
+            $ContactNumber1         = mysqli_real_escape_string($conn, $_POST['ContactNumber1']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['ContactNumber2'])){ 
+            $ContactNumber2         = mysqli_real_escape_string($conn, $_POST['ContactNumber2']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['Email'])){ 
+            $Email                  = mysqli_real_escape_string($conn, $_POST['Email']);
+        }else {
+            // error_reporting(0);
+        }        
+        if(isset($_POST['RoleType'])){ 
+             $RoleType               = mysqli_real_escape_string($conn, $_POST['RoleType']);
+        }else {
+            // error_reporting(0);
+        }       
+        if(isset($_POST['Gender'])){ 
+            $Gender                 = mysqli_real_escape_string($conn, $_POST['Gender']);
+        }else {
+            // error_reporting(0);
+        }       
+        if(isset($_POST['Race'])){ 
+            $Race                   = mysqli_real_escape_string($conn, $_POST['Race']);
+        }else {
+            // error_reporting(0);
+        }
+        
+        // DescriptionID='".$Description."',
+        // $update="UPDATE UserDetail SET ModifiedDate=UUID(),UserFullName='".$UserFullName."', FirstName='".$FirstName."', LastName='".$LastName."', ContactNumber1='".$ContactNumber1."', ContactNumber2='".$ContactNumber2."', Email='".$Email."', RoleTypeID =  (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), GenderID =(select Gender.GenderID FROM Gender where Gender.Gender = '$Gender'), RaceID = (select Race.RaceID FROM Race where Race.Race = '$Race') where UserDetailID='".$UserDetailID."'";
+        // mysqli_query($conn, $update) or die($conn->error);$updatesNote = array();
+
+        // BUILD A DYNAMIC QUERY TO UPDATE THE RECORD WITH ONLY VARIABLES THAT WERE SET OR FILLED IN ON THE UPDATE FORM
+        $updateContact = array();
+
+        if(!empty($UserFullName)){
+            $updateContact[] ="UserFullName='".$UserFullName."'";
+        };
+
+
+        if(!empty($FirstName)){
+            $updateContact[] ="FirstName='".$FirstName."'";
+        };
+        
+        if(!empty($LastName)){
+            $updateContact[] ="LastName='".$LastName."'";
+        };
+
+        if(!empty($ContactNumber1)){
+            $updateContact[] ="ContactNumber1='".$ContactNumber1."'";
+        };
+
+        if(!empty($ContactNumber2)){
+            $updateContact[] ="ContactNumber2='".$ContactNumber2."'";
+        };
+
+        if(!empty($Email)){
+            $updateContact[] ="Email='".$Email."'";
+        };
+
+        if(!empty($RoleType)){
+            $updateContact[] =" RoleTypeID = (SELECT RoleType.RoleTypeID FROM RoleType WHERE RoleType.RoleType = '$RoleType')";
+        };
+
+        if(!empty($Gender)){
+            $updateContact[] =" GenderID = (SELECT Gender.GenderID FROM Gender WHERE Gender.Gender = '$Gender')";
+        };
+
+        if(!empty($Race)){
+            $updateContact[] =" RaceID = (SELECT Race.RaceID FROM Race WHERE Race.Race = '$Race')";
+        };
+        // ECHO OUT THE ARRAY TO SEE IF VARIABLES ARE PULLING THROUGH PROPERLY.
+        // print_r($updateContact);
+        
+        $updateContactString = implode(', ', $updateContact);
+        
+        $updateContactQuery = "UPDATE UserDetail SET ModifiedDate= NOW(), $updateContactString  WHERE UserDetailID='".$UserDetailID."'";
+        // echo $updateNote;
+        $resultContactUpdate = mysqli_query($conn, $updateContactQuery);
+        if($resultContactUpdate){
+            // do nothing
+        }else{
+            echo 'error: '.mysqli_error($conn); 
+        }
     }else {
 ?>
 <!DOCTYPE html>
@@ -81,65 +174,67 @@
         </nav>
         <main  class="my-5 ">
             <form name="form" method="post" action="" class="form container"> 
-                <input type="hidden" name="new" value="1" />
-                <input name="UserDetailID" type="hidden" value="<?php echo $row['UserDetailID'];?>" />
-                <p>
-                    <label for="UserFullName" class="form-label" >User Full Name </label> <br>
-                    <input class="form-control col" type="text" name="UserFullName" placeholder=" Enter UserFullName" required value="<?php echo $row['UserFullName'];?>" />
-                </p>
-                <p>
-                    <label for="FirstName" class="form-label" >First Name </label> <br>
-                    <input class="form-control col" type="text" name="FirstName" placeholder="Enter FirstName"  value="<?php echo $row['FirstName'];?>" />
-                </p>
-                <p>
-                    <label for="LastName" class="form-label" >Last Name </label> <br>
-                    <input class="form-control col" type="text" name="LastName" placeholder="Enter LastName"  value="<?php echo $row['LastName'];?>" /></p>
-                <p>
-                    <label for="ContactNumber1" class="form-label" >Contact Number 1 </label> <br>
-                    <input class="form-control col" type="text" name="ContactNumber1" placeholder="Enter ContactNumber1"  value="<?php echo $row['ContactNumber1'];?>" />
-                </p>
-                <p>
-                    <label for="ContactNumber2" class="form-label" >Contact Number 2</label> <br>
-                    <input class="form-control col" type="text" name="ContactNumber2" placeholder="Enter ContactNumber2"  value="<?php echo $row['ContactNumber2'];?>" />
+                <div class="row">
+                    <input type="hidden" name="new" value="1" />
+                    <input name="UserDetailID" type="hidden" value="<?php echo $row['UserDetailID'];?>" />
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="UserFullName" class="form-label" >User Full Name </label> <br>
+                        <input class="form-control col" type="text" name="UserFullName" placeholder=" Enter UserFullName" required value="<?php echo $row['UserFullName'];?>" />
                     </p>
-                <p>
-                    <label for="Email" class="form-label" >Email </label> <br>
-                    <input class="form-control col" type="text" name="Email" placeholder="Enter Email"  value="<?php echo $row['Email'];?>" />
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="FirstName" class="form-label" >First Name </label> <br>
+                        <input class="form-control col" type="text" name="FirstName" placeholder="Enter FirstName"  value="<?php echo $row['FirstName'];?>" />
                     </p>
-                <p>
-                    <label for="RoleType" class="form-label" >RoleType </label> <br>
-                    <!-- <input class="form-control col" type="text" name="RoleType" placeholder="Enter RoleType"  value="<?php echo $row2['RoleType'];?>" /> -->
-                    <select name="RoleType" class="form-select" id="RoleType" required>
-                        <option selected ><?php echo $row2['RoleType'];?></option>
-                        <option value="President">President</option>
-                        <option value="CEO">CEO</option>
-                        <option value="CFO">CFO</option>
-                        <option value="COO">COO</option>
-                    </select>
-                </p>
-                <p>
-                    <label for="Gender" class="form-label" >Gender </label> <br>
-                    <!-- <input class="form-control col" type="text" name="Gender" placeholder="Enter Gender"  value="<?php echo $row3['Gender'];?>" /> -->
-                    <select name="Gender" class="form-select" id="Gender" required>
-                        <option selected ><?php echo $row3['Gender'];?></option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Unknown">Unknown</option>
-                    </select>
-                </p>
-                <p>
-                    <label for="Race" class="form-label" >Race </label> <br>
-                    <!-- <input class="form-control col" type="text" name="Race" placeholder="Enter Race"  value="<?php echo $row4['Race'];?>" /> -->
-                    <select name="Race" class="form-select" id="Race" required>
-                        <option selected ><?php echo $row4['Race'];?></option>
-                        <option value="Black">Black</option>
-                        <option value="White">White</option>
-                        <option value="Asian">Asian</option>
-                        <option value="Indian">Indian</option>
-                        <option value="Unknown">Unknown</option>
-                    </select>
-                </p>
-                <p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="LastName" class="form-label" >Last Name </label> <br>
+                        <input class="form-control col" type="text" name="LastName" placeholder="Enter LastName"  value="<?php echo $row['LastName'];?>" /></p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="ContactNumber1" class="form-label" >Contact Number 1 </label> <br>
+                        <input class="form-control col" type="text" name="ContactNumber1" placeholder="Enter ContactNumber1"  value="<?php echo $row['ContactNumber1'];?>" />
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="ContactNumber2" class="form-label" >Contact Number 2</label> <br>
+                        <input class="form-control col" type="text" name="ContactNumber2" placeholder="Enter ContactNumber2"  value="<?php echo $row['ContactNumber2'];?>" />
+                        </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="Email" class="form-label" >Email </label> <br>
+                        <input class="form-control col" type="text" name="Email" placeholder="Enter Email"  value="<?php echo $row['Email'];?>" />
+                        </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="RoleType" class="form-label" >RoleType </label> <br>
+                        <!-- <input class="form-control col" type="text" name="RoleType" placeholder="Enter RoleType"  value="<?php echo $row2['RoleType'];?>" /> -->
+                        <select name="RoleType" class="form-select" id="RoleType" required>
+                            <option selected ><?php echo $row2['RoleType'];?></option>
+                            <option value="President">President</option>
+                            <option value="CEO">CEO</option>
+                            <option value="CFO">CFO</option>
+                            <option value="COO">COO</option>
+                        </select>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="Gender" class="form-label" >Gender </label> <br>
+                        <!-- <input class="form-control col" type="text" name="Gender" placeholder="Enter Gender"  value="<?php echo $row3['Gender'];?>" /> -->
+                        <select name="Gender" class="form-select" id="Gender" required>
+                            <option selected ><?php echo $row3['Gender'];?></option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                    </p>
+                    <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
+                        <label for="Race" class="form-label" >Race </label> <br>
+                        <!-- <input class="form-control col" type="text" name="Race" placeholder="Enter Race"  value="<?php echo $row4['Race'];?>" /> -->
+                        <select name="Race" class="form-select" id="Race" required>
+                            <option selected ><?php echo $row4['Race'];?></option>
+                            <option value="Black">Black</option>
+                            <option value="White">White</option>
+                            <option value="Asian">Asian</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                    </p>
+                </div>
+                <p >
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
                     <a href="../tabs/contacts.php" class="btn btn-danger" >Close</a>
                 </p>

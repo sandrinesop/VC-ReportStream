@@ -118,9 +118,7 @@
             } else {
                 echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
-
-            echo '<p> Thanks for your contribution! You will be redirected in 5 sec...</p>';
-            
+            // echo '<p> Thanks for your contribution! You will be redirected in 5 sec...</p>';
             header( "refresh: 5;url= ../tabs/contacts.php" );
     }
 ?>
@@ -316,7 +314,7 @@
                                         while($rows = mysqli_fetch_assoc($result))
                                         {
                                     ?>
-                                        <tr>
+                                        <tr data-href="../crud/edit_Contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">
                                             <td class="text-truncate"> <small><?php echo $rows['UserFullName'] ?></small></td>
                                             <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
                                             <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
@@ -352,6 +350,11 @@
             // Initializing the datatable plugin
             $(document).ready( function () {
                 $('#table_Contacts').DataTable();
+
+                // Trigger the double tap to edit function
+                $(document.body).on("dblclick", "tr[data-href]", function (){
+                    window.location.href = this.dataset.href;
+                })
             });
         </script>
     </body>

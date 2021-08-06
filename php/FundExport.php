@@ -9,7 +9,7 @@
         $output = fopen("php://output","w");
         fputcsv($output, array('Fund Name', 'Investment Manager(s)', 'Portfolio Companies', 'Currency', 'Committed Capital', 'Minimum Investment', 'Maximum Investment', 'Investment Stage', 'Note'));
         $query = " SELECT 
-                        Fund.Deleted, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage,  Note.Note
+                        Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage,  Note.Note
                     FROM 
                         Fund 
                         -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -65,7 +65,7 @@
                     WHERE  
                         Fund.Deleted = 0
 
-                    GROUP BY  Deleted, FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note 
+                    GROUP BY FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note 
         ";
         $result = mysqli_query($conn, $query);
 

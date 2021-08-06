@@ -122,24 +122,70 @@
             </div>
         </nav>
         <main  class="my-5 ">
-            <form name="form" method="post" action="" class="form container"> 
-                <input type="hidden" name="new" value="1" />
-                <input name="DealsID" type="hidden" value="<?php echo $rowA1['DealsID'];?>"/>
-                <p><input class="form-control col" type="text" name="NewsDate" required value="<?php echo $rowA1['NewsDate'];?>" DISABLED/></p>
-                <p><input class="form-control col" type="text" name="PortfolioCompanyName" placeholder="Portfolio Company"  value="<?php echo $rowA1['PortfolioCompanyName'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="InvestorName" placeholder="Unknown Investor(s)"  value="<?php echo $rowA1['InvestorName'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="FundName" placeholder="Unknown Fund(s)"  value="<?php echo $rowA1['FundName'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="InvestmentStage" placeholder="Unknown Investment Stage"  value="<?php echo $rowA1['InvestmentStage'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="Sector" placeholder="Enter Sector"  value="<?php echo $rowA1['Sector'];?>" DISABLED/></p>
-                
-                <p><input class="form-control col" type="text" name="Country" placeholder="Unknown Headquarters"  value="<?php echo $rowA1['Country'];?>" DISABLED/></p>
+            <form name="form"  class="form container"> 
+                <div class="row">
+                    <p class="col-lg-6">
+                        <label for="NewsDate">News Date</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['NewsDate'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">News URL</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['NewsURL'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Portfolio Company</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['PortfolioCompanyName'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Investment Manager(s)</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['InvestorName'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Fund(s)</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['FundName'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Investment Value</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['InvestmentValue'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">stake</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['stake'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Industry</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['Industry'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Sector</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['Sector'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Country</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['Country'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Contact</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['UserFullName'];?>" DISABLED/>
+                    </p>
+                    <p class="col-lg-6">
+                        <label for="NewsDate">Role</label>
+                        <input class="form-control col" type="text" name="NewsDate" value="<?php echo $rowA1['RoleType'];?>" DISABLED/>
+                    </p>
 
+                </div>
                 <button><a href="../../index.php"> Close</a></button>
             </form>
         </main>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+

@@ -3,14 +3,49 @@
         // INVESTOR INSERTS
         if ( isset($_POST['submit']))
         {
-            $InvestorName           = $_POST['InvestorName'];
-            $InvestorWebsite        = $_POST['InvestorWebsite'];
-            $InvestorNote           = $_POST['InvestorNote'];
-            $Description            = $_POST['Description'];
-            $Currency                = $_POST['Currency'];
-            $YearFounded            = $_POST['YearFounded'];
-            $Headquarters           = $_POST['Headquarters'];
-            $Logo                   = $_FILES['img']['name'];
+            if(isset($_POST['InvestorName'])){ 
+                $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['InvestorWebsite'])){ 
+                $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['InvestorNote'])){ 
+                $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['Description'])){ 
+                $Description            = mysqli_real_escape_string($conn, $_POST['Description']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['Currency'])){ 
+                $Currency               = mysqli_real_escape_string($conn, $_POST['Currency']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['YearFounded'])){ 
+                $YearFounded            = mysqli_real_escape_string($conn, $_POST['YearFounded']);
+            }else {
+                // error_reporting(0);
+            };
+
+            if(isset($_POST['Headquarters'])){ 
+                $Headquarters           = mysqli_real_escape_string($conn, $_POST['Headquarters']); 
+            }else {
+                // error_reporting(0);
+            };
+            
+            
 
             // INVESTOR NOTE INSERT
 
@@ -21,67 +56,56 @@
             if($query2){
                 // echo 'Form 3 Submitted! => '.$query3.'<br/>';
             } else {
-                echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                echo 'Oops! There was an error saving investor note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             };
 
             // INVESTOR TABLE INSERT
-            // $m = "../img/".$_FILES['img']['name'];
-
-            // Use move_uploaded_file function to move files
-            // move_uploaded_file($_FILES['img']['tmp_name'], $m);
-
-            $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
-
-            // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
-            // echo "Uploaded Successfully"; 
-            $sql3 ="INSERT INTO Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
-            VALUES (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')";
+            if(isset($_FILES['img']['name'])){ 
+                $logoName = $_FILES['img']['name'];
+                $logoSize = $_FILES['img']['size'];
+    
+                if($logoSize>0):
+                    // echo'file uploaded' .$logo;
+                    $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+                else:
+                    // echo 'Image not set';
+                endif;
+            }else {
+                // error_reporting(0);
+            }
+            
+            $sql3 ="    INSERT INTO 
+                            Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
+                        VALUES 
+                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')
+            ";
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
                 // echo 'Thanks for your contribution! You will be redirected in 3 sec...';
             }else{
                 echo 'Oops! There was an error creating new Investor. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-          
-        /* LINK INVESTOR TO FUND 
-            // $sql4 = "  INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
-            // VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'))";
-            // $query4 = mysqli_query($conn, $sql4);
-            // if($query4){
-            //     // echo '<script> Alert("Fund created successfully!")</script>';
-            //     // header( "refresh: 3; url= fund.php" );
-            // } else {
-            //     echo 'Oops! There was an error linking Investor to Fund  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            // }
-                    
-            // LINK INVESTOR TO PORTFOLIO COMPANY 
-            // $sql4 = "  INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, PortfolioCompanyID)
-            // VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-            // $query4 = mysqli_query($conn, $sql4);
-            // if($query4){
-            //     // echo '<script> Alert("Fund created successfully!")</script>';
-            //     // header( "refresh: 3; url= fund.php" );
-            // } else {
-            //     echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-        */
-                  
-        // LINK INVESTOR TO NOTE
-        $sql5 = "  INSERT INTO InvestorNote(InvestorNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, NoteID)
-        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Note.NoteID FROM Note where Note.Note = '$InvestorNote'))";
-        $query5 = mysqli_query($conn, $sql5);
-        if($query5){
-            // echo '<script> Alert("Investor created successfully!");</script>';
-            // header( "refresh: 3; url= fund.php");
-        } else {
-            echo 'Oops! There was an error linking Investment Manger to Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
-
-        echo '<p> New Investment Manger created successfully! </p>'
-             .'<br/>'
-             .'<a class="btn btn-danger" href="javascript:window.open(\'\',\'_self\').close();">Close</a>'
-             .'<br/>';
-        // header( "refresh: 5;url= ../../../index.php" );
+            };
+            
+            if($query2 && $query3){
+                // LINK INVESTOR TO NOTE
+                $sql5 = "   INSERT INTO 
+                                InvestorNote(InvestorNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, NoteID)
+                            VALUES 
+                                (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Note.NoteID FROM Note where Note.Note = '$InvestorNote'))
+                ";
+                $query5 = mysqli_query($conn, $sql5);
+                if($query5){
+                // DO NOTHING
+                echo    '<p> New Investment Manger created successfully! </p>'
+                        .'<br/>'
+                        .'<a class="btn btn-danger" href="javascript:window.open(\'\',\'_self\').close();">Close</a>'
+                        .'<br/>';
+                } else {
+                echo 'Oops! There was an error linking Investment Manager to Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                }
+            }else{
+                echo mysqli_error($conn);
+            };
         exit();
     }
 

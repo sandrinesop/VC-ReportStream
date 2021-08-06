@@ -130,13 +130,13 @@
         echo '<p style="color:#FF0000;">'.$status.'</p>';
         header( "refresh: 5;url= ../tabs/portfolio-company.php" );
 
-        $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_REQUEST['PortfolioCompanyName']);
-        $Currency                = mysqli_real_escape_string($conn, $_REQUEST['Currency']);
-        $Website                 = mysqli_real_escape_string($conn, $_REQUEST['Website']);
-        $Contact            = mysqli_real_escape_string($conn, $_REQUEST['UserFullName']);
-        $Details                 = mysqli_real_escape_string($conn,  $_REQUEST['Details']);
-        $YearFounded             = mysqli_real_escape_string($conn, $_REQUEST['YearFounded']);
-        $Headquarters            = mysqli_real_escape_string($conn, $_REQUEST['Headquarters']);
+        $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
+        $Currency                = mysqli_real_escape_string($conn, $_POST['Currency']);
+        $Website                 = mysqli_real_escape_string($conn, $_POST['Website']);
+        $Contact            = mysqli_real_escape_string($conn, $_POST['UserFullName']);
+        $Details                 = mysqli_real_escape_string($conn,  $_POST['Details']);
+        $YearFounded             = mysqli_real_escape_string($conn, $_POST['YearFounded']);
+        $Headquarters            = mysqli_real_escape_string($conn, $_POST['Headquarters']);
   
         if(isset($_FILES['img']['name'])){ 
             $logoName = $_FILES['img']['name'];
@@ -152,26 +152,26 @@
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['InvestorName'])){ 
-            $Investors          = $_REQUEST['InvestorName'];
+        if(isset($_POST['InvestorName'])){ 
+            $Investors          = $_POST['InvestorName'];
         }else {
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['FundName'])){ 
-            $Funds                   = $_REQUEST['FundName'];
+        if(isset($_POST['FundName'])){ 
+            $Funds                   = $_POST['FundName'];
         }else {
             // error_reporting(0);
         }
 
-        if(isset($_REQUEST['Industry'])){ 
-            $Industries              = mysqli_real_escape_string($conn, $_REQUEST['Industry']);
+        if(isset($_POST['Industry'])){ 
+            $Industries              = mysqli_real_escape_string($conn, $_POST['Industry']);
         }else {
             // error_reporting(0);
         }
         
-        if(isset($_REQUEST['Sector'])){ 
-            $Sectors                 =  $_REQUEST['Sector'];
+        if(isset($_POST['Sector'])){ 
+            $Sectors                 =  $_POST['Sector'];
         }else {
             // error_reporting(0);
         }

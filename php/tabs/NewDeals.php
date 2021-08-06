@@ -3,7 +3,7 @@
     include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
     // QUERY DATABASE FROM DATA
     $sqlAA="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Note.Note
                 FROM 
                     Deals 
                 -- Include investor table data through the linking table dealsinvestor
@@ -77,9 +77,17 @@
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
+                LEFT JOIN 
+                    DealsNote
+                ON 
+                    DealsNote.DealsID = Deals.DealsID
+                LEFT JOIN 
+                    Note
+                ON 
+                    Note.NoteID =DealsNote.NoteID
                 WHERE 
                     Deals.Deleted = 0
-                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType, Note
                 ORDER BY  news.NewsDate
     ";
 
@@ -568,6 +576,7 @@
                                     <th scope="col">Portfolio Company Headquarters</th>
                                     <th scope="col">Company Contact(s)</th>
                                     <th scope="col">Role </th>
+                                    <th scope="col">Role </th>
                                     <th scope="col">View More </th>
                                     <th scope="col">Edit  </th>
                                     <th scope="col">Delete </th>
@@ -590,6 +599,7 @@
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["Note"];?> </small></td>
                                         <td> <a href="../Views/DealView.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
                                         <td class="text-truncate"> <a href="../crud/edit_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Edit</a></td>
                                         <td class="text-truncate"> <a href="../crud/delete_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Delete</a></td>

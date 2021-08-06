@@ -7,9 +7,9 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('','UserFullName', 'FirstName', 'LastName', 'Organization(s)', 'ContactNumber1', 'ContactNumber2', 'Email', 'RoleTypeID', 'GenderID', 'RaceID'));
+        fputcsv($output, array('UserFullName', 'FirstName', 'LastName', 'Organization(s)', 'ContactNumber1', 'ContactNumber2', 'Email', 'RoleTypeID', 'GenderID', 'RaceID'));
         $query = "  SELECT 
-                        userdetail.Deleted, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race 
+                        userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race 
                     FROM 
                         userdetail 
                     LEFT JOIN 
@@ -37,7 +37,7 @@
                     WHERE  
                         userdetail.Deleted = 0 
                     GROUP BY 
-                    userdetail.Deleted, userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race
+                        userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race
         ";
         $result = mysqli_query($conn, $query);
 

@@ -60,9 +60,13 @@
                 ON 
                     Country.CountryID = PortfolioCompanyCountry.CountryID
                 LEFT JOIN 
+                    DealsIndustry
+                ON 
+                    DealsIndustry.DealsID = deals.DealsID
+                LEFT JOIN 
                     Industry
                 ON 
-                    Industry.IndustryID = deals.IndustryID
+                    Industry.IndustryID = DealsIndustry.IndustryID
                 LEFT JOIN 
                     DealsSector
                 ON 
