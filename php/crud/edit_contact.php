@@ -210,7 +210,7 @@
                             <option value="CFO">CFO</option>
                             <option value="COO">COO</option>
                         </select>
-                    </p>
+                    </p> 
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Gender" class="form-label" >Gender </label> <br>
                         <!-- <input class="form-control col" type="text" name="Gender" placeholder="Enter Gender"  value="<?php echo $row3['Gender'];?>" /> -->
