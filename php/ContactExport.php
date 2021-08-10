@@ -7,37 +7,37 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('UserFullName', 'FirstName', 'LastName', 'Organization(s)', 'ContactNumber1', 'ContactNumber2', 'Email', 'RoleTypeID', 'GenderID', 'RaceID'));
+        fputcsv($output, array('UserFullName', 'FirstName', 'LastName', 'Organization(s)', 'ContactNumber1', 'ContactNumber2', 'Email', 'RoleType', 'Gender', 'Race'));
         $query = "  SELECT 
-                        userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race 
+                        UserDetail.UserFullName, UserDetail.FirstName, UserDetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, UserDetail.ContactNumber1, UserDetail.ContactNumber2, UserDetail.Email, RoleType.RoleType, Gender.Gender, Race.Race 
                     FROM 
-                        userdetail 
+                        UserDetail 
                     LEFT JOIN 
                         PortfolioCompanyUserDetail 
                     ON 
-                        PortfolioCompanyUserDetail.UserDetailID=userdetail.UserDetailID 
+                        PortfolioCompanyUserDetail.UserDetailID=UserDetail.UserDetailID 
                     LEFT JOIN 
                         PortfolioCompany
                     ON 
                         PortfolioCompanyUserDetail.PortfolioCompanyID=PortfolioCompany.PortfolioCompanyID 
                     LEFT JOIN 
-                        roletype 
+                        RoleType 
                     ON 
-                        roletype.RoleTypeID=userdetail.RoleTypeID
+                        RoleType.RoleTypeID=UserDetail.RoleTypeID
 
                     LEFT JOIN 
-                        gender
+                        Gender
                     ON
-                        gender.GenderID = userdetail.GenderID
+                        Gender.GenderID = UserDetail.GenderID
 
                     LEFT JOIN 
-                        race 
+                        Race 
                     ON 
-                        race.RaceID =userdetail.RaceID
+                        Race.RaceID =UserDetail.RaceID
                     WHERE  
-                        userdetail.Deleted = 0 
+                        UserDetail.Deleted = 0 
                     GROUP BY 
-                        userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race
+                        UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
         ";
         $result = mysqli_query($conn, $query);
 

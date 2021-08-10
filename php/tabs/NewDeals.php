@@ -2,11 +2,11 @@
     include_once('../App/connect.php');
     include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
     // QUERY DATABASE FROM DATA
-    $sqlAA="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType, Note.Note
+    $sqlAA="    SELECT
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType, Note.Note
                 FROM 
                     Deals 
-                -- Include investor table data through the linking table dealsinvestor
+                -- Include investor table data through the linking table Dealsinvestor
                 LEFT JOIN
                     DealsInvestor
                 ON 
@@ -16,7 +16,7 @@
                     Investor
                 ON
                     Investor.InvestorID = DealsInvestor.InvestorID
-                -- Include fund table data through the linking table dealsfund
+                -- Include fund table data through the linking table Dealsfund
                 LEFT JOIN
                     DealsFund
                 ON 
@@ -30,12 +30,12 @@
                 LEFT JOIN 
                     News 
                 ON
-                    News.NewsID = deals.NewsID 
+                    News.NewsID = Deals.NewsID 
                 LEFT JOIN 
                 -- Include PortfoliCompany table data
                     PortfolioCompany
                 ON
-                    PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
+                    PortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                 -- Link investment stage to fund
                     FundInvestmentStage      
@@ -48,7 +48,7 @@
                 LEFT JOIN 
                     PortfolioCompanyCountry
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
+                    PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
@@ -56,7 +56,7 @@
                 LEFT JOIN 
                     DealsIndustry
                 ON 
-                    DealsIndustry.DealsID = deals.DealsID
+                    DealsIndustry.DealsID = Deals.DealsID
                 LEFT JOIN 
                     Industry
                 ON 
@@ -88,10 +88,10 @@
                 WHERE 
                     Deals.Deleted = 0
                 GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType, Note
-                ORDER BY  news.NewsDate
+                ORDER BY  News.NewsDate
     ";
 
-    $resultAA = $conn->query($sqlAA) or die($conn->error);
+    $resultAA = $conn->query($sqlAA);// or die($conn->error)
     $rowAA = mysqli_fetch_assoc($resultAA);
 
     //==================================================== 
@@ -103,7 +103,7 @@
     $sql = " SELECT DISTINCT 
                 PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
             JOIN 
-                Country ON country.CountryID = PortfolioCompany.Headquarters 
+                Country ON Country.CountryID = PortfolioCompany.Headquarters 
             WHERE Website IS NOT NULL AND Details IS NOT NULL";
             
     $result = mysqli_query($conn, $sql);
@@ -245,8 +245,8 @@
         <title>VC Reportstream | deals </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../css/select2.min.css">
-        <link rel="stylesheet" href="../../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../../css/bootstrap.css">
+        <!-- <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/bootstrap.css"> -->
         <link rel="stylesheet" href="../../css/main.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
@@ -374,7 +374,7 @@
                                                         <select id="Industry" name="Industry[]" class="form-select">
                                                             <option>choose...</option>
                                                             <option value="Artificial Intelligence">Artificial Intelligence</option>
-                                                            <option value="Clothing Apparel">Clothing Apparel</option>
+                                                            <option value="Clothing and Apparel">Clothing Apparel</option>
                                                             <option value="Administrative Services">Administrative Services</option>
                                                             <option value="Advertising">Advertising</option>
                                                             <option value="Agriculture and Farming">Agriculture and Farming</option>
@@ -576,7 +576,7 @@
                                     <th scope="col">Portfolio Company Headquarters</th>
                                     <th scope="col">Company Contact(s)</th>
                                     <th scope="col">Role </th>
-                                    <th scope="col">Role </th>
+                                    <th scope="col">Deal Notes </th>
                                     <th scope="col">View More </th>
                                     <th scope="col">Edit  </th>
                                     <th scope="col">Delete </th>

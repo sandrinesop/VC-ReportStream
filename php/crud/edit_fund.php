@@ -3,7 +3,7 @@
     // QUERY DATABASE FROM DATA
     $FundID =$_REQUEST['FundID'];
     $sql="  SELECT 
-                Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
+                Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Industry) AS Industry , Note.Note
             FROM 
                 Fund 
                 -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -53,9 +53,9 @@
             Note.NoteID = FundNote.NoteID
 
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID = Fund.CurrencyID 
+                Currency.CurrencyID = Fund.CurrencyID 
             WHERE  
                 Fund.Deleted = 0 AND Fund.FundID = '$FundID'
 
@@ -153,7 +153,7 @@
         }
 
         if(!empty($Currency)){
-            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency')";
+            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM Currency C WHERE C.Currency = '$Currency')";
         }
 
         if(!empty($CommittedCapital)){
@@ -242,7 +242,7 @@
                                 VALUES 
                                     (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany  where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompany'))
                     ";
-                    echo $sql5;
+                    // echo $sql5;
                     $query5 = mysqli_query($conn, $sql5);
 
                     if($query5){
@@ -382,7 +382,7 @@
                         </select>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        <label for="Currency" class="form-label">currency</label>
+                        <label for="Currency" class="form-label">Currency</label>
                         <select class="form-select" id="Currency" name="Currency" >
                             <option value="<?php echo $row['Currency'];?>"> <?php echo $row['Currency'];?> </option>
                             <?php

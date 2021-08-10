@@ -51,17 +51,17 @@
                                     LEFT JOIN 
                                         News 
                                     ON
-                                        News.NewsID = deals.NewsID  
+                                        News.NewsID = Deals.NewsID  
                                     WHERE 
-                                        News.NewsDate = '".$line[0]."'AND News.NewsURL = '".$line[1]."' AND Deals.InvestmentValue = '".$line[5]."'
+                                        News.NewsDate = '".$line[0]."'AND News.NewsURL = '".$line[1]."'
                     ";
                     $prevResult = mysqli_query($conn,$prevQuery);
-                    if($prevResult->num_rows>0){
+                    if(!empty($prevResult) && $prevResult->num_rows>0){
                         // means deal is already in the database so simply ignore
                         $msg[] =$NewsURL;
                     }else{
                         header( "refresh: 8; url= ../tabs/NewDeals.php" );
-                        // BEFORE IMPORTING THE DEAL, WE NEED TO MAK SURE THE NEWS, COMPANIES, INVESTORS AND FUNDS ALREADY EXISTS IN THE LOOK UP TABLES SO WE'LL INSERT THOSE ENTITIES FIRST.
+                        // BEFORE IMPORTING THE DEAL, WE NEED TO MAK SURE THE News, COMPANIES, INVESTORS AND FUNDS ALREADY EXISTS IN THE LOOK UP TABLES SO WE'LL INSERT THOSE ENTITIES FIRST.
                         $sql = "    INSERT INTO 
                                         News(NewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsDate, NewsURL) 
                                     VALUES 
@@ -90,7 +90,7 @@
                                 $sql99 = "  INSERT INTO 
                                                 DealsSector(DealsSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate,DealsID, SectorID)
                                             VALUES 
-                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select S.SectorID FROM sector S where S.Sector = '$sector'))
+                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select S.SectorID FROM sector S where S.Sector = '$sector'))
                                 ";
                                 $query99 = mysqli_query($conn, $sql99);
 
@@ -109,7 +109,7 @@
                                 $sql100 = "  INSERT INTO 
                                                 DealsInvestor(DealsInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate,DealsID, InvestorID)
                                             VALUES 
-                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor'))
+                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Investor.InvestorID FROM Investor  where Investor.InvestorName = '$Investor'))
                                 ";
                                 $query100 = mysqli_query($conn, $sql100);
 
@@ -127,7 +127,7 @@
                                 $sql101 = "  INSERT INTO 
                                                 DealsFund(DealsFundID, CreatedDate, ModifiedDate, Deleted, DeletedDate,DealsID, FundID)
                                             VALUES 
-                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select Fund.FundID FROM Fund  where Fund.FundName = '$Fund'))
+                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Fund.FundID FROM Fund  where Fund.FundName = '$Fund'))
                                 ";
                                 $query101 = mysqli_query($conn, $sql101);
 
@@ -145,7 +145,7 @@
                                 $sql102 = "   INSERT INTO 
                                                 DealsIndustry(DealsIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, IndustryID)
                                             VALUES 
-                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
                                 $query102 = mysqli_query($conn, $sql102);
                                 if($query102){
                                     // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';

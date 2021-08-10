@@ -2,35 +2,35 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql="      SELECT 
-                    userdetail.UserDetailID, userdetail.UserFullName, userdetail.FirstName, userdetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, userdetail.ContactNumber1, userdetail.ContactNumber2, userdetail.Email, RoleType.RoleType, gender.Gender, race.Race 
+                    UserDetail.UserDetailID, UserDetail.UserFullName, UserDetail.FirstName, UserDetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, UserDetail.ContactNumber1, UserDetail.ContactNumber2, UserDetail.Email, RoleType.RoleType, Gender.Gender, Race.Race 
                 FROM 
-                    userdetail 
+                    UserDetail 
                 LEFT JOIN 
                     PortfolioCompanyUserDetail 
                 ON 
-                    PortfolioCompanyUserDetail.UserDetailID=userdetail.UserDetailID 
+                    PortfolioCompanyUserDetail.UserDetailID=UserDetail.UserDetailID 
                 LEFT JOIN 
                     PortfolioCompany
                 ON 
                     PortfolioCompanyUserDetail.PortfolioCompanyID=PortfolioCompany.PortfolioCompanyID 
                 LEFT JOIN 
-                    roletype 
+                    RoleType 
                 ON 
-                    roletype.RoleTypeID=userdetail.RoleTypeID
+                    RoleType.RoleTypeID=UserDetail.RoleTypeID
 
                 LEFT JOIN 
-                    gender
+                    Gender
                 ON
-                    gender.GenderID = userdetail.GenderID
+                    Gender.GenderID = UserDetail.GenderID
 
                 LEFT JOIN 
-                    race 
+                    Race 
                 ON 
-                    race.RaceID =userdetail.RaceID
+                    Race.RaceID =UserDetail.RaceID
                 WHERE  
-                    userdetail.Deleted = 0 
+                    UserDetail.Deleted = 0 
                 GROUP BY 
-                UserDetailID, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
+                    UserDetailID, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
     ";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
@@ -119,7 +119,11 @@
                 echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
             // echo '<p> Thanks for your contribution! You will be redirected in 5 sec...</p>';
-            header( "refresh: 5;url= ../tabs/contacts.php" );
+            header( "refresh: 3;url= ../tabs/contacts.php" );
+
+            echo '<H3 style="color:green;">New contact created successfully</H3> '
+            .'<br/>'
+            .'<small>You will be redirected shortly...</small>';
     }
 ?>
 

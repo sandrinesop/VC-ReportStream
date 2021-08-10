@@ -1,5 +1,6 @@
 <?php
-    $conn = mysqli_connect('localhost', 'root', '','AA');
+    // $conn = mysqli_connect('localhost', 'root', '','AA');
+   $conn = mysqli_connect('services.methys-pe.com', 'remote', 'PmHjW$?R/wh:l:cpW%pF@t#*=','AA');
     
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -8,7 +9,7 @@
     if ( isset($_POST['submit']))
     {
         // DECLARED AND SET VARIABLES
-        // NEWS TABLE
+        // News TABLE
         $NewsDate       = date('Y-m-d', strtotime($_POST['NewsDate']));
         $NewsURL        = mysqli_real_escape_string($conn, $_POST['NewsURL']);
         $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
@@ -29,12 +30,12 @@
         
         /* 
             ///////////////////////////////////////////////////
-            Loop through the array of sectors
+            Loop through the array of Sectors
             ///////////////////////////////////////////////////
         */
 
         // ===============================
-        // BELOW ARE THE INSERT STATEMENTS TO THE NEWS AND NOTE TABLE. THIS IS ONE OF THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
+        // BELOW ARE THE INSERT STATEMENTS TO THE News AND NOTE TABLE. THIS IS ONE OF THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
         // ===============================
         $sql = "    INSERT INTO 
                         News(NewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsDate, NewsURL) 
@@ -73,7 +74,7 @@
         // ===============================
 
         $sqlA1 = "  INSERT INTO PortfolioCompanyNews(PortfolioCompanyNewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, PortfolioCompanyID, NewsID)
-                    VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct news.NewsID FROM news where news.NewsURL = '$NewsURL'))";
+                    VALUES (uuid(), now(), now(),0,NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'))";
         $queryA1 = mysqli_query($conn, $sqlA1);
         if ($queryA1 ){
             // Success
@@ -119,7 +120,7 @@
                 $sqlDealIndustry = "  INSERT INTO 
                                         DealsIndustry(DealsIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, IndustryID)
                                     VALUES 
-                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry')
+                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (SELECT Industry.IndustryID FROM Industry WHERE Industry.Industry = '$Industry'))
                 ";
                 $queryIndustry = mysqli_query($conn, $sqlDealIndustry);
                 if($queryIndustry){
@@ -129,19 +130,19 @@
                 }
             }
             // =================================================================
-            // LOOP TO INSERT SECTORS TO THE LINKING TABLE ON DEALS
+            // LOOP TO INSERT SectorS TO THE LINKING TABLE ON DEALS
             // =================================================================
             foreach($Sector as $sects){  
                 $sqlDealSector = "  INSERT INTO 
                                         DealsSector(DealsSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, SectorID)
                                     VALUES 
-                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (SELECT S.SectorID FROM sector S WHERE S.Sector = '$sects'))
+                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (SELECT S.SectorID FROM Sector S WHERE S.Sector = '$sects'))
                 ";
                 $query99 = mysqli_query($conn, $sqlDealSector);
                 if($query99){
                     // Do nothing
                 } else {
-                    echo 'Oops! There was an error inserting the sector IDs from the array'.mysqli_error($conn).'<br/>';
+                    echo 'Oops! There was an error inserting the Sector IDs from the array'.mysqli_error($conn).'<br/>';
                 }
             }
             // =================================================================
@@ -151,7 +152,7 @@
                 $sqlDealInvestor = "  INSERT INTO 
                                         DealsInvestor(DealsInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, InvestorID)
                                     VALUES 
-                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (SELECT Investor.InvestorID FROM Investor WHERE Investor.InvestorName = '$InvestmentManager'))
+                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (SELECT Investor.InvestorID FROM Investor WHERE Investor.InvestorName = '$InvestmentManager'))
                 ";
 
                 $query98 = mysqli_query($conn, $sqlDealInvestor);
@@ -169,7 +170,7 @@
                 $sqlDealFund = "  INSERT INTO 
                                         DealsFund(DealsFundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, DealsID, FundID)
                                     VALUES 
-                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$Fund'))
+                                        (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$Fund'))
                 ";
 
                 $query97 = mysqli_query($conn, $sqlDealFund);
@@ -189,7 +190,7 @@
             $sqlDealsNote = "   INSERT INTO 
                                     DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
                                 VALUES 
-                                    (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT news.NewsID FROM news WHERE news.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+                                    (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
             ";
             $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
             if ($queryDealsNote ){

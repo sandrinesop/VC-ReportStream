@@ -7,9 +7,9 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('','Investment Manager','Website','Fund(s)','Portfolio Company List','Note','Description','Currency','ImpactTag','YearFounded','Country'));
+        fputcsv($output, array('Investment Manager','Website','Fund(s)','Portfolio Company List','Note','Description','Currency','YearFounded','Country', 'Logo'));
         $query = "  SELECT 
-                        Investor.Deleted, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country 
+                        Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, Description.Description, Currency.Currency, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country
                     FROM 
                         Investor
                         -- Joining linking table so that we can access funds linked to investor
@@ -40,22 +40,22 @@
                     ON 
                         Note.NoteID = InvestorNote.NoteID
                     LEFT JOIN 
-                        currency 
+                        Currency 
                     ON 
-                        currency.CurrencyID=Investor.CurrencyID
+                        Currency.CurrencyID=Investor.CurrencyID
                         
                     LEFT JOIN 
-                        description 
+                        Description 
                     ON 
-                        description.DescriptionID=Investor.DescriptionID 
+                        Description.DescriptionID=Investor.DescriptionID 
                     LEFT JOIN 
-                        country 
+                        Country 
                     ON 
-                        country.CountryID = Investor.Headquarters 
+                        Country.CountryID = Investor.Headquarters 
                     WHERE 
-                        Investor.Deleted = 0 
+                        Investor.Deleted= 0 
                     
-                    GROUP BY  Deleted, InvestorName, Note, Description, Currency, ImpactTag, YearFounded
+                    GROUP BY InvestorName, Description, Currency, Note, YearFounded
                     ORDER BY InvestorName;
         ";
 

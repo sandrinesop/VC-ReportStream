@@ -7,9 +7,9 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('Fund Name', 'Investment Manager(s)', 'Portfolio Companies', 'Currency', 'Committed Capital', 'Minimum Investment', 'Maximum Investment', 'Investment Stage', 'Note'));
-        $query = " SELECT 
-                        Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage,  Note.Note
+        fputcsv($output, array('Fund Name', 'Investment Manager(s)', 'Portfolio Companies', 'Currency','Currency Code', 'Committed Capital', 'Minimum Investment', 'Maximum Investment', 'Investment Stage', 'Note'));
+        $query = "  SELECT 
+                        Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , Currency.Currency,Currency.CurrencyCode, FORMAT(Fund.CommittedCapital, 'c', 'en-US') AS 'CommittedCapital' , FORMAT(Fund.MinimumInvestment, 'c', 'en-US') AS 'MinimumInvestment', FORMAT(Fund.MaximumInvestment, 'c', 'en-US') AS 'MaximumInvestment', GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
                     FROM 
                         Fund 
                         -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -39,15 +39,6 @@
                         InvestmentStage 
                     ON 
                     InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID
-                    --    JOINING FUNDINDUSTRY TO ACCESS LINKED INDUSTRY
-                    LEFT JOIN 
-                        FundIndustry 
-                    ON 
-                    FundIndustry.FundID = Fund.FundID
-                    LEFT JOIN 
-                        Industry 
-                    ON 
-                    Industry.IndustryID = FundIndustry.IndustryID
                     --    JOINING FUNDNOTE TO ACCESS LINKED NOTE
                     LEFT JOIN 
                         FundNote 
@@ -59,13 +50,13 @@
                     Note.NoteID = FundNote.NoteID
 
                     LEFT JOIN 
-                        currency 
+                        Currency 
                     ON 
-                        currency.CurrencyID = Fund.CurrencyID 
+                        Currency.CurrencyID = Fund.CurrencyID 
                     WHERE  
                         Fund.Deleted = 0
 
-                    GROUP BY FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note 
+                    GROUP BY  FundName, Currency, CurrencyCode, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note
         ";
         $result = mysqli_query($conn, $query);
 

@@ -2,7 +2,7 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency,currency.CurrencyCode, FORMAT(Fund.CommittedCapital, 'c', 'en-US') AS 'CommittedCapital' , FORMAT(Fund.MinimumInvestment, 'c', 'en-US') AS 'MinimumInvestment', FORMAT(Fund.MaximumInvestment, 'c', 'en-US') AS 'MaximumInvestment', GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
+	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , Currency.Currency,Currency.CurrencyCode, FORMAT(Fund.CommittedCapital, 'c', 'en-US') AS 'CommittedCapital' , FORMAT(Fund.MinimumInvestment, 'c', 'en-US') AS 'MinimumInvestment', FORMAT(Fund.MaximumInvestment, 'c', 'en-US') AS 'MaximumInvestment', GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
             FROM 
                 Fund 
                 -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -43,9 +43,9 @@
                Note.NoteID = FundNote.NoteID
 
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID = Fund.CurrencyID 
+                Currency.CurrencyID = Fund.CurrencyID 
             WHERE  
                 Fund.Deleted = 0
 
@@ -125,9 +125,14 @@
         $sql = "    INSERT INTO 
                         Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
                     VALUES 
-                        (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')
+                        (uuid(), now(), now(),0,NULL, '$FundName',(SELECT Currency.CurrencyID FROM Currency WHERE Currency.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')
         ";
         $query = mysqli_query($conn, $sql);
+        if($query){
+            // Do Nothing
+        } else {
+            echo 'Oops! There was an error creating Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        };
         // NOTE INSERTION QUERY
         $sql2 = "INSERT INTO 
                     Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID) 
@@ -136,17 +141,17 @@
         ";
         $query2 = mysqli_query($conn, $sql2);
 
-        if($query && $query2 ){
+        if($query2 ){
             // Do Nothing
         } else {
-            echo 'Oops! There was an error. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
+            echo 'Oops! There was an error creating Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+        };
         // ===========================================================
         // LOOP TO INSERT INVESTORS ON FUND
         // ===========================================================
         foreach($InvestorName as $InvestmentManager) {
             $sql4 = "   INSERT INTO FundInvestor(FundInvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestorID)
-                        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestmentManager'))
+                        VALUES (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT Investor.InvestorID FROM Investor WHERE Investor.InvestorName = '$InvestmentManager'))
             ";
             $query4 = mysqli_query($conn, $sql4);
             if($query4){
@@ -162,7 +167,7 @@
             $sql5 = "   INSERT INTO 
                             FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
                         VALUES 
-                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$Company'))
+                            (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany WHERE PortfolioCompany.PortfolioCompanyName = '$Company'))
             ";
             $query5 = mysqli_query($conn, $sql5);
             if($query5){
@@ -178,7 +183,7 @@
             $sql6 = "   INSERT INTO 
                             FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
                         VALUES 
-                            (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select InvestmentStage.InvestmentStageID FROM InvestmentStage where InvestmentStage.InvestmentStage = '$Stage'))
+                            (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT InvestmentStage.InvestmentStageID FROM InvestmentStage WHERE InvestmentStage.InvestmentStage = '$Stage'))
             ";
             $query6 = mysqli_query($conn, $sql6);
             if($query6){
@@ -192,7 +197,7 @@
         $sql7 = "   INSERT INTO 
                         FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
                     VALUES 
-                        (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select Note.NoteID FROM Note where Note.Note = '$FundNote'))
+                        (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT Note.NoteID FROM Note WHERE Note.Note = '$FundNote'))
         ";
         $query7 = mysqli_query($conn, $sql7);
         if($query7){

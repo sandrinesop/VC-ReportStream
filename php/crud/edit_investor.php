@@ -3,7 +3,7 @@
     // QUERY DATABASE FROM DATA
     $InvestorID =$_REQUEST['InvestorID'];
     $sql=" SELECT  
-                Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
+                Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, Description.Description, Currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
             FROM 
                 Investor
                 -- Joining linking table so that we can access funds linked to investor
@@ -34,18 +34,18 @@
             ON 
                 Note.NoteID = InvestorNote.NoteID
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID=Investor.CurrencyID
+                Currency.CurrencyID=Investor.CurrencyID
                 
             LEFT JOIN 
-                description 
+                Description 
             ON 
-                description.DescriptionID=Investor.DescriptionID 
+                Description.DescriptionID=Investor.DescriptionID 
             LEFT JOIN 
-                country 
+                Country 
             ON 
-                country.CountryID = Investor.Headquarters 
+                Country.CountryID = Investor.Headquarters 
             WHERE 
                 Investor.Deleted= 0 AND Investor.InvestorID = '$InvestorID'
 

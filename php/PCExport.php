@@ -7,11 +7,11 @@
         header('Content-Disposition: attachment; filename=data.csv');
 
         $output = fopen("php://output","w");
-        fputcsv($output, array('Deleted','PortfolioCompanyName','Investment Manager(s)','Fund(s)','Currency','Website','Industry','Sector','Details','Year Founded','Country','CEO'));
+        fputcsv($output, array('PortfolioCompanyName','Investment Manager(s)','Fund(s)','Currency','Website','Industry','Sector','Details','Year Founded','Country','CEO'));
         $query = "  SELECT DISTINCT
-                         portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName
+                        PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, UserDetail.UserFullName
                     FROM 
-                        portfoliocompany 
+                        PortfolioCompany 
                     LEFT JOIN 
                         InvestorPortfolioCompany 
                     ON 
@@ -29,13 +29,13 @@
                     ON 
                         Fund.FundID = FundPortfolioCompany.FundID 
                     LEFT JOIN 
-                        currency 
+                        Currency 
                     ON 
-                        currency.CurrencyID = portfoliocompany.CurrencyID 
+                        Currency.CurrencyID = PortfolioCompany.CurrencyID 
                     LEFT JOIN 
-                        country 
+                        Country 
                     ON 
-                        country.CountryID = portfoliocompany.Headquarters 
+                        Country.CountryID = PortfolioCompany.Headquarters 
                     LEFT JOIN 
                         PortfolioCompanyIndustry 
                     ON 
@@ -47,7 +47,7 @@
                     LEFT JOIN 
                         PortfolioCompanySector
                     ON 
-                        PortfolioCompanySector.PortfolioCompanyID = portfoliocompany.PortfolioCompanyID
+                        PortfolioCompanySector.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
                     LEFT JOIN 
                         Sector 
                     ON 
@@ -55,7 +55,7 @@
                     LEFT JOIN 
                         PortfolioCompanyUserDetail
                     ON 
-                        PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompany.PortfolioCompanyID
+                        PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
                     LEFT JOIN 
                         UserDetail
                     ON 
@@ -64,10 +64,18 @@
                         RoleType
                     ON 
                         RoleType.RoleTypeID = UserDetail.RoleTypeID
+                    LEFT JOIN 
+                        Gender
+                    ON
+                        Gender.GenderID = UserDetail.GenderID
+                    LEFT JOIN 
+                        Race 
+                    ON 
+                        Race.RaceID =UserDetail.RaceID
                     WHERE 
-                        portfoliocompany.Deleted = 0
+                        PortfolioCompany.Deleted = 0
                         
-                    GROUP BY portfoliocompany.Deleted, PortfolioCompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, UserDetail.UserFullName
+                    GROUP BY PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country
         ";
         $result = mysqli_query($conn, $query);
 

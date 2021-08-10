@@ -39,7 +39,7 @@
                                         PortfolioCompanyName = '".$line[0]."'
                     ";
                     $prevResult = mysqli_query($conn,$prevQuery);
-                    if($prevResult->num_rows>0){
+                    if(!empty($prevResult) && $prevResult->num_rows>0){
                         // means company is already in the database so simply ignore
                         // echo
                         // ''
@@ -52,24 +52,24 @@
                         $sql = "INSERT INTO 
                                     PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters)
                                 VALUES 
-                                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'))
+                                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'))
                         ";
                         $query = mysqli_query($conn, $sql);
 
                         if($query){
                             // =============================================
-                            // LOOP TO INSERT SECTORS ON P.COMPANY
+                            // LOOP TO INSERT SectorS ON P.COMPANY
                             // =============================================
                             $SectorList = explode(",", $Sectors);
-                            foreach($SectorList as $sector){  
+                            foreach($SectorList as $Sector){  
                                 $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sector'))";
+                                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$Sector'))";
                                 $query99 = mysqli_query($conn, $sql99);
 
                                 if($query99){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
-                                    echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+                                    echo 'Oops! There was an error inserting the Sector ID from the array'.mysqli_error($conn).'<br/>';
                                 }
                             }
                             // =============================================
@@ -83,7 +83,7 @@
                                                 (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
                                 $query98 = mysqli_query($conn, $sql98);
                                 if($query98){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
                                     echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
                                 }

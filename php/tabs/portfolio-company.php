@@ -2,73 +2,73 @@
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT DISTINCT
-        portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
-        FROM 
-            portfoliocompany 
-        LEFT JOIN 
-            InvestorPortfolioCompany 
-        ON 
-            InvestorPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
-        LEFT JOIN 
-            Investor 
-        ON 
-            Investor.InvestorID = InvestorPortfolioCompany.InvestorID 
-        LEFT JOIN 
-            FundPortfolioCompany 
-        ON 
-            FundPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
-        LEFT JOIN 
-            Fund 
-        ON 
-            Fund.FundID = FundPortfolioCompany.FundID 
-        LEFT JOIN 
-            currency 
-        ON 
-            currency.CurrencyID = portfoliocompany.CurrencyID 
-        LEFT JOIN 
-            country 
-        ON 
-            country.CountryID = portfoliocompany.Headquarters 
-        LEFT JOIN 
-            PortfolioCompanyIndustry 
-        ON 
-            PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
-        LEFT JOIN 
-            Industry 
-        ON 
-            Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
-        LEFT JOIN 
-            PortfolioCompanySector
-        ON 
-            PortfolioCompanySector.PortfolioCompanyID = portfoliocompany.PortfolioCompanyID
-        LEFT JOIN 
-            Sector 
-        ON 
-            Sector.SectorID = PortfolioCompanySector.SectorID
-        LEFT JOIN 
-            PortfolioCompanyUserDetail
-        ON 
-            PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompany.PortfolioCompanyID
-        LEFT JOIN 
-            UserDetail
-        ON 
-            UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
-        LEFT JOIN 
-            RoleType
-        ON 
-            RoleType.RoleTypeID = UserDetail.RoleTypeID
-        LEFT JOIN 
-            gender
-        ON
-            gender.GenderID = userdetail.GenderID
-        LEFT JOIN 
-            race 
-        ON 
-            race.RaceID =userdetail.RaceID
-        WHERE 
-            portfoliocompany.Deleted = 0
-            
-        GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo
+                PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo, UserDetail.UserFullName, Gender.Gender, Race.Race
+            FROM 
+                PortfolioCompany 
+            LEFT JOIN 
+                InvestorPortfolioCompany 
+            ON 
+                InvestorPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Investor 
+            ON 
+                Investor.InvestorID = InvestorPortfolioCompany.InvestorID 
+            LEFT JOIN 
+                FundPortfolioCompany 
+            ON 
+                FundPortfolioCompany.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Fund 
+            ON 
+                Fund.FundID = FundPortfolioCompany.FundID 
+            LEFT JOIN 
+                Currency 
+            ON 
+                Currency.CurrencyID = PortfolioCompany.CurrencyID 
+            LEFT JOIN 
+                Country 
+            ON 
+                Country.CountryID = PortfolioCompany.Headquarters 
+            LEFT JOIN 
+                PortfolioCompanyIndustry 
+            ON 
+                PortfolioCompanyIndustry.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Industry 
+            ON 
+                Industry.IndustryID = PortfolioCompanyIndustry.IndustryID
+            LEFT JOIN 
+                PortfolioCompanySector
+            ON 
+                PortfolioCompanySector.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                Sector 
+            ON 
+                Sector.SectorID = PortfolioCompanySector.SectorID
+            LEFT JOIN 
+                PortfolioCompanyUserDetail
+            ON 
+                PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
+                UserDetail
+            ON 
+                UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+            LEFT JOIN 
+                RoleType
+            ON 
+                RoleType.RoleTypeID = UserDetail.RoleTypeID
+            LEFT JOIN 
+                Gender
+            ON
+                Gender.GenderID = UserDetail.GenderID
+            LEFT JOIN 
+                Race 
+            ON 
+                Race.RaceID =UserDetail.RaceID
+            WHERE 
+                PortfolioCompany.Deleted = 0
+                
+            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo
     "; 
     $result = $conn->query($sql) or die($conn->error);
     
@@ -183,7 +183,7 @@
         $sql = "INSERT INTO 
                     PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
                 VALUES 
-                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
+                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'), '$Logo')";
         $query = mysqli_query($conn, $sql);
 
         // LINKING COMPANY WITH SECTORS AND INDUSTRY
@@ -194,7 +194,7 @@
             foreach($Sector as $sects)  
             {  
                 $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$sects'))";
                 $query99 = mysqli_query($conn, $sql99);
 
                 if($query99){
@@ -265,10 +265,11 @@
                 }
             }
             header( "refresh: 5; url= portfolio-company.php" );
+            
             exit;
         } else {
             //echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.
-            mysqli_error($conn).'<br/>';
+            echo'There was an error: '.mysqli_error($conn).'<br/>';
         }
     }
 ?>

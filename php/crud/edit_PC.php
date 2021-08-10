@@ -3,9 +3,9 @@
     // QUERY DATABASE FROM DATA
     $PortfolioCompanyID =$_REQUEST['PortfolioCompanyID'];
     $sql=" SELECT DISTINCT
-            portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, currency.Currency, portfoliocompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo, UserDetail.UserFullName, gender.Gender, race.Race
+            PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo, UserDetail.UserFullName, Gender.Gender, Race.Race
             FROM 
-                portfoliocompany 
+                PortfolioCompany 
             LEFT JOIN 
                 InvestorPortfolioCompany 
             ON 
@@ -23,13 +23,13 @@
             ON 
                 Fund.FundID = FundPortfolioCompany.FundID 
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID = portfoliocompany.CurrencyID 
+                Currency.CurrencyID = PortfolioCompany.CurrencyID 
             LEFT JOIN 
-                country 
+                Country 
             ON 
-                country.CountryID = portfoliocompany.Headquarters 
+                Country.CountryID = PortfolioCompany.Headquarters 
             LEFT JOIN 
                 PortfolioCompanyIndustry 
             ON 
@@ -41,7 +41,7 @@
             LEFT JOIN 
                 PortfolioCompanySector
             ON 
-                PortfolioCompanySector.PortfolioCompanyID = portfoliocompany.PortfolioCompanyID
+                PortfolioCompanySector.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
             LEFT JOIN 
                 Sector 
             ON 
@@ -49,7 +49,7 @@
             LEFT JOIN 
                 PortfolioCompanyUserDetail
             ON 
-                PortfolioCompanyUserDetail.portfoliocompanyID = PortfolioCompany.PortfolioCompanyID
+                PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
             LEFT JOIN 
                 UserDetail
             ON 
@@ -59,18 +59,18 @@
             ON 
                 RoleType.RoleTypeID = UserDetail.RoleTypeID
             LEFT JOIN 
-                gender
+                Gender
             ON
-                gender.GenderID = userdetail.GenderID
+                Gender.GenderID = UserDetail.GenderID
             LEFT JOIN 
-                race 
+                Race 
             ON 
-                race.RaceID =userdetail.RaceID
+                Race.RaceID =UserDetail.RaceID
             
             WHERE 
                 PortfolioCompany.PortfolioCompanyID = '$PortfolioCompanyID'
             
-            GROUP BY portfoliocompany.PortfolioCompanyID,portfoliocompany.Deleted, portfoliocompany.DeletedDate, portfoliocompany.PortfolioCompanyName, currency.Currency, portfoliocompany.Website, portfoliocompany.Details, portfoliocompany.YearFounded, country.Country, portfoliocompany.Logo
+            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo
     "; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
@@ -112,11 +112,11 @@
                     FundName IS NOT NULL ORDER BY FundName ASC";
     $result103 = mysqli_query($conn, $sql103);
 
-    // ACCESSING Userdetail TO POPULATE Userdetail DROPDOWN
+    // ACCESSING UserDetail TO POPULATE UserDetail DROPDOWN
     $sql104 = "   SELECT DISTINCT 
                     UserFullName
                 FROM 
-                    Userdetail 
+                    UserDetail 
                 WHERE 
                     UserFullName IS NOT NULL ORDER BY UserFullName ASC";
     $result104 = mysqli_query($conn, $sql104); 
@@ -133,7 +133,6 @@
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = mysqli_real_escape_string($conn, $_POST['Currency']);
         $Website                 = mysqli_real_escape_string($conn, $_POST['Website']);
-        $Contact            = mysqli_real_escape_string($conn, $_POST['UserFullName']);
         $Details                 = mysqli_real_escape_string($conn,  $_POST['Details']);
         $YearFounded             = mysqli_real_escape_string($conn, $_POST['YearFounded']);
         $Headquarters            = mysqli_real_escape_string($conn, $_POST['Headquarters']);
@@ -174,6 +173,12 @@
             $Sectors                 =  $_POST['Sector'];
         }else {
             // error_reporting(0);
+        }   
+
+        if(isset($_POST['UserFullName'])){ 
+            $Contact            = mysqli_real_escape_string($conn, $_POST['UserFullName']);
+        }else {
+            // error_reporting(0);
         }
         //  BUILDING A DYNAMIC MYSQL UPDATE QUERY BY CREATING AN EMPTY ARRAY AND THEN SETTING CONDITIONAL STATEMENTS TO CHECK IF A VARIABLE IS NOT EMPTY FIRST, IF EMPTY DO NOTHING AND IF SET, THE APPEND IT TO THE ARRAY. THERE ON EXPLODE THE ARRAY TO CONVERT IT INOT A STRING THEN APPEND STRING TO THE UPDATE STATEMENT.
         $updates = array();
@@ -181,7 +186,7 @@
             $updates[] ='PortfolioCompanyName="'.$PortfolioCompanyName.'"';
         }
         if(!empty($Currency)){
-            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM currency C WHERE C.Currency = '$Currency')";
+            $updates[] =" CurrencyID = (SELECT C.CurrencyID FROM Currency C WHERE C.Currency = '$Currency')";
         }
         if(!empty($Website)){
             $updates[] ='Website="'.$Website.'"';
@@ -193,7 +198,7 @@
             $updates[] ='YearFounded="'.$YearFounded.'"';
         }
         if(!empty($Headquarters)){
-            $updates[] ="Headquarters=(select country.CountryID FROM country where country.Country = '$Headquarters')";
+            $updates[] ="Headquarters=(select Country.CountryID FROM Country where Country.Country = '$Headquarters')";
         };
 
         if(!empty($logo)){
@@ -203,7 +208,12 @@
         $updateString = implode(', ', $updates);
 
         $updateCompany = "UPDATE PortfolioCompany SET ModifiedDate= NOW(), $updateString WHERE PortfolioCompanyID='".$PortfolioCompanyID."'";
-        $resultUpdate = mysqli_query($conn, $updateCompany) or die($conn->error);
+        $resultUpdate = mysqli_query($conn, $updateCompany);
+        if($resultUpdate){
+            //do nothing
+        }else{
+            echo'There is an error: '.mysqli_error($conn);
+        }
         // ===================================================================================
         // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN COMPANY AND INVESTORS ALREADY EXISTS
         // ===================================================================================
@@ -281,18 +291,18 @@
                                 FROM 
                                     PortfolioCompanySector
                                 WHERE 
-                                    PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')
+                                    PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM Sector S where S.Sector = '$sector')
                         ";
                 $prevResult = mysqli_query($conn,$prevQuery);
                 if($prevResult->num_rows>0){
                     // $msg[] =$sector;
                     // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE COMPANY ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
-                    $deleteQuery = "DELETE FROM PortfolioCompanySector WHERE PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM sector S where S.Sector = '$sector')";
+                    $deleteQuery = "DELETE FROM PortfolioCompanySector WHERE PortfolioCompanyID = (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName') AND SectorID = (select S.SectorID FROM Sector S where S.Sector = '$sector')";
                     mysqli_query($conn, $deleteQuery);
                 }else{
                     // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE SECTOR, WE WILL THEN CREATE A NEW LINK BETWEEN THAT SECTOR AND THE COMPANY.
                     $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                                VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sector'))";
+                                VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$sector'))";
                     $query99 = mysqli_query($conn, $sql99);
 
                     // if($query99){
@@ -346,18 +356,23 @@
         // echo 'the industries array is: '.print_r($msg);
         
         //LINK PORTFOLIO COMPANY TO CONTACT
-        
-        $sql6 = "  UPDATE 
-                        PortfolioCompanyUserdetail SET ModifiedDate = NOW(), UserdetailID = (select Userdetail.UserdetailID FROM Userdetail where Userdetail.UserFullName = '$Contact')
-                    WHERE PortfolioCompanyID= '$PortfolioCompanyID'   
-        ";
-        $query6 = mysqli_query($conn, $sql6);
+        $updateContact = array();
+        if(!empty($Contact)){
+            $updateContact[] ="UserDetailID = (SELECT UserDetail.UserDetailID FROM UserDetail WHERE UserDetail.UserFullName = '$Contact')";
+        }
+        // print_r($updateContact);
+        $updateContactString = implode($updateContact);
+        // echo $updateContactString;
 
-        if($query6){
+        $updatelink = " UPDATE PortfolioCompanyUserDetail SET ModifiedDate = NOW(), $updateContactString WHERE PortfolioCompanyID = '".$PortfolioCompanyID."' ";
+        // echo $updatelink;
+        $UpdateContactResult = mysqli_query($conn, $updatelink);
+
+        if($UpdateContactResult){
         //    DO NOTHING IF SUCCESSFULL
         } else {
             echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-        }
+        };
         
     }else {
 ?>
@@ -450,7 +465,7 @@
                         <label for="Website" class="form-label">Website</label>
                         <input class="form-control col" type="text" name="Website" placeholder="Enter Website"  value="<?php echo $row['Website'];?>" />
                     </p>
-                    <!-- userdetail dropdown -->
+                    <!-- UserDetail dropdown -->
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="UserFullName" class="form-label">Contact(s)</label>
                         <select class="form-select" id="UserFullName" name="UserFullName" >
@@ -519,7 +534,7 @@
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="Sector" class="form-label" >Sector </label> <br>
                         <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
-                            <option value="<?php echo $row['Sector'];?>" selected><?php echo $row['Sector'];?></option>
+                            <option value="<?php echo $row['Sector'];?>" ><?php echo $row['Sector'];?></option>
                         </select> <br>
                         <small style="color:red;">First select an industry </small>
                     </p>

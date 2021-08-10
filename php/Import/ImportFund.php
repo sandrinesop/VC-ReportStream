@@ -36,7 +36,7 @@
                                         FundName = '".$line[0]."'
                     ";
                     $prevResult = mysqli_query($conn,$prevQuery);
-                    if($prevResult->num_rows>0){
+                    if(!empty($prevResult) && $prevResult->num_rows>0){
                         // means company is already in the database so simply ignore
                         // echo
                         // ''
@@ -49,7 +49,7 @@
                         $sql = "INSERT INTO 
                                     Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
                                 VALUES 
-                                    (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')
+                                    (uuid(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')
                         ";
                         $query = mysqli_query($conn, $sql);
 
