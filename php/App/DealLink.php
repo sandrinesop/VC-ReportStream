@@ -50,9 +50,9 @@
         }
         // Query End
         $sql2 = "   INSERT INTO 
-                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
+                        Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
                     VALUES 
-                        (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
+                        (uuid(), now(), now(), 0,NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
         $query2 = mysqli_query($conn, $sql2);
 
         if ($query2 ){

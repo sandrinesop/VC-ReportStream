@@ -23,7 +23,7 @@
                     $MinimumInvestment      = $line[5];
                     $MaximumInvestment      = $line[6];  
                     $InvestmentStage        = mysqli_real_escape_string($conn,$line[7]); 
-                    $FundNote               = mysqli_real_escape_string($conn,$line[8]);    
+                    $Note               = mysqli_real_escape_string($conn,$line[8]);    
 
                     // =============================================
                     // CHECK FOR DUPLICATES RECORDS BEFORE INSERTING
@@ -46,6 +46,21 @@
                     }else{
                         header( "refresh: 5; url= ../tabs/fund.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
+                        // INSERT NOTE
+                        $sqlNote = "INSERT INTO 
+                                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
+                                    VALUES 
+                                        (uuid(), now(), now(), '$Note','fb450e57-7056-11eb-a66b-96000010b114')
+                        ";
+                        $queryNote = mysqli_query($conn, $sqlNote);
+
+                        if ($queryNote ){
+                        // Success
+                        } else {
+                            echo 'Oops! There was an error importing Fund Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                        }
+
+                        // INSERT FUND
                         $sql = "INSERT INTO 
                                     Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
                                 VALUES 
@@ -55,8 +70,20 @@
 
                         if($query){
                             // =============================================
-                            // Do nothing
+                            // LINK THE FUND AND THE NOTE ITEM
                             // =============================================
+                            $sqlFundNote= " INSERT INTO 
+                                                FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
+                                            VALUES 
+                                                (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT Note.NoteID FROM Note WHERE Note.Note = '$Note'))
+                            ";
+                            $queryFundNote = mysqli_query($conn, $sqlFundNote);
+                            if($queryFundNote){
+                            // Do nothing if success
+                            } else {
+                            echo 'Oops! There was an error on linking Fund and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                            }
+
                         }else{
                             echo
                             '<div style="color:red; font-size:20px;">

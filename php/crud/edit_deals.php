@@ -513,20 +513,61 @@
         // A CODE BLOCK TO UPDATE THE News/Deal NOTE
         // ===================================================================================
         // $msg = array();
-        $updatesNote = array();
+        $updateNote = array();
         if(!empty($NewsNote)){
-            $updatesNote[] ="Note='".$NewsNote."'";
+            $updateNote[] ="Note='".$NewsNote."'";
         };
 
-        $updatesNoteString = implode( $updatesNote);
-        
-        $updateNoteQuery = "UPDATE Note SET ModifiedDate= NOW(), $updatesNoteString  WHERE NoteID= (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID='".$DealsID."')";
-        // echo $updateNote;
-        $resultNoteUpdate = mysqli_query($conn, $updateNoteQuery);
-        if($resultNoteUpdate){
-            // do nothing
+        // print_r($updateNote);
+        $updateNoteString = implode( $updateNote);
+        // check if the deal has a note item linked to it, if yes, then update the note item and if not, then create a new note item.
+        $prevQueryNote = "  SELECT 
+                                    DealsID 
+                                FROM 
+                                    DealsNote
+                                WHERE 
+                                    DealsID = '$DealsID' 
+        ";
+        $prevResultNote = mysqli_query($conn,$prevQueryNote);
+        if($prevResultNote->num_rows>0){
+            // $msg[] =$sector;
+            // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+            $updateNoteQuery = "UPDATE Note SET ModifiedDate= NOW(), $updateNoteString  WHERE NoteID= (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID='".$DealsID."')";
+            // echo $updateNote;
+            $resultNoteUpdate = mysqli_query($conn, $updateNoteQuery);
+            if($resultNoteUpdate){
+                // do nothing
+                // echo 'Note Updated!';
+            }else{
+                echo 'Error Notes not Updated: '.mysqli_error($conn); 
+            }
         }else{
-            echo 'error: '.mysqli_error($conn); 
+            // INSERT INTO THE NOTE TABLE
+            $sqlInsertNote= "   INSERT INTO 
+                                    Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
+            ";
+            $queryInsertNote= mysqli_query($conn, $sqlInsertNote);
+
+            if ($queryInsertNote){
+                    // Success
+            } else {
+                echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
+
+            // LINKING THE NOTE TO THE DEAL IN THE LINKING/MAPPING TABLE
+            $sqlDealsNote = "   INSERT INTO 
+                                    DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
+                                VALUES 
+                                    (uuid(), now(), now(),0,NULL, '$DealsID', (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+            ";
+            $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
+            if ($queryDealsNote ){
+            // Success
+            } else {
+            echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+            }
         }
         
     }else {

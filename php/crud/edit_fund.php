@@ -298,16 +298,53 @@
         // ===================================================================================
         // A CODE BLOCK TO UPDATE THE FUND NOTE
         // ===================================================================================
-        // $msg = array();
-        $updates2 = array();
+        $updateNote = array();
         if(!empty($Note)){
-            $updates2[] ='Note="'.$Note.'"';
+            $updateNote[] ="Note='".$Note."'";
         };
-        // print_r($updates2);
-        $updateString2 = implode(', ', $updates2);
-        // echo $updateString2;
-        $updateNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE NoteID= (SELECT FundNote.NoteID FROM FundNote WHERE FundNote.FundID='".$FundID."')";
-        $resultUpdate2 = mysqli_query($conn, $updateNote) or die($conn->error);
+
+        // print_r($updateNote);
+        $updateNoteString = implode( $updateNote);
+        // check if the deal has a note item linked to it, if yes, then update the note item and if not, then create a new note item.
+        $prevQueryNote = "  SELECT 
+                                    FundID 
+                                FROM 
+                                    FundNote
+                                WHERE 
+                                    FundID = '$FundID' 
+        ";
+        $prevResultNote = mysqli_query($conn,$prevQueryNote);
+        if($prevResultNote->num_rows>0){
+            $updateFundNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE NoteID = (SELECT FundNote.NoteID FROM FundNote WHERE FundNote.FundID='".$FundID."')";
+            $resultUpdateNote = mysqli_query($conn, $updateFundNote);
+        }else{
+            // INSERT INTO THE NOTE TABLE
+            $sqlInsertNote= "   INSERT INTO 
+                                    Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, '$Note','fb44ee75-7056-11eb-a66b-96000010b114')
+            ";
+            $queryInsertNote= mysqli_query($conn, $sqlInsertNote);
+
+            if ($queryInsertNote){
+            // Success
+            } else {
+            echo 'Oops! There was an error saving Fund Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
+
+            // LINKING THE NOTE TO THE DEAL IN THE LINKING/MAPPING TABLE
+            $sqlFundNote= "   INSERT INTO 
+                                    FundNote(FundNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, NoteID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL, '$FundID',(SELECT Note.NoteID FROM Note WHERE Note.Note = '$Note'))
+            ";
+            $queryFundNote = mysqli_query($conn, $sqlFundNote);
+            if($queryFundNote){
+            // Do nothing if success
+            } else {
+                echo 'Oops! There was an error on linking Fund and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            }
+        }
 
     }else {
 ?>

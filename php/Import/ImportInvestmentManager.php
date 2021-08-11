@@ -44,6 +44,20 @@
                     }else{
                         header( "refresh: 5; url= ../tabs/investor.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
+                        // INSERT NOTE
+                        $sqlNote = "   INSERT INTO 
+                                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
+                                    VALUES 
+                                        (uuid(), now(), now(), '$InvestorNote','fb450b19-7056-11eb-a66b-96000010b114')
+                        ";
+                        $queryNote = mysqli_query($conn, $sqlNote);
+
+                        if ($queryNote ){
+                        // Success
+                        } else {
+                            echo 'Oops! There was an error saving Investment Manager Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                        }
+                        // INSERT INTO INVESTOR
                         $sql ="    INSERT INTO 
                                         Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID,  YearFounded, Headquarters) 
                                     VALUES 
@@ -52,7 +66,20 @@
                         $query = mysqli_query($conn, $sql);
 
                         if($query){
-                            // do nothing
+                            // =============================================
+                            // LINK THE INVESTOR AND THE NOTE ITEM
+                            // =============================================
+                            $sqlInvestorNote= " INSERT INTO 
+                                                InvestorNote(InvestorNoteID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, NoteID)
+                                            VALUES 
+                                                (uuid(), now(), now(), 0, NULL, (SELECT Investor.InvestorID FROM Investor WHERE Investor.InvestorName = '$InvestorName'),(SELECT Note.NoteID FROM Note WHERE Note.Note = '$InvestorNote'))
+                            ";
+                            $queryInvestorNote = mysqli_query($conn, $sqlInvestorNote);
+                            if($queryInvestorNote){
+                            // Do nothing if success
+                            } else {
+                            echo 'Oops! There was an error on linking Investor and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                            }
                         }else{
                             echo 'There was an error importing records'.mysqli_error($conn);
                         }

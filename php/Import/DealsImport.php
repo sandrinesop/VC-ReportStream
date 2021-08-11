@@ -61,7 +61,10 @@
                         $msg[] =$NewsURL;
                     }else{
                         header( "refresh: 8; url= ../tabs/NewDeals.php" );
+                        // insert and create a new deal then redirect back to the deals page(added header function first because if set below or after echos then it will not work.)
+                        // ==================================================================================================================================================================
                         // BEFORE IMPORTING THE DEAL, WE NEED TO MAK SURE THE News, COMPANIES, INVESTORS AND FUNDS ALREADY EXISTS IN THE LOOK UP TABLES SO WE'LL INSERT THOSE ENTITIES FIRST.
+                        // ==================================================================================================================================================================
                         $sql = "    INSERT INTO 
                                         News(NewsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsDate, NewsURL) 
                                     VALUES 
@@ -73,31 +76,60 @@
                         } else {
                             echo 'Oops! There was an error saving News item. Please report bug to support.'.'<br/>'.mysqli_error($conn); 
                         }
-                        // insert and create a new deal then redirect back to the deals page(added header function first because if set below or after echos then it will not work.)
-                            $sqlDLS = "  INSERT INTO 
-                                            Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, UserDetailID)
-                                        VALUES 
-                                            (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))
-                            ";
-                            $queryDLS = mysqli_query($conn, $sqlDLS);
+                        
+                        // INSERT NOTE
+                        $sqlNote = "   INSERT INTO 
+                                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
+                                    VALUES 
+                                        (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
+                        ";
+                        $queryNote = mysqli_query($conn, $sqlNote);
+
+                        if ($queryNote ){
+                        // Success
+                        } else {
+                        echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                        }
+
+                        // INSERT INTO DEALS TABLE
+                        $sqlDLS = "  INSERT INTO 
+                                        Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, UserDetailID)
+                                    VALUES 
+                                        (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))
+                        ";
+                        $queryDLS = mysqli_query($conn, $sqlDLS);
 
                         if($queryDLS){
+                            // ==========================================================
+                            // LINKING THE NOTE TO THE DEAL IN THE LINKING/MAPPING TABLE
+                            // ==========================================================
+                            $sqlDealsNote = "INSERT INTO 
+                                                DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
+                                            VALUES 
+                                                (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+                            ";
+                            $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
+                            if ($queryDealsNote ){
+                            // Success
+                            } else {
+                            echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+                            }
                             // =============================================
                             // LOOP TO INSERT SECTORS ON DEALS
                             // =============================================
                             $SectorList = explode(",", $Sectors);
-                            foreach($SectorList as $sector){  
+                            foreach($SectorList as $Sector){  
                                 $sql99 = "  INSERT INTO 
                                                 DealsSector(DealsSectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate,DealsID, SectorID)
                                             VALUES 
-                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select S.SectorID FROM sector S where S.Sector = '$sector'))
+                                                (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select S.SectorID FROM Sector S where S.Sector = '$Sector'))
                                 ";
                                 $query99 = mysqli_query($conn, $sql99);
 
                                 if($query99){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
-                                    echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+                                    echo 'Oops! There was an error inserting the Sector ID from the array'.mysqli_error($conn).'<br/>';
                                 }
                             }
                             
@@ -114,7 +146,7 @@
                                 $query100 = mysqli_query($conn, $sql100);
 
                                 if($query100){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
                                     echo 'Oops! There was an error inserting the Investor ID from the array'.mysqli_error($conn).'<br/>';
                                 }
@@ -132,7 +164,7 @@
                                 $query101 = mysqli_query($conn, $sql101);
 
                                 if($query101){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
                                     echo 'Oops! There was an error inserting the Fund ID from the array'.mysqli_error($conn).'<br/>';
                                 }
@@ -148,7 +180,7 @@
                                                 (uuid(), now(), now(), 0, NULL,(SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
                                 $query102 = mysqli_query($conn, $sql102);
                                 if($query102){
-                                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                                    // echo 'For each iteration the Sector ID for '.$Sector. 'was inserted'.'<br/>';
                                 } else {
                                     echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
                                 }
