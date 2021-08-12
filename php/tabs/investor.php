@@ -212,7 +212,7 @@
             $sql3 ="    INSERT INTO 
                             Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
                         VALUES 
-                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'),'$Logo')
+                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'),'$logo')
             ";
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -269,10 +269,12 @@
             }
             
             $conn->close();
-            header( "refresh: 3;url= Investor.php" );
-            echo '<H3>Thanks for your contibution!</H3>'
-            .'<br/>'
-            .'<small>You will be redirected shortly...</small>';
+            header( "refresh: 2;url= Investor.php" );
+            echo 
+                '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
+                    <H3>Thanks for your contibution!</H3>
+                    <p style="margin:0;"> <small>New Investment Manager created successfully!</small> </p>
+                </div>';
     }
 ?>
 
