@@ -15,7 +15,7 @@
         $FundNote               = $_POST['FundNote'];
         // FUND INSERTION QUERY
         $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
-                    VALUES (UUID(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
+                    VALUES (UUID(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";
         $query = mysqli_query($conn, $sql);
         if($query ){
             // echo '<script> Alert(Fund created successfully!)</script>';
@@ -86,7 +86,7 @@
     }
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
-	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
+	            Fund.FundID, Fund.Deleted, Fund.DeletedDate, Fund.FundName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName , Currency.Currency, Fund.CommittedCapital, Fund.MinimumInvestment, Fund.MaximumInvestment, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Note.Note
             FROM 
                 Fund 
                 -- JOINING FUNDINVESTOR TO ACCESS LINKED INVESTORS 
@@ -127,9 +127,9 @@
                Note.NoteID = FundNote.NoteID
 
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID = Fund.CurrencyID 
+                Currency.CurrencyID = Fund.CurrencyID 
             WHERE  
                 Fund.Deleted = 0
 

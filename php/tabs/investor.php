@@ -112,16 +112,84 @@
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit'])){
-            $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
-            $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
-            $FundName               = $_POST['FundName'];
-            $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-            $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
-            $Description            = $_POST['Description'];
-            $Currency                = $_POST['Currency'];
-            $YearFounded            = $_POST['YearFounded'];
-            $Headquarters           = $_POST['Headquarters'];
-            $Logo                   = $_FILES['img']['name'];
+            
+            if(isset($_POST['InvestorName'])){ 
+                $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['InvestorWebsite'])){ 
+                 $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['FundName'])){ 
+                 $FundName               = $_POST['FundName'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['PortfolioCompanyName'])){ 
+                $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['InvestorNote'])){ 
+                 $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['Description'])){ 
+                $Description            = $_POST['Description'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['Currency'])){ 
+                $Currency                = $_POST['Currency'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['YearFounded'])){ 
+                $YearFounded            = $_POST['YearFounded'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_POST['Headquarters'])){ 
+                $Headquarters           = $_POST['Headquarters'];
+            }else {
+                // error_reporting(0);
+            }
+            
+            if(isset($_FILES['img']['name'])){ 
+                $logoName = $_FILES['img']['name'];
+                $logoSize = $_FILES['img']['size'];
+    
+                if($logoSize>0):
+                    // echo'file uploaded' .$logo;
+                    $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+                else:
+                    // echo 'Image not set';
+                endif;
+            }else {
+                // error_reporting(0);
+            }
+
+            // $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
+            // $FundName               = $_POST['FundName'];
+            // $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
+            // $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
+            // $Description            = $_POST['Description'];
+            // $Currency                = $_POST['Currency'];
+            // $YearFounded            = $_POST['YearFounded'];
+            // $Headquarters           = $_POST['Headquarters'];
+            // $Logo                   = $_FILES['img']['name'];
 
             // INSERT INVESTOR NOTE 
             $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
@@ -134,11 +202,8 @@
                 echo 'Oops! There was an error saving investor note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             };
 
-            /* $m = "../img/".$_FILES['img']['name'];
-                Use move_uploaded_file function to move files
-                move_uploaded_file($_FILES['img']['tmp_name'], $m);
-            */
-            $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
+
+            
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
 
             // ========================================================

@@ -100,7 +100,7 @@
     //========== | PORTFOLIO COMPANY TABLE | =============
     //====================================================
     // PORTFOLIO COMPANY DETAILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
-    $sql = " SELECT DISTINCT 
+    $sql = " SELECT 
                 PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
             JOIN 
                 Country ON Country.CountryID = PortfolioCompany.Headquarters 
@@ -220,11 +220,11 @@
     //================ | FUND TABLE | ===================
     //===================================================
     // Pulling Fund Data into the Fund Section dropdown
-    $sqlB = "  SELECT DISTINCT
-                    FundName, CommittedCapitalOfFund, CommittedCapital, MinimumInvestment, MaximumInvestment
+    $sqlB = "  SELECT 
+                    FundName, CommittedCapital, MinimumInvestment, MaximumInvestment
                 FROM 
                     Fund
-                WHERE FundName IS NOT NULL AND CommittedCapitalOfFund IS NOT NULL AND CommittedCapital IS NOT NULL AND MinimumInvestment IS NOT NULL AND MaximumInvestment IS NOT NULL ";
+                WHERE FundName IS NOT NULL AND CommittedCapital IS NOT NULL AND MinimumInvestment IS NOT NULL AND MaximumInvestment IS NOT NULL ";
     $resultB = mysqli_query($conn, $sqlB);
     // Pulling Fund Data into the FundName dropdown
     $sqlB1 = "  SELECT DISTINCT

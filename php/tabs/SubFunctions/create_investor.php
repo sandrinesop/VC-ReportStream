@@ -44,9 +44,14 @@
             }else {
                 // error_reporting(0);
             };
-            
-            
 
+            if(isset($_FILES['img']['name'])){ 
+                $logo = mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name']))); 
+            }else {
+                // error_reporting(0);
+            };
+            
+            
             // INVESTOR NOTE INSERT
 
             $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
@@ -60,24 +65,25 @@
             };
 
             // INVESTOR TABLE INSERT
-            if(isset($_FILES['img']['name'])){ 
-                $logoName = $_FILES['img']['name'];
-                $logoSize = $_FILES['img']['size'];
+            // if(isset($_FILES['img']['name'])){ 
+            //     $logoName = $_FILES['img']['name'];
+            //     $logoSize = $_FILES['img']['size'];
     
-                if($logoSize>0):
-                    // echo'file uploaded' .$logo;
-                    $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
-                else:
-                    // echo 'Image not set';
-                endif;
-            }else {
-                // error_reporting(0);
-            }
+            //     if($logoSize>0):
+            //         // echo'file uploaded' .$logo;
+            //         $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+            //     else:
+            //         // echo 'Image not set';
+            //     endif;
+            // }else {
+            //     // error_reporting(0);
+            // } 
+            
             
             $sql3 ="    INSERT INTO 
                             Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
                         VALUES 
-                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'),'$Logo')
+                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'),'$logo')
             ";
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -111,7 +117,7 @@
 
     // QUERY DATABASE FROM DATA
     $sql="  SELECT  
-                Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, description.Description, currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
+                Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, Description.Description, Currency.Currency, Investor.ImpactTag, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
             FROM 
                 Investor
                 -- Joining linking table so that we can access funds linked to investor
@@ -142,18 +148,18 @@
             ON 
                 Note.NoteID = InvestorNote.NoteID
             LEFT JOIN 
-                currency 
+                Currency 
             ON 
-                currency.CurrencyID=Investor.CurrencyID
+                Currency.CurrencyID=Investor.CurrencyID
                 
             LEFT JOIN 
-                description 
+                Description 
             ON 
-                description.DescriptionID=Investor.DescriptionID 
+                Description.DescriptionID=Investor.DescriptionID 
             LEFT JOIN 
-                country 
+                Country 
             ON 
-                country.CountryID = Investor.Headquarters 
+                Country.CountryID = Investor.Headquarters 
             WHERE 
                 Investor.Deleted= 0 
             
@@ -182,7 +188,7 @@
                     PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
     ";
     $result101 = mysqli_query($conn, $sql101);
-    // POPULATING DESCRIPTION DROPDOWN
+    // POPULATING Description DROPDOWN
     $sql102 = " SELECT DISTINCT 
                     Description
                 FROM 

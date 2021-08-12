@@ -4,10 +4,10 @@
     $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
     $sqlA1="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Roletype.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType
                 FROM 
                     Deals 
-                -- Include investor table data through the linking table dealsinvestor
+                -- Include investor table data through the linking table Dealsinvestor
                 LEFT JOIN
                     DealsInvestor
                 ON 
@@ -17,7 +17,7 @@
                     Investor
                 ON
                     Investor.InvestorID = DealsInvestor.InvestorID
-                -- Include fund table data through the linking table dealsfund
+                -- Include fund table data through the linking table Dealsfund
                 LEFT JOIN
                     DealsFund
                 ON 
@@ -31,12 +31,12 @@
                 LEFT JOIN 
                     News 
                 ON
-                    News.NewsID = deals.NewsID 
+                    News.NewsID = Deals.NewsID 
                 LEFT JOIN 
                 -- Include PortfoliCompany table data
                     PortfolioCompany
                 ON
-                    PortfolioCompany.PortfolioCompanyID = deals.PortfolioCompanyID
+                    PortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                 -- Link investment stage to fund
                     FundInvestmentStage      
@@ -49,7 +49,7 @@
                 LEFT JOIN 
                     PortfolioCompanyCountry
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = deals.PortfolioCompanyID
+                    PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
@@ -57,7 +57,7 @@
                 LEFT JOIN 
                     DealsIndustry
                 ON 
-                    DealsIndustry.DealsID = deals.DealsID
+                    DealsIndustry.DealsID = Deals.DealsID
                 LEFT JOIN 
                     Industry
                 ON 
@@ -81,7 +81,7 @@
                 WHERE 
                     Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
                 GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
-                ORDER BY  news.NewsDate
+                ORDER BY  News.NewsDate
     ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
     $rowA1 = mysqli_fetch_assoc($resultA1);

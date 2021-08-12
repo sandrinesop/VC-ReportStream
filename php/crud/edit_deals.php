@@ -654,12 +654,12 @@
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Stake" class="form-label">Stake</label>
-                        <input type="number" class="form-control" id="Stake" name="Stake"  value="<?php echo $row['stake'];?>">
+                        <input type="number" class="form-control" id="Stake" name="Stake"  value="<?php echo $row['stake'];?>"  min="0.01" max="1" step="any">
                         <small style="color:red;">Place a zero if stake not disclosed </small>
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" value="<?php echo $row['InvestmentValue']?>">
+                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" value="<?php echo $row['InvestmentValue']?>" min="1" max="1000000000000" step="any">
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                         <label for="UserFullName" class="form-label">Contact Person</label>
