@@ -112,88 +112,95 @@
 
     // INVESTOR INSERTS
     if ( isset($_POST['submit'])){
-            
-            if(isset($_POST['InvestorName'])){ 
-                $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['InvestorWebsite'])){ 
-                 $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['FundName'])){ 
-                 $FundName               = $_POST['FundName'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['PortfolioCompanyName'])){ 
-                $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['InvestorNote'])){ 
-                 $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['Description'])){ 
-                $Description            = $_POST['Description'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['Currency'])){ 
-                $Currency                = $_POST['Currency'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['YearFounded'])){ 
-                $YearFounded            = $_POST['YearFounded'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_POST['Headquarters'])){ 
-                $Headquarters           = $_POST['Headquarters'];
-            }else {
-                // error_reporting(0);
-            }
-            
-            if(isset($_FILES['img']['name'])){ 
-                $logoName = $_FILES['img']['name'];
-                $logoSize = $_FILES['img']['size'];
-    
-                if($logoSize>0):
-                    // echo'file uploaded' .$logo;
-                    $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
-                else:
-                    // echo 'Image not set';
-                endif;
-            }else {
-                // error_reporting(0);
-            }
+        if(isset($_POST['InvestorName'])){ 
+            $InvestorName           = mysqli_real_escape_string($conn, $_POST['InvestorName']);
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['InvestorWebsite'])){ 
+                $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['FundName'])){ 
+                $FundName               = $_POST['FundName'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['PortfolioCompanyName'])){ 
+            $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['InvestorNote'])){ 
+                $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['Description'])){ 
+            $Description            = $_POST['Description'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['Currency'])){ 
+            $Currency                = $_POST['Currency'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['YearFounded'])){ 
+            $YearFounded            = $_POST['YearFounded'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_POST['Headquarters'])){ 
+            $Headquarters           = $_POST['Headquarters'];
+        }else {
+            // error_reporting(0);
+        }
+        
+        if(isset($_FILES['img']['name'])){ 
+            $logoName = $_FILES['img']['name'];
+            $logoSize = $_FILES['img']['size'];
 
-            // $InvestorWebsite        = mysqli_real_escape_string($conn, $_POST['InvestorWebsite']);
-            // $FundName               = $_POST['FundName'];
-            // $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
-            // $InvestorNote           = mysqli_real_escape_string($conn, $_POST['InvestorNote']);
-            // $Description            = $_POST['Description'];
-            // $Currency                = $_POST['Currency'];
-            // $YearFounded            = $_POST['YearFounded'];
-            // $Headquarters           = $_POST['Headquarters'];
-            // $Logo                   = $_FILES['img']['name'];
+            if($logoSize>0):
+                // echo'file uploaded' .$logo;
+                $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+            else:
+                // echo 'Image not set';
+            endif;
+        }else {
+            // error_reporting(0);
+        }
+        // ===========================================================================================================
+        // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES
+        // ===========================================================================================================
+        $DuplicateCheck = " SELECT InvestorName FROM Investor WHERE Investor.InvestorName ='$InvestorName'";
+        $checkResult = mysqli_query($conn, $DuplicateCheck);
 
+        if($checkResult -> num_rows >0){
+            $conn->close();
+            header( "refresh: 3;url= investor.php" );
+            echo 
+                '<div style="background-color:#f8d7da; color: #842029; margin:0;">
+                    <H3>Heads Up!</H3>
+                    <p style="margin:0;"> <small>New record not created, Investment Manager already exists.</small> </p>
+                </div>'
+            ;
+        }else{
             // INSERT INVESTOR NOTE 
-            $sql2 = "INSERT INTO Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
-            VALUES (uuid(), now(), now(), '$InvestorNote','fb450b19-7056-11eb-a66b-96000010b114')";
+            $sql2 ="INSERT INTO 
+                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID)
+                    VALUES 
+                        (uuid(), now(), now(), '$InvestorNote','fb450b19-7056-11eb-a66b-96000010b114')
+            ";
             $query2 = mysqli_query($conn, $sql2);
 
             if($query2){
@@ -203,7 +210,6 @@
             };
 
 
-            
             // tmp_name a temporary dir to store our files & we'll transfer them to the m variable path
 
             // ========================================================
@@ -267,14 +273,19 @@
             } else {
                 echo 'Oops! There was an error linking Investor to Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
-            
+
             $conn->close();
-            header( "refresh: 2;url= Investor.php" );
+            // ===========================================================
+            // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
+            // ===========================================================
+            header( "refresh: 2;url= investor.php" );
             echo 
                 '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
-                    <H3>Thanks for your contibution!</H3>
+                    <H3>Thank you for your contibution</H3>
                     <p style="margin:0;"> <small>New Investment Manager created successfully!</small> </p>
-                </div>';
+                </div>'
+            ;
+        }
     }
 ?>
 

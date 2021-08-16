@@ -164,7 +164,7 @@
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = $_POST['Currency'];
         $PortfolioCompanyWebsite = mysqli_real_escape_string($conn, $_POST['Website']);
-        $Industries                = $_POST['Industry'];
+        $Industries              = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
         $Details                 = mysqli_real_escape_string($conn, $_POST['Details']);
         $YearFounded             = $_POST['YearFounded'];
@@ -174,102 +174,125 @@
         $InvestorName           = $_POST['InvestorName'];
         $FundName               = $_POST['FundName'];
 
-        $sectors=""; 
-
         // Company Logo Insert code
         $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
-        // PORTFOLIO COMPANY INSERT
-        $sql = "INSERT INTO 
+        // ===========================================================================================================
+        // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES
+        // ===========================================================================================================
+        $DuplicateCheck = " SELECT PortfolioCompanyName FROM PortfolioCompany WHERE PortfolioCompany.PortfolioCompanyName ='$PortfolioCompanyName'";
+        $checkResult = mysqli_query($conn, $DuplicateCheck);
+
+        if($checkResult -> num_rows >0){
+            $conn->close();
+            header( "refresh: 3; url = portfolio-company.php" );
+            echo 
+                '<div style="background-color:#f8d7da; color: #842029; margin:0;">
+                    <H4>Heads Up!</H4>
+                    <p style="margin:0;"> <small>New record not created, Portfolio Company already exists.</small> </p>
+                </div>'
+            ;
+        }else{
+            // PORTFOLIO COMPANY INSERT
+            $sql = "INSERT INTO 
                     PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
                 VALUES 
-                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'), '$Logo')";
-        $query = mysqli_query($conn, $sql);
-
-        // LINKING COMPANY WITH SECTORS AND INDUSTRY
-        if($query){
-            // =============================================
-            // LOOP TO INSERT SECTORS ON P.COMPANY
-            // =============================================
-            foreach($Sector as $sects)  
-            {  
-                $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$sects'))";
-                $query99 = mysqli_query($conn, $sql99);
-
-                if($query99){
-                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-                } else {
-                    echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
-                }
-            }
-
-            $IndustryList = explode(",", $Industries);
-            foreach($IndustryList AS $Industry){ 
-                $sql98 = "   INSERT INTO 
-                                PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
-                            VALUES 
-                                (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
-                $query98 = mysqli_query($conn, $sql98);
-                if($query98){
-                    // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
-                } else {
-                    echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
-                    print_r($IndustryList);
-                }
-            }
-
-            // =============================================
-            // LOOP TO INSERT CONTACT PERSON ON P.COMPANY
-            // =============================================
-            foreach($UserFullName as $Contact){  
-                $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
-                            VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact'))";
-                $query4 = mysqli_query($conn, $sql4);
-
-                if($query4){
-                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-                } else {
-                    echo 'Oops! There was an error saving the Contacts from the array'.mysqli_error($conn).'<br/>';
-                }
-            }
-            
-            // =============================================
-            // LOOP TO INSERT INVESTORS ON P.COMPANY
-            // =============================================
-            foreach($InvestorName as $InvestmentManager){  
-                $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
-                        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-                $query104 = mysqli_query($conn, $sql104);
-
-                if($query104){
-                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-                } else {
-                    echo 'Oops! There was an error saving the Investment Manager(s) from the array'.mysqli_error($conn).'<br/>';
-                }
-            }
-            
-            // =============================================
-            // LOOP TO FUNDS ON P.COMPANY
-            // =============================================
-            foreach($FundName as $Fund){  
-                $sql105 = "     INSERT INTO 
-                                    FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'), '$Logo')
+            ";
+            $query = mysqli_query($conn, $sql);
+            // =========================================================================================
+            // CODE BELOW: IF COMPANY IS CREATED SUCCESSFULLY THEN LINK THE COMPANY WITH OTHER ENTITIES.
+            // =========================================================================================
+            if($query){
+                // LOOP TO INSERT SECTORS ON P.COMPANY
+                foreach($Sector as $sects){  
+                    $sql99 = "  INSERT INTO 
+                                    PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
                                 VALUES 
-                                    (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-                $query105 = mysqli_query($conn, $sql105);
-                if($query105){
-                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
-                } else {
-                    echo 'Oops! There was an error saving the Contacts from the array'.mysqli_error($conn).'<br/>';
+                                    (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$sects'))
+                    ";
+                    $query99 = mysqli_query($conn, $sql99);
+
+                    if($query99){
+                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+                    }
                 }
+
+                $IndustryList = explode(",", $Industries);
+                foreach($IndustryList AS $Industry){ 
+                    $sql98 = "   INSERT INTO 
+                                    PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                                VALUES 
+                                    (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+                    $query98 = mysqli_query($conn, $sql98);
+                    if($query98){
+                        // echo 'For each iteration the Sector ID for '.$sector. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error inserting the Industry IDs from the array'.mysqli_error($conn).'<br/>';
+                        print_r($IndustryList);
+                    }
+                }
+
+                // =============================================
+                // LOOP TO INSERT CONTACT PERSON ON P.COMPANY
+                // =============================================
+                foreach($UserFullName as $Contact){  
+                    $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+                                VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact'))";
+                    $query4 = mysqli_query($conn, $sql4);
+
+                    if($query4){
+                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error saving the Contacts from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+
+                // =============================================
+                // LOOP TO INSERT INVESTORS ON P.COMPANY
+                // =============================================
+                foreach($InvestorName as $InvestmentManager){  
+                    $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
+                            VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestmentManager'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+                    $query104 = mysqli_query($conn, $sql104);
+
+                    if($query104){
+                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error saving the Investment Manager(s) from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+
+                // =============================================
+                // LOOP TO FUNDS ON P.COMPANY
+                // =============================================
+                foreach($FundName as $Fund){  
+                    $sql105 = "     INSERT INTO 
+                                        FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
+                                    VALUES 
+                                        (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$Fund'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
+                    $query105 = mysqli_query($conn, $sql105);
+                    if($query105){
+                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error saving the Contacts from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+                // ===========================================================
+                // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
+                // ===========================================================
+                header( "refresh: 3; url= portfolio-company.php" );
+                echo 
+                    '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
+                        <H4>Thank you for your contibution</H4>
+                        <p style="margin:0;"> <small> New Portfolio Company created successfully! </small> </p>
+                    </div>'
+                ;
+            } else {
+                echo'There was an error creating Portfolio Company: '.mysqli_error($conn).'<br/>';
             }
-            header( "refresh: 5; url= portfolio-company.php" );
-            
-            exit;
-        } else {
-            //echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.
-            echo'There was an error: '.mysqli_error($conn).'<br/>';
         }
     }
 ?>

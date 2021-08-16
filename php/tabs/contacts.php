@@ -1,36 +1,36 @@
 <?php 
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
-    $sql="      SELECT 
-                    UserDetail.UserDetailID, UserDetail.UserFullName, UserDetail.FirstName, UserDetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, UserDetail.ContactNumber1, UserDetail.ContactNumber2, UserDetail.Email, RoleType.RoleType, Gender.Gender, Race.Race 
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    PortfolioCompanyUserDetail 
-                ON 
-                    PortfolioCompanyUserDetail.UserDetailID=UserDetail.UserDetailID 
-                LEFT JOIN 
-                    PortfolioCompany
-                ON 
-                    PortfolioCompanyUserDetail.PortfolioCompanyID=PortfolioCompany.PortfolioCompanyID 
-                LEFT JOIN 
-                    RoleType 
-                ON 
-                    RoleType.RoleTypeID=UserDetail.RoleTypeID
+    $sql="  SELECT 
+                UserDetail.UserDetailID, UserDetail.UserFullName, UserDetail.FirstName, UserDetail.LastName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, UserDetail.ContactNumber1, UserDetail.ContactNumber2, UserDetail.Email, RoleType.RoleType, Gender.Gender, Race.Race 
+            FROM 
+                UserDetail 
+            LEFT JOIN 
+                PortfolioCompanyUserDetail 
+            ON 
+                PortfolioCompanyUserDetail.UserDetailID = UserDetail.UserDetailID 
+            LEFT JOIN 
+                PortfolioCompany
+            ON 
+                PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID 
+            LEFT JOIN 
+                RoleType 
+            ON 
+                RoleType.RoleTypeID = UserDetail.RoleTypeID
 
-                LEFT JOIN 
-                    Gender
-                ON
-                    Gender.GenderID = UserDetail.GenderID
+            LEFT JOIN 
+                Gender
+            ON
+                Gender.GenderID = UserDetail.GenderID
 
-                LEFT JOIN 
-                    Race 
-                ON 
-                    Race.RaceID =UserDetail.RaceID
-                WHERE  
-                    UserDetail.Deleted = 0 
-                GROUP BY 
-                    UserDetailID, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
+            LEFT JOIN 
+                Race 
+            ON 
+                Race.RaceID = UserDetail.RaceID
+            WHERE  
+                UserDetail.Deleted = 0 
+            GROUP BY 
+                UserDetailID, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleType, Gender, Race
     ";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
@@ -95,35 +95,58 @@
             $Gender                 = $_POST['Gender'];
             $Race                   = $_POST['Race'];
 
-            $sqlUser ="INSERT INTO UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
-            VALUES (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))";
+            // ===========================================================================================================
+            // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES
+            // ===========================================================================================================
+            $DuplicateCheck = " SELECT UserFullName FROM UserDetail WHERE UserDetail.UserFullName ='$UserFullName'";
+            $checkResult = mysqli_query($conn, $DuplicateCheck);
 
-            $query3 = mysqli_query($conn, $sqlUser);
-            
-
-            if($query3){
-                // echo ;
-                // header( "refresh: 5;url= contacts.php" );
+            if($checkResult -> num_rows >0){
+                $conn->close();
+                header( "refresh: 3;url= contacts.php" );
+                echo 
+                    '<div style="background-color:#f8d7da; color: #842029; margin:0;">
+                        <H4>Heads Up!</H4>
+                        <p style="margin:0;"> <small>New record not created, Contact already exists.</small> </p>
+                    </div>'
+                ;
             }else{
-                echo 'Oops! There was an error creating new contact';
-            }
-                              
-            // LINK CONTACT TO PORTFOLIO COMPANY 
-            $sql4 = "  INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
-            VALUES (uuid(), now(), now(), 0, NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
-            $query4 = mysqli_query($conn, $sql4);
-            if($query4){
-                // echo '<script> Alert("Fund created successfully!")</script>';
-                // header( "refresh: 3; url= fund.php" );
-            } else {
-                echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-            // echo '<p> Thanks for your contribution! You will be redirected in 5 sec...</p>';
-            header( "refresh: 3;url= ../tabs/contacts.php" );
+                $sqlUser =" INSERT INTO 
+                                UserDetail(UserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, UserFullName, FirstName, LastName, ContactNumber1, ContactNumber2, Email, RoleTypeID, GenderID, RaceID) 
+                            VALUES 
+                                (uuid(), now(), now(),0,NULL, '$UserFullName', '$FirstName','$LastName','$ContactNumber1','$ContactNumber2','$Email', (select RoleType.RoleTypeID FROM RoleType where RoleType.RoleType = '$RoleType'), (select Gender.GenderID FROM Gender where Gender.Gender = '$Gender') , (select Race.RaceID FROM Race where Race.Race = '$Race'))
+                ";
 
-            echo '<H3 style="color:green;">New contact created successfully</H3> '
-            .'<br/>'
-            .'<small>You will be redirected shortly...</small>';
+                $queryUser = mysqli_query($conn, $sqlUser);
+                
+                if($queryUser){     
+                    // LINK CONTACT TO PORTFOLIO COMPANY 
+                    $sql4 ="INSERT INTO 
+                                PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
+                            VALUES 
+                                (uuid(), now(), now(), 0, NULL, (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))
+                    ";
+                    $query4 = mysqli_query($conn, $sql4);
+                    if($query4){
+                        // do nothing
+                    } else {
+                        echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                    }
+                }else{
+                    echo 'Oops! There was an error creating new contact'.mysqli_error($conn);
+                }
+                $conn->close();
+                // ===========================================================
+                // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
+                // ===========================================================
+                header( "refresh: 3;url= ../tabs/contacts.php" );
+                echo 
+                    '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
+                        <H4>Thank you for your contibution</H4>
+                        <p style="margin:0;"> <small> New Contact created successfully! </small> </p>
+                    </div>'
+                ;
+            }
     }
 ?>
 
