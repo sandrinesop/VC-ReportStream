@@ -1,6 +1,6 @@
 <?php
-    // $conn = mysqli_connect('localhost', 'root', '','AA');
-    $conn = mysqli_connect('services.methys-pe.com', 'remote', 'PmHjW$?R/wh:l:cpW%pF@t#*=','AA');
+    $conn = mysqli_connect('localhost', 'root', '','AA');
+    // $conn = mysqli_connect('services.methys-pe.com', 'remote', 'PmHjW$?R/wh:l:cpW%pF@t#*=','AA');
     
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -203,7 +203,7 @@
             } else {
                 echo 'Oops! There was an error on Deals Capture Table. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
-            $conn->close();
+            
             // ===========================================================
             // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
             // ===========================================================

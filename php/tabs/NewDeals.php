@@ -234,6 +234,20 @@
                 WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
     $resultB1 = mysqli_query($conn, $sqlB1);
 
+    // QUERY DATABASE TO DISPLAY DATA INSIDE THE PieChart
+    $chartQuery ="  SELECT
+	                    Sector.Sector, COUNT(*) AS Percentage FROM DealsSector
+                    
+                    Left Join 
+                        Sector
+                    ON
+                        Sector.SectorID = DealsSector.SectorID
+                    GROUP BY
+                        Sector.Sector
+    ";
+    $resultQuery = mysqli_query($conn, $chartQuery);
+
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -357,12 +371,12 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="text" class="form-control" id="Stake" name="Stake" required>
+                                                        <input type="text" class="form-control" id="Stake" name="Stake"  min="0.01" max="1" step="any">
                                                         <small style="color:red;">Place a zero if stake not disclosed </small>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                                                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" required>
+                                                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" min="1" max="1000000000000" step="any">
                                                     </div>
                                                     <!-- 
                                                         /////////////////////
@@ -564,7 +578,7 @@
                         <div class="table-responsive" style="overflow-x:auto;">
                             <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;" id="table_Deals">
                                 <thead>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date </th>
                                     <th scope="col">News Link</th>
                                     <th scope="col">Portfolio Company</th>
                                     <th scope="col">Investment Manager(s)</th>
@@ -611,6 +625,77 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
+            <script type="text/javascript">
+                // Loading the Visualization API and the corechart package.
+                google.charts.load('current', {'packages':['corechart']});
+
+                // Set a callback to run when the Google Visualization API is loaded.
+                google.charts.setOnLoadCallback(drawChart);
+                
+                google.charts.setOnLoadCallback(drawChart2);
+
+                // Callback that creates and populates a data table,
+                // instantiates the pie chart, passes in the data and draws it.
+                function drawChart() {
+
+                    // Create the data table.
+                    var data =  google.visualization.arrayToDataTable([
+                        ['Sector', 'Percentage'],
+                        <?php
+                            while($chartRow = mysqli_fetch_assoc($resultQuery)){
+                                echo"['".$chartRow['Sector']."', ".$chartRow['Percentage']."],";
+                            }
+                        ?>
+                    ]);
+
+                    var options= {
+                        title: 'Percentage of Sectors'
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+                    chart.draw(data, options);
+                };
+
+                // second chart drawing
+                function drawChart2() {
+
+                // Create the data table.
+                var data =  google.visualization.arrayToDataTable([
+                    ['Sector', 'Percentage'],
+                    <?php
+                        mysqli_data_seek($resultQuery, 0);
+                        while($chartRow = mysqli_fetch_assoc($resultQuery)){
+                            echo"['".$chartRow['Sector']."', ".$chartRow['Percentage']."],";
+                        }
+                    ?>
+                ]);
+
+                var options= {
+                    title: 'Percentage of Sectors'
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
+                chart.draw(data, options);
+                };
+            </script>
+            <!-- 
+                DASHBOARD SECTION USING GOOGLEW CHARTS API 
+             -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="card-title"> Dashboard | Data breakdown using the MySQL Database data.</h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div id="pieChart"  style=" height:270px;" class="col-6 col">
+                        </div>
+                        <div id="BarChart"  style=" height:270px;" class="col-6 col">
+                        </div> 
+                    </div>  
                 </div>
             </div>
         </main>
@@ -662,7 +747,7 @@
                     ImportFormReview.style.display ="none";
                  }
             };
-        </script>
+        </script>      
     </body>
 </html>
 
