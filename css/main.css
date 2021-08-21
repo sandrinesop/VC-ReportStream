@@ -8,9 +8,6 @@ nav {
     z-index: 1;
     color: #ffffff;
 }
-/* .navbar {
-    background-color: #2f470c;
-} */
 nav.container, main.container, footer.container {
     width:100%;
     max-width:none ;
@@ -35,27 +32,7 @@ nav.container, main.container, footer.container {
 /* HTML TABLE STYLE */
 .table{
     table-layout:fixed;
-    /* border-collapse: collapse;
-    background: #fff;
-     text-overflow:ellipsis; */
- }
-
-td {
-    /* white-space:nowrap; */
-    /* text-overflow:ellipsis;
-    overflow:hidden;
-    display: table-cell; */
 }
-
-/*tr {
-     display: table-row; 
-}
-*/
-/* th, td {
-    white-space: Wrap;
-    text-align: left;
-    padding: 8px;
-  } */
 
 /* BUTTON STYLES */
 
@@ -63,4 +40,83 @@ td {
     border: 1px solid #2f470c;
     border-radius: 15px;
     padding: 5px 10px;
+}
+
+/* 
+===================
+LOGIN FORM STYLES
+===================
+*/
+
+.login-main #login {
+    color: #2f470c !important;
+}
+
+.login-main .card {
+    width: 500px;
+}
+.login-main #login label{
+   font-weight: 600;
+}
+.login-main #login hr{
+    border-bottom: #2f470c 2px solid ;
+}
+.login-main div.username, 
+.login-main div.userpassword {
+    padding: 5px;
+    display: flex;
+}
+.login-main div.FirstName input,
+.login-main div.LastName input,
+.login-main div.username input, 
+.login-main div.userpassword input{
+    border: none;
+    height: 25px;
+}
+.login-main div.username img, 
+.login-main div.userpassword img{
+    width: 25px;
+    height: 25px;
+}
+
+/* 
+    ======================
+    LOGIN BUTTON STYLES
+    ======================
+ */
+.login-main #login .login-btn {
+    color: #2f470c !important;
+    width: 100px;
+    padding: 3px;
+    border-radius: 22.5px;
+    background-image: linear-gradient(to left,#2f470c87 ,#71943d95,  #ffffff,#ffffff);
+    transition: color .4s, background-image 18s, transform 5s;
+}
+.login-main #login .login-btn:hover {
+    color: #ffffff !important;
+    background-image: linear-gradient(to right, #2f470c ,#71943d, #ffffff);
+    transform: scale(.95);
+}
+/* 
+    ======================
+    REGISTER BUTTON STYLES
+    ======================
+ */
+.login-main #login .register-btn {
+    color: #2f470c !important;
+    width: 100px;
+    padding: 3px;
+    border-radius: 22.5px;
+    background-image: linear-gradient(to left,#b30600 ,#db10099e,  #ffffff,#ffffff);
+    transition: color .4s, background-image 18s, transform 5s;
+}
+.login-main #login .register-btn a,
+.login-main #login .login-btn a {
+    color: #2f470c !important;
+    text-decoration: none;
+}
+.login-main #login .register-btn:hover {
+    color: #ffffff !important;
+    background-image: linear-gradient(to right, #b30600 ,#db10099e,  #ffffff,#ffffff);
+    transform: scale(.95);
 }

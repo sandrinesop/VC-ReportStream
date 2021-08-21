@@ -28,10 +28,10 @@
                                 <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./WebInterface.php">New Deal</a>
+                                <a class="nav-link" href="#">Contact</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contact</a>
+                                <a class="nav-link" href="./php/AUTH/login.php">login</a>
                             </li>
                         </ul>
                     </div>
