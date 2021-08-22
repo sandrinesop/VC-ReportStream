@@ -27,12 +27,10 @@
         // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES
         // ===========================================================================================================
         $DuplicateCheck = " SELECT 
-                                FirstName, Email 
+                                Email 
                             FROM 
                                 PlatformContributors 
                             WHERE 
-                                PlatformContributors.FirstName ='$FirstName' 
-                            AND 
                                 PlatformContributors.Email ='$Email' 
         ";
         $checkResult = mysqli_query($conn, $DuplicateCheck);

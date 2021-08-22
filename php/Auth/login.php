@@ -297,22 +297,22 @@
             <div class="card container p-0">
                 <div class="card-header text-center">Sign in</div>
                 <div class="card-body">
-                    <form class="container" id="login" action="./process_login.php">
+                    <form class="container" id="login" action="./process_login.php" method="POST">
                         <div class="mb-3 email-container">
                             <label for="Email" class=" col-form-label">Email</label>
                             <div class="username">
-                                <img src="../img/login_User.png" alt=""><input type="email" class="form-control" id="Email" placeholder="Enter Username">
+                                <img src="../img/login_User.png" alt=""><input type="email" class="form-control" id="Email" placeholder="Enter email address " name="Email">
                             </div>
                             <hr >
                         </div>
                         <div class="mb-3">
                             <label for="password" class=" col-form-label">Password</label>
                             <div class="username">
-                                <img src="../img/login_password.png" alt=""><input type="password" class="form-control" id="password" placeholder="Enter Password">
+                                <img src="../img/login_password.png" alt=""><input type="password" class="form-control" id="password" placeholder="Enter Password"  name="password1">
                             </div>
                             <hr >
                         </div>
-                        <button type="submit" class=" login-btn" formmethod="POST">Sign in</button>
+                        <button type="submit" class=" login-btn" formmethod="POST" name="login">login</button>
                         <button class="register-btn" ><a href="./register.php">Register</a></button>
                     </form>
                 </div>

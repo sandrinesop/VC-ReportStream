@@ -57,7 +57,7 @@
             <div class="card container p-0">
                 <div class="card-header text-center">Sign Up</div>
                 <div class="card-body">
-                    <form class="container" id="login" action="./process_registration.php">
+                    <form class="container" id="login" action="./process_registration.php" method="POST">
                         <div class="mb-3 FirstName-container">
                             <label for="Name" class=" col-form-label">First Name</label>
                             <div class="FirstName">
