@@ -614,7 +614,7 @@
                                         <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Note"];?> </small></td>
-                                        <td> <a href="../Views/DealView.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
+                                        <td> <a href="../Views/ViewDeal.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
                                         <td class="text-truncate"> <a href="../crud/edit_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Edit</a></td>
                                         <td class="text-truncate"> <a href="../crud/delete_deals.php?DealsID=<?php echo $rowAA['DealsID']; ?>">Delete</a></td>
                                     </tr>
