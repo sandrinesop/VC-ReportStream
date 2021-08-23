@@ -1,4 +1,7 @@
 <?php
+    // ======================================
+    // STARTING A NEW SESSION FOR EACH USER
+    // ======================================
     session_start();    
     // CONNECT TO DATABASE
     include_once('../App/connect.php');
@@ -13,7 +16,7 @@
         // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES
         // ===========================================================================================================
         $sql = " SELECT 
-                    PlatformContributorsID, Email, Password 
+                    PlatformContributorsID,FirstName, LastName, Email, Password 
                 FROM 
                     PlatformContributors 
                 WHERE  
@@ -28,7 +31,8 @@
             // IF ROWS ARE RETURNED THEN USER EXISTS ON THE DB SO PROCEED
             // ===========================================================
             $row = mysqli_fetch_assoc($query);
-            $UserID = $row['PlatformContributorsID'];
+            $UserID     = $row['PlatformContributorsID'];
+            $UserName   = $row['FirstName'].' '.$row['LastName'];
             echo 
                 '<div style=" background-color:#d1e7dd; color: #0f5132; margin:0;">
                     <H4>Loggged In!</H4>
@@ -37,6 +41,7 @@
             ;
             $_SESSION['Username'] = $Email;
             $_SESSION['UserID'] = $UserID;
+            $_SESSION['UserName'] = $UserName;
             echo '<a href="./login.php">Back</a>';
         }else{
             // ===========================================================
