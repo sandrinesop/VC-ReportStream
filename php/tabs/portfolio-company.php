@@ -1,4 +1,5 @@
 <?php 
+    // CONNECT TO DATABASE
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT DISTINCT
@@ -332,6 +333,11 @@
     <body class="pb-5">
         <!-- HEADER CONTENT -->
         <?php include('../Views/navBar/nav.php');?> 
+        <div class="float-end">
+            <form action="../Auth/logout.php" method="POST">
+                <input type="submit" value="logout" name="logout">
+            </form>
+        </div>
         <!-- BODY CONTENT -->
         <main class="container ">
             <div class=" my-5">

@@ -85,7 +85,6 @@
     ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
     $rowA1 = mysqli_fetch_assoc($resultA1);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

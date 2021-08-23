@@ -179,9 +179,9 @@
                 echo 'Oops! There was an error linking Fund to Investment Manager. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
             }
-            // ===========================================================
+            // ========================================
             // LOOP TO INSERT PORTFOLIO COMPANY ON FUND
-            // ===========================================================
+            // ========================================
             foreach($PortfolioCompanyName as $Company) {
             $sql5 = "   INSERT INTO 
                         FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)

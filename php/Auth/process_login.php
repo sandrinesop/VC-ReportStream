@@ -2,7 +2,8 @@
     // ======================================
     // STARTING A NEW SESSION FOR EACH USER
     // ======================================
-    session_start();    
+    session_start();  
+
     // CONNECT TO DATABASE
     include_once('../App/connect.php');
  
@@ -32,17 +33,21 @@
             // ===========================================================
             $row = mysqli_fetch_assoc($query);
             $UserID     = $row['PlatformContributorsID'];
+            $Email      = $row['Email'] ;
             $UserName   = $row['FirstName'].' '.$row['LastName'];
-            echo 
-                '<div style=" background-color:#d1e7dd; color: #0f5132; margin:0;">
-                    <H4>Loggged In!</H4>
-                    <p style="margin:0;"> <small>You have been successfully logged in.</small> </p>
-                </div>'
-            ;
-            $_SESSION['Username'] = $Email;
+            // echo 
+            //     '<div style=" background-color:#d1e7dd; color: #0f5132; margin:0;">
+            //         <H4>Loggged In!</H4>
+            //         <p style="margin:0;"> <small>You have been successfully logged in.</small> </p>
+            //     </div>'
+            // ;
+            $_SESSION['Email'] = $Email;
             $_SESSION['UserID'] = $UserID;
             $_SESSION['UserName'] = $UserName;
-            echo '<a href="./login.php">Back</a>';
+
+            // REDIRECT THE USER TO THE ADMIN PANEL
+            header('refresh: 1; url = ../tabs/AdminPanel.php');
+            exit;
         }else{
             // ===========================================================
             // USER DES NOTE EXIST SO DO NOT GIVE ACCESS
@@ -53,7 +58,7 @@
                 <p style="margin:0;"> <small> Your login attempt failed. Please try again with the right credentials</small> </p>
             </div>'
             ;
-            $_SESSION =[];
+            $_SESSION = [];
             session_destroy();  
             echo '<a href="./login.php">Back</a>';          
         }
