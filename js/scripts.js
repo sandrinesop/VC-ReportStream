@@ -1169,5 +1169,5 @@ $(document).ready(function() {
         width: '220px', 
         maximumSelectionLength: 8,
         placeholder: "Select Sector"
-    })
+    });
 });

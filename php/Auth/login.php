@@ -313,7 +313,7 @@
                             <hr >
                         </div>
                         <button type="submit" class=" login-btn" formmethod="POST" name="login">login</button>
-                        <button class="register-btn" ><a href="./register.php">Register</a></button>
+                        <button class="register-btn" ><a href="https://forms.gle/LPddSitYcXgYfVFT7" target="_blank">Register</a></button>
                     </form>
                 </div>
             </div>
@@ -327,40 +327,5 @@
         <script src="../../js/MultiSelect.js"></script>
         <script src="../../DataTables/datatables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-        <script>
-            var createWindow1;
-            // open window
-            function openWin1() {
-                createWindow1 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
-            }
-            var createWindow2;
-            // open window
-            function openWin2() {
-                createWindow2 = window.open("./SubFunctions/create_portfoliocompany.php", "_blank", "width=920, height=500");
-            }
-
-        </script>
-        <script>
-            $(document).ready( function () {
-                // Initializing the datatable plugin
-                $('#table_Fund').DataTable();
-                
-                // Trigger the double tap to edit function
-                $(document.body).on("dblclick", "tr[data-href]", function (){
-                    window.location.href = this.dataset.href;
-                });
-            });
-        </script>
-        <!-- Display and Hide the import form with a button click -->
-        <script>
-            function formToggle(ID){
-                 var ImportFormReview = document.getElementById(ID);
-                 if(ImportFormReview.style.display === "none"){
-                    ImportFormReview.style.display ="block";
-                 }else{
-                    ImportFormReview.style.display ="none";
-                 }
-            };
-        </script>
     </body>
 </html>

@@ -426,44 +426,10 @@
         <script src="../../js/MultiSelect.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
-                var createWindow;
-                // open window
-                function openWin() {
-                    createWindow = window.open("./SubFunctions/create_contact.php", "_blank", "width=920, height=500");
-                };
-
-                var createWindow2;
-                // open window
-                function openWin2() {
-                    createWindow2 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
-                };
-
-                var createWindow3;
-                // open window
-                function openWin3() {
-                    createWindow3 = window.open("./SubFunctions/create_fund.php", "_blank", "width=920, height=500");
-                };
-        </script>
-        <script>
             $(document).ready( function () {    
                 // Initializing the datatable plugin
                 $('#table_PortfolioCompany').DataTable();
-                
-                // Trigger the double tap to edit function
-                $(document.body).on("dblclick", "tr[data-href]", function (){
-                    window.location.href = this.dataset.href;
-                })
             } );
-        </script>
-        <script>
-            function formToggle(ID){
-                 var ImportFormReview = document.getElementById(ID);
-                 if(ImportFormReview.style.display === "none"){
-                    ImportFormReview.style.display ="block";
-                 }else{
-                    ImportFormReview.style.display ="none";
-                 }
-            };
         </script>
     </body>
 </html>

@@ -2,7 +2,7 @@
 <!-- HEADER CONTENT -->
 <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
     <div class="container-fluid">
-        <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 80px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+        <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 50px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream  </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,7 +15,9 @@
                     <a class="nav-link" href="#">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../AUTH/login.php">login</a>
+                    <form action="../AUTH/logout.php" method="POST"  class="profile">
+                        <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
+                    </form>
                 </li>
             </ul>
         </div>

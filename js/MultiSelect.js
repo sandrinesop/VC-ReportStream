@@ -40,5 +40,11 @@
         width: '230px', 
         maximumSelectionLength: 4,
         placeholder: "Select Description(s)"
+    });
+    
+    $(".DealsectorDropdowns").select2({
+        width: '220px', 
+        maximumSelectionLength: 8,
+        placeholder: "Select Sector"
     })
 });

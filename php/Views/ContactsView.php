@@ -272,11 +272,6 @@
             // Initializing the datatable plugin
             $(document).ready( function () {
                 $('#table_Contacts').DataTable();
-
-                // Trigger the double tap to edit function
-                $(document.body).on("dblclick", "tr[data-href]", function (){
-                    window.location.href = this.dataset.href;
-                })
             });
         </script>
     </body>

@@ -14,6 +14,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./php/AUTH/login.php"><img src="../img/User_Profile_White.png" alt="" style="width:30px;"><small>login</small></a>
+                </li>
             </ul>
         </div>
     </div>

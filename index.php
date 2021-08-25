@@ -18,20 +18,20 @@
         <!-- Header Content -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream </a>
+                    <a class="navbar-brand" href="./index.php"><img style=" width: 80px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> <small>VC Reportstream </small></a>
                     <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav w-50 justify-content-end">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
+                                <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" ><small>Digital Collective Africa</small></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contact</a>
+                                <a class="nav-link" href="#"><small>Contact</small></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./php/AUTH/login.php">login</a>
+                                <a class="nav-link" href="./php/AUTH/login.php"><img src="./php/img/User_Profile_White.png" alt="" style="width:30px;"><small>login</small></a>
                             </li>
                         </ul>
                     </div>
@@ -41,7 +41,7 @@
         <main class="container text-center index-main">
             <div class="wrapper ">
                 <div>
-                    <a href="./php/tabs/NewDeals.php">
+                    <a href="./php/Views/DealsView.php">
                         <div class=" Deals centered-nav">
                             <h1>Deals</h1>
                             <div>
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/tabs/investor.php">
+                    <a href="./php/Views/InvestorsView.php">
                         <div class=" Investors centered-nav">
                             <h1>Investment Managers</h1>
                             <div>
@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     
-                    <a href="./php/tabs/fund.php">
+                    <a href="./php/Views/FundsView.php">
                         <div class=" Funds centered-nav">
                             <h1>Funds</h1>
                             <div>
@@ -70,7 +70,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="./php/tabs/portfolio-company.php">
+                    <a href="./php/Views/CompaniesView.php">
                         <div class=" Portfolio centered-nav">
                             <h1>Portfolio Companies</h1>
                             <div>
@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/tabs/contacts.php">
+                    <a href="./php/Views/ContactsView.php">
                         <div class=" Funds centered-nav">
                             <h1>Contacts</h1>
                             <div>

@@ -46,7 +46,7 @@
             $_SESSION['UserName'] = $UserName;
 
             // REDIRECT THE USER TO THE ADMIN PANEL
-            header('refresh: 1; url = ../tabs/AdminPanel.php');
+            header('refresh: 1; url = ../../Admin.php');
             exit;
         }else{
             // ===========================================================
