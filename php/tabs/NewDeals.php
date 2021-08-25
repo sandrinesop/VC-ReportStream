@@ -122,7 +122,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="text" class="form-control" id="Stake" name="Stake"  min="0.01" max="1" step="any">
+                                                        <input type="number" class="form-control" id="Stake" name="Stake"  min="0.01" max="1" step="any">
                                                         <small style="color:red;">Place a zero if stake not disclosed </small>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
