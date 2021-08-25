@@ -320,21 +320,21 @@
                 <div class="card">
                     <div class="card-body " style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;" id="table_Deals">
+                            <table class=" table table-hover table-striped table-success table-bordered" style=" line-height: 18px;" id="table_Deals">
                                 <thead>
                                     <th scope="col">Date </th>
                                     <th scope="col">News Link</th>
                                     <th scope="col">Portfolio Company</th>
                                     <th scope="col">Investment Manager(s)</th>
-                                    <th scope="col">Fund(s)</th>
+                                    <!-- <th scope="col">Fund(s)</th> -->
                                     <th scope="col">Value Of Investment</th>
-                                    <th scope="col">Stake</th>
+                                    <!-- <th scope="col">Stake</th>
                                     <th scope="col">Industry </th>
                                     <th scope="col">Sector(s)</th>
                                     <th scope="col">Portfolio Company Headquarters</th>
                                     <th scope="col">Company Contact(s)</th>
                                     <th scope="col">Role </th>
-                                    <th scope="col">Deal Notes </th>
+                                    <th scope="col">Deal Notes </th> -->
                                     <th scope="col">View More </th>
                                 </thead>
                                 <tbody>
@@ -347,16 +347,16 @@
                                         <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td>
+                                        <!-- <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td> -->
                                         <td class="text-truncate"> <small ><?php echo '$'.$rowAA["InvestmentValue"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
+                                        <!-- <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
                                         <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["Note"];?> </small></td>
-                                        <td> <a href="../Views/ViewDeal.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
+                                        <td class="text-truncate"> <small ><?php echo $rowAA["Note"];?> </small></td> -->
+                                        <td> <a href="./SingleView/ViewDeal.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
                                     </tr>
                                     <?php
                                         }

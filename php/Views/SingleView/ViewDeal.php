@@ -1,5 +1,5 @@
 <?php 
-    include_once('../App/connect.php');
+    include_once('../../App/connect.php');
     // QUERY DATABASE FROM DATA
     $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
@@ -92,16 +92,16 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
-        <title>Update Record </title>
+        <link rel="shortcut icon" href="../../../resources/DCA_Icon.png" type="image/x-icon">
+        <title> VC Reportstream | Deal View </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../../css/main.css">
     </head>
     <body>
     <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 80px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../../index.php"><img style=" width: 80px;" class="home-ico" src="../../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -111,7 +111,7 @@
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
+                            <a class="nav-link" href="../../../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -173,7 +173,7 @@
                     </p>
 
                 </div>
-                <button><a href="../../index.php"> Close</a></button>
+                <button><a href="../DealsView.php"> Close</a></button>
             </form>
         </main>
     </body>
