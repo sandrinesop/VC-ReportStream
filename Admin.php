@@ -49,7 +49,7 @@
                                 <a class="nav-link" href="#">Contact</a>
                             </li>
                             <li class="nav-item">
-                                <form action="./php/AUTH/logout.php" method="POST"  class="profile">
+                                <form action="./php/Auth/logout.php" method="POST"  class="profile">
                                     <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
                                 </form>
                             </li>

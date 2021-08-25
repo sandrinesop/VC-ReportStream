@@ -31,7 +31,7 @@
                                 <a class="nav-link" href="#"><small>Contact</small></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./php/AUTH/login.php"><img src="./php/img/User_Profile_White.png" alt="" style="width:30px;"><small>login</small></a>
+                                <a class="nav-link" href="./php/Auth/login.php"><img src="./php/img/User_Profile_White.png" alt="" style="width:30px;"><small>login</small></a>
                             </li>
                         </ul>
                     </div>
