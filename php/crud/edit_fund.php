@@ -61,7 +61,6 @@
 
             GROUP BY FundID, Deleted, DeletedDate, FundName, Currency, CommittedCapital, MinimumInvestment, MaximumInvestment,  Note 
     "; 
-
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
@@ -315,7 +314,7 @@
         ";
         $prevResultNote = mysqli_query($conn,$prevQueryNote);
         if($prevResultNote->num_rows>0){
-            $updateFundNote = "UPDATE Note SET ModifiedDate= NOW(), $updateString2 WHERE NoteID = (SELECT FundNote.NoteID FROM FundNote WHERE FundNote.FundID='".$FundID."')";
+            $updateFundNote = "UPDATE Note SET ModifiedDate= NOW(), $updateNoteString WHERE NoteID = (SELECT FundNote.NoteID FROM FundNote WHERE FundNote.FundID='".$FundID."')";
             $resultUpdateNote = mysqli_query($conn, $updateFundNote);
         }else{
             // INSERT INTO THE NOTE TABLE
