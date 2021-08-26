@@ -503,7 +503,7 @@
                                             <td class="text-truncate"> <small> <?php echo $rows['Country']?> </small></td> -->
                                             <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
                                             <td> <a href="./SingleView/ViewInvestor.php?InvestorID=<?php echo $rows['InvestorID'];?>">View More</a></td>
-                                            <td class="text-truncate"> <small> <a href="../crud/edit_Investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
+                                            <td class="text-truncate"> <small> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
                                             <td class="text-truncate"> <small> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a> </small></td>
                                         </tr>
                                     <?php 
