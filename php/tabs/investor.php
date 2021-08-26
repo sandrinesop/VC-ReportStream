@@ -470,17 +470,18 @@
                 <div class="card">
                     <div class="card-body" >
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 3600px; line-height: 18px; " id="table_investmentManager">
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="line-height: 18px; " id="table_investmentManager">
                                 <thead>
                                     <th scope="col">Investment Manager</th>
                                     <th scope="col">Website</th>
                                     <th scope="col">Fund((s)</th>
-                                    <th scope="col">Portfolio Company List</th>
+                                    <!-- <th scope="col">Portfolio Company List</th>
                                     <th scope="col">Note</th>
-                                    <th scope="col">Description</th>
+                                    <th scope="col">Description</th> -->
                                     <th scope="col">Currency</th>
-                                    <th scope="col">Year Founded</th>
-                                    <th scope="col">Country</th>
+                                    <!-- <th scope="col">Year Founded</th>
+                                    <th scope="col">Country</th> -->
+                                    <th scope="col">View More</th>
                                     <th scope="col">Logo</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
@@ -493,14 +494,15 @@
                                         <tr data-href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?>">
                                             <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                             <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
+                                            <!--<td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['Note'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Description'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Description'] ?> </small></td> -->
                                             <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Country']?> </small></td>
+                                            <!-- <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Country']?> </small></td> -->
                                             <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
+                                            <td> <a href="./SingleView/ViewInvestor.php?InvestorID=<?php echo $rows['InvestorID'];?>">View More</a></td>
                                             <td class="text-truncate"> <small> <a href="../crud/edit_Investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
                                             <td class="text-truncate"> <small> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a> </small></td>
                                         </tr>

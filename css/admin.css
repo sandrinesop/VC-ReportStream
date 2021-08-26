@@ -5,7 +5,7 @@
 */
 
 nav {
-    background-color: #d7032a;
+    background-color: #b05802;
     height: 4.5rem;
     z-index: 1;
     color: #ffffff;
@@ -63,19 +63,19 @@ nav.container, main.container, footer.container {
 }
 
 .Deals {
-    background-color: #f34162;
+    background-color: #e09345;
     transition: all .5s;
 }
 .Investors {
-    background-color: #d7032a;
+    background-color: #b05802;
     transition: all .5s;
 }
 .Portfolio {
-    background-color: #d7032a;
+    background-color: #b05802;
     transition: all .5s;
 }
 .Funds {
-    background-color: #f34162;
+    background-color: #e09345;
     transition: all .5s;
 }
 .centered-nav:hover {
@@ -117,7 +117,7 @@ nav.container, main.container, footer.container {
 }
 
 .admin-main {
-    background-image: url(../resources/Admin_Banner.png);
+    background-image: url(../resources/Admin_banner.png);
     background-size: cover;
 }
 
@@ -154,7 +154,7 @@ nav.container, main.container, footer.container {
 
 
 main div .card .card-body{
-    background-color:#d7032a !important;
+    background-color:#b05802 !important;
 }
 
 /* HTML TABLE STYLE */

@@ -207,9 +207,17 @@
         if(!empty($Website)){
             $updates[] ="Website='".$Website."'";
         }
+        
+        if(!empty($Description)){
+            $updates[] ="DescriptionID=(select Description.DescriptionID FROM Description where Description.Description = '$Description')";
+        }
 
         if(!empty($YearFounded)){
             $updates[] ="YearFounded='".$YearFounded."'";
+        }
+        
+        if(!empty($Headquarters)){
+            $updates[] ="Headquarters =(select Country.CountryID FROM Country where Country.Country = '$Headquarters')";
         }
 
         if(!empty($logo)){
