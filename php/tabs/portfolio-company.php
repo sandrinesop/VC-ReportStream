@@ -260,22 +260,23 @@
                 <div class="card">
                     <div class="card-body table_container" ">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" tbl table table-hover table-striped table-success table-bordered" style="Width: 3600px; line-height: 18px;" id="table_PortfolioCompany">
+                            <table class=" tbl table table-hover table-striped table-success table-bordered" style=" line-height: 10px;" id="table_PortfolioCompany">
                                 <thead> 
-                                    <th scope="col" >Portfolio Company Name</th>
-                                    <th scope="col" >Investment Manager(s)</th>
+                                    <th scope="col" > Company </th>
+                                    <!-- <th scope="col" >Investment Manager(s)</th>
                                     <th scope="col" >Fund(s)</th>
-                                    <th scope="col" >Currency </th>
-                                    <th scope="col" >Portfolio Company Website</th>
+                                    <th scope="col" >Currency </th> -->
+                                    <th scope="col" > Website</th>
                                     <th scope="col" >Industry</th>
-                                    <th scope="col" >Sector</th>
-                                    <th scope="col" >Details</th>
+                                    <!-- <th scope="col" >Sector</th> -->
+                                    <!-- <th scope="col" >Details</th>
                                     <th scope="col" >Year Founded</th>
-                                    <th scope="col" >Country</th>
+                                    <th scope="col" >Country</th> -->
                                     <th scope="col" >CEO </th>
-                                    <th scope="col" >CEO Gender</th>
-                                    <th scope="col" >CEO Race</th>
+                                    <!-- <th scope="col" >CEO Gender</th>
+                                    <th scope="col" >CEO Race</th> -->
                                     <th scope="col" >Logo</th>
+                                    <th scope="col" >View More</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
                                 </thead>
@@ -286,19 +287,20 @@
                                     ?>
                                         <tr data-href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?>">     
                                             <td class="text-truncate"> <small> <?php echo $rows['PortfolioCompanyName'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
+                                            <!-- <td class="text-truncate"> <small> <?php echo $rows['InvestorName'] ?> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['FundName'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Currency'] ?> </small></td> -->
                                             <td class="text-truncate"> <small> <a href="<?php echo $rows['Website'] ?>" target="_Blank"><?php echo $rows['Website'] ?></a> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['Industry'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
+                                            <!-- <td class="text-truncate"> <small> <?php echo $rows['Sector'] ?> </small></td> -->
+                                            <!-- <td class="text-truncate"> <small> <?php echo $rows['Details'] ?> </small></td>
                                             <td class="text-truncate"> <small> <?php echo $rows['YearFounded'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Country'] ?> </small></td> -->
                                             <td class="text-truncate"> <small> <?php echo $rows['UserFullName'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Gender'] ?> </small></td>
-                                            <td class="text-truncate"> <small> <?php echo $rows['Race'] ?> </small></td>
+                                            <!-- <td class="text-truncate"> <small> <?php echo $rows['Gender'] ?> </small></td>
+                                            <td class="text-truncate"> <small> <?php echo $rows['Race'] ?> </small></td> -->
                                             <td class="text-truncate"> <small> <?php echo '<img src="data:image;base64,'.base64_encode($rows['Logo']).'" style="width:100px; height:60px;">'?> </small></td>
+                                            <td> <a href="./SingleView/ViewCompany.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID'];?>">View More</a></td>
                                             <td class="text-truncate"> <small> <a href="../crud/edit_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Edit</a></small></td>
                                             <td class="text-truncate"> <small> <a href="../crud/delete_PC.php?PortfolioCompanyID=<?php echo $rows['PortfolioCompanyID']; ?> ">Delete</a></small></td>
                                             <!-- <td> <?php echo $rows['IndustryID'] ?></td>

@@ -5,7 +5,7 @@
     session_start();
     // NOW WE SET A CONDITION TO PREVENT UNAUTHORISED USERS TO ACCESS THIS PAGE.
     if( $_SESSION == []){
-        header('refresh:5; url = ./Admin_index.php');
+        header('refresh:5; url = ./index.php');
         echo'
             <p> 
                 Access denied. Only Admins can access this page. <br/>
