@@ -304,18 +304,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="Width: 2400px;line-height: 18px;"id="table_Contacts">
+                            <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="line-height: 18px;"id="table_Contacts">
                                 <thead>
-                                    <th scope="col">User Full Name</th>
+                                    <th scope="col">Full Name</th>
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Company</th>
-                                    <th scope="col">Contact Number 1</th>
+                                    <!-- <th scope="col">Contact Number 1</th>
                                     <th scope="col">Contact Number 2 </th>
                                     <th scope="col">Email</th>
                                     <th scope="col">RoleType</th>
                                     <th scope="col">Gender</th>
-                                    <th scope="col">Race  </th>
+                                    <th scope="col">Race  </th> -->
+                                    <th scope="col">View More </th>
                                     <th scope="col">Edit  </th>
                                     <th scope="col">Delete </th>
                                 </thead>
@@ -329,12 +330,13 @@
                                             <td class="text-truncate"> <small><?php echo $rows['FirstName'] ?></small></td>
                                             <td class="text-truncate"> <small><?php echo $rows['LastName'] ?></small></td>
                                             <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['RoleType'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['Gender'] ?></small></td>
-                                            <td class="text-truncate"> <small><?php echo $rows['Race'] ?></small></td>
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['ContactNumber1'] ?></small></td> -->
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['ContactNumber2'] ?></small></td> -->
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['Email'] ?></small></td> -->
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['RoleType'] ?></small></td> -->
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['Gender'] ?></small></td> -->
+                                            <!-- <td class="text-truncate"> <small><?php echo $rows['Race'] ?></small></td> -->
+                                            <td> <a href="./SingleView/ViewContact.php?UserDetailID=<?php echo $rows['UserDetailID'];?>">View More</a></td>
                                             <td class="text-truncate"> <a href="../crud/edit_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Edit</a></td>
                                             <td class="text-truncate"> <a href="../crud/delete_contact.php?UserDetailID=<?php echo $rows['UserDetailID']; ?>">Delete</a></td>
                                         </tr>
