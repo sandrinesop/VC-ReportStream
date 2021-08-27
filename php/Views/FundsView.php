@@ -310,17 +310,18 @@
                 <div class="card">
                     <div class="card-body" style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
-                            <table class=" table table-hover table-striped table-success table-bordered" style="Width: 2400px;line-height: 18px;" id="table_Fund">
+                            <table class=" table table-hover table-striped table-success table-bordered" style="line-height: 18px;" id="table_Fund">
                                 <thead>
                                     <th scope="col">Fund Name</th>
-                                    <th scope="col">Investment Manager(s)</th>
-                                    <th scope="col">Portfolio Companies List</th>
+                                    <!-- <th scope="col">Investment Manager(s)</th> -->
+                                    <!-- <th scope="col">Portfolio Companies List</th> -->
                                     <th scope="col">Currency</th>
                                     <th scope="col">Committed Capital </th>
-                                    <th scope="col">Minimum Investment</th>
-                                    <th scope="col">Maximum Investment</th>
+                                    <!-- <th scope="col">Minimum Investment</th> -->
+                                    <!-- <th scope="col">Maximum Investment</th> -->
                                     <th scope="col">Investment Stage</th>
-                                    <th scope="col">Fund Note</th>
+                                    <!-- <th scope="col">Fund Note</th> -->
+                                    <th scope="col">View More </th> 
                                 </thead>
                                 <tbody>
                                     <?php
@@ -329,14 +330,15 @@
                                     ?>
                                     <tr data-href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?>">
                                         <td class="text-truncate"> <small><?php echo $rows['FundName'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td>
+                                        <!-- <td class="text-truncate"> <small><?php echo $rows['InvestorName'] ?> </small></td> -->
+                                        <!-- <td class="text-truncate"> <small><?php echo $rows['PortfolioCompanyName'] ?> </small></td> -->
                                         <td class="text-truncate"> <small><?php echo $rows['Currency'] ?> </small></td>
                                         <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['CommittedCapital'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MinimumInvestment'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MaximumInvestment'] ?> </small></td>
+                                        <!-- <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MinimumInvestment'] ?> </small></td> -->
+                                        <!-- <td class="text-truncate"> <small><?php echo $rows['CurrencyCode'] ?> <?php echo $rows['MaximumInvestment'] ?> </small></td> -->
                                         <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
-                                        <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td>
+                                        <!-- <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td> -->
+                                        <td> <a href="./SingleView/ViewFund.php?FundID=<?php echo $rows['FundID'];?>">View More</a></td>
                                     </tr>
                                     <?php 
                                         }

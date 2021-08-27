@@ -506,7 +506,7 @@
                                             <td class="text-truncate"> <small> <a href="../crud/edit_investor.php?InvestorID=<?php echo $rows['InvestorID']; ?> ">Edit</a></small></td>
                                             <td class="text-truncate"> <small> <a href="../crud/Delete.php?InvestorID=<?php echo $rows['InvestorID']; ?>">Delete</a> </small></td>
                                         </tr>
-                                    <?php 
+                                    <?php  
                                         }
                                     ?>
                                 </tbody>
