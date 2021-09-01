@@ -205,7 +205,7 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="FundName" class="form-label">Fund(s)</label>
-                                                        <select class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
+                                                        <select class="form-select FundName" id="FundName" name="FundName[]" multiple="true" >
                                                             <option> Select Fund(s)...</option>
                                                             <?php
                                                                 while ($row103 = mysqli_fetch_assoc($result103)) {
@@ -223,7 +223,7 @@
                                                     <div class="row">
                                                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                                             <label for="img" class="form-label">Logo</label>
-                                                            <input type="file" class="form-control" id="img" name="img" required>
+                                                            <input type="file" class="form-control" id="img" name="img" >
                                                         </div>
                                                     </div>
                                                 </div>

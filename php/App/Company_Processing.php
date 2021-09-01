@@ -174,7 +174,20 @@
         $FundName               = $_POST['FundName'];
 
         // Company Logo Insert code
-        $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
+        if(isset($_FILES['img']['name'])){ 
+            $logoName = $_FILES['img']['name'];
+            $logoSize = $_FILES['img']['size'];
+
+            if($logoSize>0):
+                // echo'file uploaded' .$logo;
+                $logo =mysqli_real_escape_string($conn, (file_get_contents($_FILES['img']['tmp_name'])));
+            else:
+                // echo 'Image not set';
+            endif;
+        }else {
+            error_reporting(0);
+        }
+        // $Logo = addslashes(file_get_contents($_FILES['img']['tmp_name']));
 
         // ===========================================================================================================
         // THE CODE BLOCK BELOW CHECKS IF RECORD ALREADY EXISTS IN THE DB OR NOT. WE'LL USE THIS TO PREVENT DUPLICATES

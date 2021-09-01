@@ -172,3 +172,44 @@ main.single_View div div div div p{
     padding: 5px;
     font-weight: 600;
 }
+
+
+.container {
+    max-width: 1350px;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+
+/* 
+    STYLES FOR THE FOOTER
+*/
+footer  h3{
+    color: #ffffff;
+}
+
+footer .footer-upper{
+    background-color: #b05902b9;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+footer .footer-lower{
+    background-color: #b05802;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    color: #ffffff;
+    text-align: center;
+}
+.footer_nav div .footer_nav_a {
+    text-decoration: none;
+    color: #ffffff;
+}
+.footer_nav div .footer_nav_a:hover {
+    text-decoration: none;
+    color: #e09345;
+}

@@ -63,10 +63,10 @@
             echo '<a href="./login.php">Back</a>';          
         }
 
-        echo '<pre>';
+        // echo '<pre>';
 
-        print_r($_SESSION);
+        // // print_r($_SESSION);
 
-        echo '</pre>';
+        // echo '</pre>';
     }
 ?>

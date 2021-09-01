@@ -1,6 +1,21 @@
 /* 
 /// Header - Navbar Styles///
 */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1350px;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 
 nav {
     background-color: #2f470c;
@@ -28,6 +43,34 @@ nav.container, main.container, footer.container {
     transform: scale(.98);
 }
 
+/* 
+    STYLES FOR THE FOOTER
+*/
+footer  h3{
+    color: #ffffff;
+}
+
+footer .footer-upper{
+    background-color: #447002a9;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+footer .footer-lower{
+    background-color: #2f470c;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    color: #ffffff;
+    text-align: center;
+}
+.footer_nav div .footer_nav_a {
+    text-decoration: none;
+    color: #ffffff;
+}
+.footer_nav div .footer_nav_a:hover {
+    text-decoration: none;
+    color: #00c900;
+}
 
 /* HTML TABLE STYLE */
 .table{
@@ -133,4 +176,63 @@ main.single_View div div div div p{
     border: 1px solid #2f470c;
     padding: 5px;
     font-weight: 600;
+}
+
+/* 
+    ========================================
+    RESPONSIVE BEHAVIOUR OF TABLES ON MOBILE
+    ========================================
+*/
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 300px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+		display: block;
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { 
+	   border: 1px solid #ccc; 
+	   margin-bottom:5px;
+	   justify-content: center;
+	   align-content: center;
+	}
+
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%;
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+    
+	.dataTables_wrapper .dataTables_filter input {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        padding: 2px;
+        background-color: transparent;
+        margin-left: 3px;
+        margin-bottom:10px;
+    }
 }
