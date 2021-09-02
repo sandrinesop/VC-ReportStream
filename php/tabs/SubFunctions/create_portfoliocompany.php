@@ -6,14 +6,7 @@
     //Pulling data from the database and into dropdowns to create a new company with standardized data 
     //===================================================
     //===================================================
-    // USER FULLNAME TO SET CONTACT
-    $sql5 = "   SELECT DISTINCT 
-                    UserFullName
-                FROM 
-                    UserDetail 
-                WHERE 
-                    UserFullName IS NOT NULL ORDER BY UserFullName ASC";
-    $result5 = mysqli_query($conn, $sql5);
+
     // ACCESSING CURRENCIES TO POPULATE DROPDOWN FROM DATABASE
     $sql100 = "   SELECT DISTINCT 
                     Currency
@@ -30,61 +23,8 @@
                 WHERE 
                     Country IS NOT NULL ORDER BY Country ASC";
     $result101 = mysqli_query($conn, $sql101);
+ 
     
-    // ACCESSING INVESTORS TO POPULATE DROPDOWN FROM DATABASE
-    $sql102 = "   SELECT DISTINCT 
-                    InvestorName
-                FROM 
-                    Investor 
-                WHERE 
-                    InvestorName IS NOT NULL ORDER BY InvestorName ASC";
-    $result102 = mysqli_query($conn, $sql102);
-    
-    // ACCESSING FUNDS TO POPULATE DROPDOWN FROM DATABASE
-    $sql103 = "   SELECT DISTINCT 
-                    FundName
-                FROM 
-                    Fund 
-                WHERE 
-                    FundName IS NOT NULL ORDER BY FundName ASC";
-    $result103 = mysqli_query($conn, $sql103);
-
-    // POPULATING PORTFOLIO COMPANIES DROPDOWN
-    $sql104 = " SELECT DISTINCT 
-                    PortfolioCompanyName
-                FROM 
-                    PortfolioCompany 
-                WHERE 
-                    PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
-    ";
-    $result104 = mysqli_query($conn, $sql104);
-    // POPULATING ROLETYPE DROPDOWN
-    $sqlRoleType = " SELECT DISTINCT 
-                    RoleType
-                FROM 
-                    RoleType 
-                WHERE 
-                    RoleType IS NOT NULL ORDER BY RoleType ASC
-    ";
-    $resultRoleType = mysqli_query($conn, $sqlRoleType);
-    // POPULATING GENDER DROPDOWN
-    $sqlGender = " SELECT DISTINCT 
-                    Gender
-                FROM 
-                    Gender 
-                WHERE 
-                    Gender IS NOT NULL ORDER BY Gender ASC
-    ";
-    $resultGender = mysqli_query($conn, $sqlGender);
-    // POPULATING RACE DROPDOWN
-    $sqlRace = " SELECT DISTINCT 
-                    Race
-                FROM 
-                    Race 
-                WHERE 
-                    Race IS NOT NULL ORDER BY Race ASC
-    ";
-    $resultRace = mysqli_query($conn, $sqlRace);
 
     if ( isset($_POST['submit']))
     {
@@ -98,13 +38,9 @@
         $Details                 = $_POST['Details'];
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
-        $UserFullName            = $_POST['UserFullName'];
         $Logo                    = $_FILES['img']['name'];
-        $InvestorName           = $_POST['InvestorName'];
-        $FundName               = $_POST['FundName'];
 
-        $sectors=""; 
-
+        
         // Company Logo Insert code
         $Logo = addslashes(file_get_contents($_FILES["img"]["tmp_name"]));
 
@@ -115,21 +51,13 @@
 
         // LINKING COMPANY WITH SECTORS AND INDUSTRY
         if($query){
-
             // echo 'This is the value inside the $PortfolioCompanyName variable : '.$PortfolioCompanyName;
-
             foreach($Sector as $sects)  
             {  
-                // $sectors.= $sects.",";
-                // $testQuery = " SELECT sector.SectorID FROM sector WHERE sector.Sector = '$sects'";
-                // $queryResult = mysqli_query($conn, $testQuery);
-
-                // while($queryRows = mysqli_fetch_assoc($queryResult) ){
-                // // echo 'For each iteration this is the Sector ID'.$queryRows['SectorID'].'<br/>';
-                // }
-
-                $sql99 = "  INSERT INTO PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
-                            VALUES (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+                $sql99 = "  INSERT INTO 
+                                PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
+                            VALUES 
+                                (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
                 $query99 = mysqli_query($conn, $sql99);
 
                 if($query99){
@@ -139,29 +67,26 @@
                 }
             }
         
-            $sql3 = "   INSERT INTO PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
-                        VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))";
+            $sql3 ="INSERT INTO 
+                        PortfolioCompanyIndustry(PortfolioCompanyIndustryID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, IndustryID)
+                    VALUES 
+                        (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Industry.IndustryID FROM Industry where Industry.Industry = '$Industry'))
+            ";
             $query3 = mysqli_query($conn, $sql3);
-            
-            // LINK CONTACT TO COMPANY
-            $sql4 = "   INSERT INTO PortfolioCompanyUserDetail(PortfolioCompanyUserDetailID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, UserDetailID)
-                        VALUES (uuid(), now(), now(), 0, NULL,(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$UserFullName'))";
-            $query4 = mysqli_query($conn, $sql4);
-            
-            // LINK INVESTOR TO COMPANY
-            $sql104 = " INSERT INTO InvestorPortfolioCompany(InvestorPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, InvestorID, PortfolioCompanyID)
-                        VALUES (uuid(), now(), now(), 0, NULL, (select Investor.InvestorID FROM  Investor where Investor.InvestorName = '$InvestorName'), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-            $query104 = mysqli_query($conn, $sql104);
-            
-            // LINK FUND TO COMPANY
-            $sql105 = "   INSERT INTO FundPortfolioCompany(FundPortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, PortfolioCompanyID)
-                        VALUES (uuid(), now(), now(), 0, NULL, (select Fund.FundID FROM Fund where Fund.FundName = '$FundName'),(select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'))";
-            $query105 = mysqli_query($conn, $sql105);
 
-            header( "refresh: 5; url= portfolio-company.php" );
+            echo 
+                '<div style="background-color:#d1e7dd; color: #0f5132; margin:5px 0 ;">
+                    <H4>Thank you for your contribution</H4>
+                    <p style="margin:0;"> <small> New Portfolio Company created successfully! </small> </p>
+                </div>'
+            ;
+            
+            echo" <a style=\"padding:3px; border:1px solid red;font-size:18px; text-decoration:none;\" href=\"javascript:window.open('','_self').close();\">Close</a>";
+            $conn->close();
 
+            exit;
         } else {
-            echo 'Oops! There was an error Linking PortfolioCompany with Sector and Industry'.mysqli_error($conn).'<br/>';
+            echo 'Oops! There was an error creating PortfolioCompany'.mysqli_error($conn).'<br/>';
         }
     }
 ?>
@@ -213,7 +138,7 @@
                         <!--   INDUSTRY DROPDOWN  -->
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                             <label for="Industry" class="form-label">Industry</label>
-                            <select id="Industry" name="Industry" class="form-select">
+                            <select id="Industry" name="Industry" class="form-select" required>
                                 <option>choose...</option>
                                 <option value="Artificial Intelligence">Artificial Intelligence</option>
                                 <option value="Clothing and Apparel">Clothing and Apparel</option>
@@ -279,7 +204,7 @@
                         </div>
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                             <label for="YearFounded" class="form-label">Year Founded</label>
-                            <select class="form-control" name="YearFounded" id="YearFounded"required>
+                            <select class="form-control" name="YearFounded" id="YearFounded">
                                     <option value=""> Select...</option>
                             </select>
                         </div>
@@ -295,44 +220,6 @@
                                 ?>
                             </select>
                         </div>
-                        <!-- COMPANY CONTACT -->
-                        <!-- <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                            <label for="UserFullName" class="form-label">Company Contact</label>
-                            <select class="form-select UserFullName" id="UserFullName" name="UserFullName[]" multiple="true" required>
-                                <option> Select Contact Person...</option>
-                                <?php
-                                    while ($row5 = mysqli_fetch_assoc($result5)) {
-                                        # code...
-                                        echo "<option>".$row5['UserFullName']."</option>";
-                                    }
-                                ?>
-                            </select>
-                            </div>
-                        </div>
-                        <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                            <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                            <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
-                                <option> Select...</option>
-                                <?php
-                                    while ($row102 = mysqli_fetch_assoc($result102)) {
-                                        # code...
-                                        echo "<option>".$row102['InvestorName']."</option>";
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                            <label for="FundName" class="form-label">Fund(s)</label>
-                            <select class="form-select FundName" id="FundName" name="FundName[]" multiple="true" required>
-                                <option> Select Fund(s)...</option>
-                                <?php
-                                    while ($row103 = mysqli_fetch_assoc($result103)) {
-                                        # code...
-                                        echo "<option>".$row103['FundName']."</option>";
-                                    } 
-                                ?>
-                            </select>
-                        </div> -->
                         <div class="row">
                             <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                                 <label for="img" class="form-label">Logo</label>

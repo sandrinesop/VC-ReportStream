@@ -298,7 +298,7 @@
                 header( "refresh: 3; url= portfolio-company.php" );
                 echo 
                     '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
-                        <H4>Thank you for your contibution</H4>
+                        <H4>Thank you for your contribution</H4>
                         <p style="margin:0;"> <small> New Portfolio Company created successfully! </small> </p>
                     </div>'
                 ;

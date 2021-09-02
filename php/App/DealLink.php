@@ -12,7 +12,10 @@
         // NEWS TABLE
         $NewsDate       = date('Y-m-d', strtotime($_POST['NewsDate']));
         $NewsURL        = mysqli_real_escape_string($conn, $_POST['NewsURL']);
-        $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
+
+        if(isset($_POST['NewsNote'])){
+            $NewsNote       = mysqli_real_escape_string($conn, $_POST['NewsNote']);
+        }
         // PORTFOLIO COMPANY TABLE
         $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         $Stake                   = $_POST['Stake'];
@@ -58,16 +61,17 @@
                 echo 'Oops! There was an error saving News item. Please report bug to support.'.'<br/>'.mysqli_error($conn); 
             }
             // Query End
-            $sql2 = "   INSERT INTO 
-                            Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
-                        VALUES 
-                            (uuid(), now(), now(), 0,NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
-            $query2 = mysqli_query($conn, $sql2);
-    
-            if ($query2 ){
-                    // Success
-            } else {
-                echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+
+            // CONDITIONAL STATEMENT TO INSERT DATA INTO THE NOTE TABLE
+            // IF THE NOTE VARIABLE IS SET THEN INSERT INTO NOTE OTHERWISE DO NOT INSERT.
+            if(!empty($NewsNote)){
+                $sql2 = "   INSERT INTO 
+                                Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
+                            VALUES 
+                                (uuid(), now(), now(), 0,NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')";
+                $query2 = mysqli_query($conn, $sql2);
+            }else {
+                // echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
     
             // =====================================================
@@ -188,18 +192,21 @@
                 // Deal Note Mapping tables
                 // ===============================
                 // ===============================
-                $sqlDealsNote = "   INSERT INTO 
-                                        DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
-                                    VALUES 
-                                        (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
-                ";
-                $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
-                if ($queryDealsNote ){
-                // Success
-                } else {
-                echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-                }
-    
+                if(!empty($NewsNote)){
+                    $sqlDealsNote = "   INSERT INTO 
+                                            DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
+                                        VALUES 
+                                            (uuid(), now(), now(),0,NULL, (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+                    ";
+                    $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
+                    if ($queryDealsNote ){
+                        // Success
+                    } else {
+                        echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+                    }
+                }else {
+                    // echo 'Oops! There was an error linking the Deal and Note because Notes field is empty. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                }    
             } else {
                 echo 'Oops! There was an error on Deals Capture Table. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
@@ -212,7 +219,6 @@
             echo '<H3>Thank you for your contibution</H3> '
             .'<br/>'
             .'<small>You will be redirected shortly...</small>';
-
         }
     };
 
@@ -330,7 +336,9 @@
                     Country ON Country.CountryID = PortfolioCompany.Headquarters 
                 WHERE Country IS NOT NULL";
     $result3 = mysqli_query($conn, $sql3);
-    // Pulling Startup Data into the Currency dropdown
+    // ================================================
+    // ============| CURRENCY DROPDOWN |===============
+    // ================================================
     $sql4 = "   SELECT DISTINCT 
                     Currency 
                 FROM 
@@ -349,57 +357,22 @@
                 WHERE 
                     UserFullName IS NOT NULL ORDER BY UserFullName ASC";
     $result5 = mysqli_query($conn, $sql5);
-    // Pulling UserDetail Data into the Email dropdown
-    $sql6 = "   SELECT DISTINCT 
-                    Email, ContactNumber1 
-                FROM 
-                    UserDetail 
-                WHERE Email IS NOT NULL";
-    $result6 = mysqli_query($conn, $sql6);
-    // Pulling UserDetail Data into the RoleType dropdown
-    $sql7 = "   SELECT DISTINCT 
-                    RoleType.RoleType
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    RoleType ON RoleType.RoleTypeID = UserDetail.RoleTypeID ";
-    $result7 = mysqli_query($conn, $sql7);
-    // Pulling UserDetail Data into the Gender dropdown
-    $sql8 = "   SELECT DISTINCT 
-                     Gender.Gender 
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    Gender ON Gender.GenderID = UserDetail.GenderID ";
-    $result8 = mysqli_query($conn, $sql8);
-    // Pulling UserDetail Data into the Race dropdown
-    $sql9 = "   SELECT DISTINCT 
-                     Race.Race 
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    Race ON Race.RaceID = UserDetail.RaceID ";
-    $result9 = mysqli_query($conn, $sql9);
     //=================================================== 
-    //============== | INVESTOR TABLE | =================
+    //============== | INVESTOR DROPDOWN | =================
     //===================================================
     $sqlA1 = "   SELECT DISTINCT 
                 InvestorName
             FROM 
                 Investor 
             WHERE 
-                InvestorName IS NOT NULL ORDER BY InvestorName ASC";
-            $resultA1 = mysqli_query($conn, $sqlA1);
+                InvestorName IS NOT NULL ORDER BY InvestorName ASC
+    ";
+    $resultA1 = mysqli_query($conn, $sqlA1);
 
-            $sqlA2 = "   SELECT DISTINCT 
-                Website
-            FROM 
-                Investor 
-            WHERE 
-                Website IS NOT NULL ORDER BY Website ASC";
-    $resultA2 = mysqli_query($conn, $sqlA2);
-    // INVETSOR NOTES. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
-    // Pulling Investor Data into the Notes dropdown
+    // ================================================
+    // ============| INVETSOR NOTES |===============
+    // ================================================. 
+    // THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
     $sqlA3 = "  SELECT DISTINCT
                     SUBSTRING(Note, 1, 55) AS Note 
                 FROM 
@@ -407,49 +380,22 @@
                 WHERE 
                     Note IS NOT NULL";
     $resultA3 = mysqli_query($conn, $sqlA3);
-    // Pulling Investor Data into the impact tag dropdown
-    $sqlA4 = "  SELECT DISTINCT
-                    ImpactTag
-                FROM 
-                Investor
-                WHERE 
-                    ImpactTag IS NOT NULL";
-    $resultA4 = mysqli_query($conn, $sqlA4);
-    // Pulling Investor Data into the Investor Headquarters dropdown
-    $sqlA5 = "  SELECT DISTINCT
-                    Country
-                FROM 
-                    Investor
-                JOIN 
-                    Country ON country.CountryID = Investor.Headquarters";
-    $resultA5 = mysqli_query($conn, $sqlA5);
-    // Pulling Investor Data into the impact tag dropdown
-    $sqlA6 = "  SELECT DISTINCT
-                    Description
-                FROM 
-                    Investor
-                JOIN 
-                    Description ON Description.DescriptionID = Investor.DescriptionID";
-    $resultA6 = mysqli_query($conn, $sqlA6);
     //=================================================== 
     //================ | FUND TABLE | ===================
     //===================================================
     // Pulling Fund Data into the Fund Section dropdown
-    $sqlB = "  SELECT 
-                    FundName, CommittedCapital, MinimumInvestment, MaximumInvestment
+    $sqlB = "  SELECT DISTINCT
+                    FundName
                 FROM 
                     Fund
-                WHERE FundName IS NOT NULL AND CommittedCapital IS NOT NULL AND MinimumInvestment IS NOT NULL AND MaximumInvestment IS NOT NULL ";
+                WHERE FundName IS NOT NULL
+    ";
     $resultB = mysqli_query($conn, $sqlB);
-    // Pulling Fund Data into the FundName dropdown
-    $sqlB1 = "  SELECT DISTINCT
-                    InvestmentStage
-                FROM 
-                    InvestmentStage
-                WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
-    $resultB1 = mysqli_query($conn, $sqlB1);
-
-    // QUERY DATABASE TO DISPLAY DATA INSIDE THE PieChart
+    
+    
+    //====================================================================
+    //======== | DISPLAY DATA INSIDE THE google charts PieChart | ========
+    //====================================================================
     $chartQuery ="  SELECT
 	                    Sector.Sector, COUNT(*) AS Percentage FROM DealsSector
                     
