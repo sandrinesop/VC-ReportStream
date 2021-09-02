@@ -410,7 +410,7 @@
              -->
             <div class="card">
                 <div class="card-header text-center">
-                    <h4 class="card-title"> Dashboard | Data breakdown using the MySQL Database data.</h4>
+                    <h4 class="card-title"> Visualization Dashboard | Sector breakdowns.</h4>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">

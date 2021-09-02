@@ -33,29 +33,32 @@
     <!-- Body -->
     <body class="index-body">
         <!-- Header Content -->
-        <nav class="container navbar navbar-expand-lg align-middle fixed-top" style="z-index: 1;">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="./Admin.php"><img style=" width: 50px;" class="home-ico" src="./resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream </a>
-                    <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Contact</a>
-                            </li>
-                            <li class="nav-item">
-                                <form action="./php/Auth/logout.php" method="POST"  class="profile">
-                                    <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
-                                </form>
-                            </li>
-                        </ul>
+        <header class="mb-5">
+            <nav class="container navbar navbar-expand-lg align-middle navbar-dark fixed-top" style="z-index: 1;">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="./Admin.php"><img style=" width: 50px;" class="home-ico" src="./resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream </a>
+                        <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                    <form action="./php/Auth/logout.php" method="POST"  class="profile">
+                                        <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-        </nav> 
+            </nav>
+        </header> 
+        <div style="height: 20px;"></div>
         <!-- Main Welcome Screen -->
         <main class="container text-center admin-main">
             <div class="wrapper ">
@@ -108,51 +111,6 @@
                 </div>
             </div>
         </main>
-        <footer class="">
-            <div class="footer-upper">
-                <div class="row">
-                    <div class="col-xs-12 col-md-4 col-lg-4 text-left " style="padding-left:8%;">
-                        <h3>
-                            Digital Collective Africa
-                        </h3>
-                        <a class="navbar-brand" href="./Admin.php">
-                            <img style=" width: 90px;" class="home-ico  mx-auto d-block" src="./resources/DCA_Admin.png" alt="Digital collective africa logo">
-                        </a>
-                    </div>
-                    <div class="col-xs-12 col-md-4 col-lg-4 footer_nav text-left" style="padding-left:8%;">
-                        <h3>
-                            Information
-                        </h3>
-                        <div>
-                            <a href="./index.php" class="footer_nav_a">
-                                Home
-                            </a>
-                        </div>
-                        <div>
-                            <a href=""class="footer_nav_a">
-                                About
-                            </a>
-                        </div>
-                        <div class="DCA_Link">
-                            <a href="https://www.digitalcollective.africa/ " target="_blank" class="footer_nav_a">
-                                VC Deal Database
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-4 col-lg-4 text-left" style="padding-left:8%;">
-                        <form action="./php/App/NewsLetter_Processing.php" method="post">
-                            <label for="Email">
-                                <input type="Email" name="Email" id="Email">
-                            </label>
-                            <input type="submit" value="Subscribe" name="submit">
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-lower">
-                <small>Digital Collective Africa</small>
-            </div>
-        </footer>
        <!-- JavaScript Scripts -->
        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     </body>

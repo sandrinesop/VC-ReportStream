@@ -56,9 +56,9 @@
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class=" my-5">
                 <div class="my-2">
-                    <div class="row w-50">
+                    <div class="row ">
                         <!-- CREATE NEW Deal MODAL -->
-                        <span class="col">
+                        <span class="col-4">
                             <!-- Button trigger modal -->
                             <small>
                                 <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -306,17 +306,17 @@
                             </div>
                         </span>
                         <!-- IMPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col-4"> 
                             <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="my-1" style="display:none;">
                                 <form action="../Import/DealsImport.php" method="POST" enctype="multipart/form-data">
-                                    <input type="file" name="file">
+                                    <input type="file" name="file"> <br>
                                     <input type="submit" class="btn btn-outline-success" name="ImportSubmit" value="IMPORT">
                                 </form>
                             </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col"> 
+                        <span class="col-3"> 
                             <form action="../DealExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
                             </form>
@@ -438,7 +438,7 @@
              -->
             <div class="card">
                 <div class="card-header text-center">
-                    <h4 class="card-title"> Dashboard | Data breakdown using the MySQL Database data.</h4>
+                    <h4 class="card-title"> Visualization Dashboard | Sector breakdowns.</h4>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">

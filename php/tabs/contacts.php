@@ -193,7 +193,7 @@
                 <div class="my-2">
                     <div class="row">
                         <!-- CREATE NEW INVESTOR MODAL -->
-                        <span class="col-6 col-md-4 col-lg-2">
+                        <span class="col-4">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 New Contact <img src="../../resources/icons/New.svg" alt="">
@@ -294,7 +294,7 @@
                             </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-6 col-md-4 col-lg-2"> 
+                        <span class="col-4"> 
                             <form action="../ContactExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>

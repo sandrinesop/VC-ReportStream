@@ -282,7 +282,7 @@
                 <div class="my-2">
                     <div class="row">
                         <!-- CREATE NEW FUND MODAL -->
-                        <span class="col-1">
+                        <span class="col-4">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Fund <img src="../../resources/icons/New.svg" alt="">
@@ -389,17 +389,17 @@
                             </div>
                         </span>
                         <!-- IMPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col-4"> 
                             <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="mt-1" style="display:none;">
                                 <form action="../Import/ImportFund.php" method="POST" enctype="multipart/form-data">
-                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file">
+                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file"> <br>
                                     <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
                                 </form>
                             </div>
                         </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-2"> 
+                        <span class="col-3"> 
                             <form action="../FundExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>

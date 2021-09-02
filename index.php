@@ -39,8 +39,9 @@
                 </div>
             </nav>
         </header>
+        <div style="height: 20px;"></div>
         <!-- Main Welcome Screen -->
-        <main class="container text-center index-main mt-5">
+        <main class="container text-center index-main">
             <div class="wrapper ">
                 <div>
                     <a href="./php/Views/DealsView.php">
@@ -91,51 +92,6 @@
                 </div>
             </div>
         </main>
-        <footer class="">
-            <div class="footer-upper">
-                <div class="row">
-                    <div class="col-xs-12 col-md-4 col-lg-4 text-left " style="padding-left:8%;">
-                        <h3>
-                            Digital Collective Africa
-                        </h3>
-                        <a class="navbar-brand" href="./index.php">
-                            <img style=" width: 90px;" class="home-ico  mx-auto d-block" src="./resources/DCA_Icon.png" alt="Digital collective africa logo">
-                        </a>
-                    </div>
-                    <div class="col-xs-12 col-md-4 col-lg-4 footer_nav text-left" style="padding-left:8%;">
-                        <h3>
-                            Information
-                        </h3>
-                        <div>
-                            <a href="./index.php" class="footer_nav_a">
-                                Home
-                            </a>
-                        </div>
-                        <div>
-                            <a href=""class="footer_nav_a">
-                                About
-                            </a>
-                        </div>
-                        <div class="DCA_Link">
-                            <a href="https://www.digitalcollective.africa/ " target="_blank" class="footer_nav_a">
-                                VC Deal Database
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-4 col-lg-4 text-left" style="padding-left:8%;">
-                        <form action="./php/App/NewsLetter_Processing.php" method="post">
-                            <label for="Email">
-                                <input type="Email" name="Email" id="Email">
-                            </label>
-                            <input type="submit" value="Subscribe" name="submit">
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-lower">
-                <small>Digital Collective Africa</small>
-            </div>
-        </footer>
        <!-- JavaScript Scripts -->
        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     </body>
