@@ -82,11 +82,15 @@
     background-image: url(../resources/data.jpg);
     background-size: cover;
 }
+
+#navbarNavDropdown{
+	background-color: #2f470c;
+}
+
+
 .container {
     max-width: 1350px;
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
 }

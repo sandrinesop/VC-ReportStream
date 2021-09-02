@@ -7,22 +7,17 @@ body {
     font-weight: 500;
 }
 
-.container {
-    max-width: 1350px;
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-
 nav {
     background-color: #2f470c;
     height: 4.5rem;
     z-index: 1;
     color: #ffffff;
 }
+
+#navbarNavDropdown{
+	background-color: #2f470c;
+}
+
 nav.container, main.container, footer.container {
     width:100%;
     max-width:none ;
@@ -32,7 +27,7 @@ nav.container, main.container, footer.container {
 .navbar-brand,
 .nav-link {
     color: #ffffff;
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: all .3s;
 } 
 
@@ -237,3 +232,9 @@ only screen and (max-width: 760px),
     }
 }
 
+.container {
+    max-width: 1350px;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}

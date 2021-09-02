@@ -19,7 +19,7 @@ nav.container, main.container, footer.container {
 .navbar-brand,
 .nav-link {
     color: #ffffff;
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: all .3s;
 } 
 
@@ -174,17 +174,6 @@ main.single_View div div div div p{
 }
 
 
-.container {
-    max-width: 1350px;
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-
-
 /* 
     STYLES FOR THE FOOTER
 */
@@ -266,4 +255,12 @@ only screen and (max-width: 760px),
         margin-left: 3px;
         margin-bottom:10px;
     }
+}
+
+
+.container {
+    max-width: 1350px;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
 }
