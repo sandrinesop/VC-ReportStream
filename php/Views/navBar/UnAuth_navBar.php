@@ -1,7 +1,7 @@
 
-        <nav class="  navbar navbar-expand-lg align-middle navbar-dark" style="z-index: 1;">
+        <nav class="  navbar navbar-expand-lg align-middle navbar-dark" style="z-index: 1; font-size: 1rem !important;">
             <div class="container px-0">
-                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 50px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 50px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> <small>VC ReportStream</small>  </a>
                 <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
