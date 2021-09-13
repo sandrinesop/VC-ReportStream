@@ -232,9 +232,41 @@ only screen and (max-width: 760px),
     }
 }
 
+/* 
+    ==========================================
+        RESPONSIVE STYLES TO THE LOGIN PAGE 
+    ==========================================
+ */
+@media all and (min-device-width:1024px){
+	.login-main .card {
+        width: 500px;
+     }
+}
+
+@media all and (max-device-width:980px){
+	.login-main .card {
+        width: max-content;
+    }
+    .nav-item{
+        padding-left: 15px;
+
+    }
+}
+
+/* 
+    =====================================================================
+        REMOVING THE MARGINS FROM THE CONTAINER CLASS IN BOOTSTRAP 
+    =====================================================================
+ */
 .container {
     max-width: 1350px;
     width: 100%;
     margin-right: auto;
     margin-left: auto;
+}
+
+
+.navbar-nav {
+    padding-left: 10px;
+    padding-bottom: 10px;
 }

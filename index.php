@@ -19,7 +19,7 @@
         <header class="mb-5">
             <nav class=" navbar navbar-expand-lg navbar-dark fixed-top ">
                 <div class="container px-0">
-                    <a class="navbar-brand" href="./index.php"><img style=" width: 50px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> <small>VC Reportstream </small></a>
+                    <a class="navbar-brand" href="./index.php"><img style=" width: 50px;" class="home-ico" src="./resources/DCA_Icon.png" alt="Digital collective africa logo"> <small>VC ReportStream </small></a>
                     <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>

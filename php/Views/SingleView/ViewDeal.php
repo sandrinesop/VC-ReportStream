@@ -98,28 +98,11 @@
         <link rel="stylesheet" href="../../../css/main.css">
     </head>
     <body>
-    <!-- HEADER CONTENT -->
-        <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
-            <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../../../index.php"><img style=" width: 80px;" class="home-ico" src="../../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../../../WebInterface.php">New Deal</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <!-- HEADER CONTENT -->
+        <?php 
+            include_once('../navBar/singleViewNav.php');
+        ?>
+        <!-- MAIN  -->
         <main  class="my-5 ">
             <form name="form"  class="form container"> 
                 <div class="row">
@@ -176,6 +159,8 @@
                 <button><a href="../DealsView.php"> Close</a></button>
             </form>
         </main>
+        <!-- SCRIPTS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
     </body>
 </html>
 

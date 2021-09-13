@@ -276,7 +276,7 @@
         <!-- HEADER CONTENT -->
         <?php include('../Views/navBar/UnAuth_navBar.php');?> 
         <!-- BODY CONTENT -->
-        <main class="container my-5 px-5 login-main" >
+        <main class="container my-5 px-1 login-main" >
             <div class="card container p-0">
                 <div class="card-header text-center">Sign in</div>
                 <div class="card-body">
