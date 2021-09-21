@@ -296,7 +296,9 @@
                             <hr >
                         </div>
                         <button type="submit" class=" login-btn" formmethod="POST" name="login">login</button>
-                        <button class="register-btn" ><a href="https://forms.gle/LPddSitYcXgYfVFT7" target="_blank">Register</a></button>
+                        <button class="register-btn" ><a href="https://forms.gle/LPddSitYcXgYfVFT7" target="_blank">Register</a></button> 
+                        <br>
+                        <a href="./PasswordReset/reset_form.php">forgot password?</a>
                     </form>
                 </div>
             </div>

@@ -7,10 +7,12 @@
         $FirstName           = mysqli_real_escape_string($conn,$_POST['FirstName']);
         $LastName           = mysqli_real_escape_string($conn,$_POST['LastName']);
         $Email              = mysqli_real_escape_string($conn,$_POST['Email']);
+        $LinkedIn              = mysqli_real_escape_string($conn,$_POST['LinkedIn']);
         $Password          = mysqli_real_escape_string($conn,$_POST['Password1']);
         $Password2          =  mysqli_real_escape_string($conn,$_POST['Password2']);
         
-  
+        $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
+
         if($Password !== $Password2){
             echo '<div>';
                 echo 
@@ -53,9 +55,9 @@
             // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
             // ===========================================================
             $sqlUser =" INSERT INTO 
-                            PlatformContributors(PlatformContributorsID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FirstName, LastName, Email, Password) 
+                            PlatformContributors(PlatformContributorsID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FirstName, LastName, Email, LinkedIn, Password) 
                         VALUES 
-                            (uuid(), now(), now(),0,NULL,  '$FirstName','$LastName','$Email', '$Password')
+                            (uuid(), now(), now(),0,NULL,  '$FirstName','$LastName','$Email','$LinkedIn', '$hashedPassword')
             ";
 
             $queryUser = mysqli_query($conn, $sqlUser);
@@ -68,8 +70,12 @@
                 header( "refresh: 3; url= login.php" ); 
                 echo 
                 '<div style="background-color:#d1e7dd; color: #0f5132; margin:0;">
-                    <H4>Success!</H4>
-                    <p style="margin:0;"> <small> Registration successful! Please login with your credentials.</small> </p>
+                    <H4>Registration successful!</H4>
+                    <p style="margin:0;"> 
+                        Please login with your credentials.
+                        <br/>
+                        <small>It may take 24hrs - 48hrs to verify your account. Thank you for your patience.</small> 
+                    </p>
                 </div>'
                 ;
                
