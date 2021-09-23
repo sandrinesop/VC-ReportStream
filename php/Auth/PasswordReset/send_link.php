@@ -27,13 +27,18 @@
             if( $result ->num_rows==1){
                 while($row=mysqli_fetch_assoc($result))
                 {
-                    $HashEmail=md5($row['Email']);
-                    $HashPassword=md5($row['Password']);
+                    // Create variables and populate them with data from the query
+                    $Email= $row['Email'];
+                    $Password=$row['Password'];
+
+                    // encode the variables to hide the data when transporting it via the reset link
+                    $EncodedEmail = base64_encode($Email);
+                    $EncodedPassword = base64_encode($Password);
+                    
                 }
 
-                $link="<a href='http://localhost/vc-reportstream/php/Auth/PasswordReset/reset_pass.php?key=".$HashEmail."&reset=".$HashPassword."'>Click To Reset password</a>";
+                $link="<a href='https://vcrep.digitalcollective.africa/php/Auth/PasswordReset/reset_pass.php?key=".$EncodedEmail."&reset=".$EncodedPassword."'>Click To Reset password</a>";
 
-                
                 $mail = new PHPMailer\PHPMailer(true);
 
                 $mail->CharSet =  "utf-8";
@@ -41,18 +46,18 @@
                 // enable SMTP authentication
                 $mail->SMTPAuth = true;                  
                 // GMAIL username
-                $mail->Username = "henrysparks1@gmail.com";
+                $mail->Username = "digitalcollectiveafrica@gmail.com";
                 // GMAIL password
-                $mail->Password = "KingHenry99";
+                $mail->Password = "Digital_Collective_Africa_2021";
                 $mail->SMTPSecure = "ssl";  
                 // sets GMAIL as the SMTP server
                 $mail->Host = "smtp.gmail.com";
                 // set the SMTP port for the GMAIL server
                 $mail->Port = "465";
-                $mail->From='henrysparks1@gmail.com';
-                $mail->FromName='Henry Javangwe';
+                $mail->From='noreply@digitalcollective.africa';
+                $mail->FromName='Digital Collective Afriva';
                 $mail->AddAddress($Email);
-                $mail->Subject  =  'Reset Password';
+                $mail->Subject  =  'Reset Password ';
                 $mail->IsHTML(true);
                 $mail->Body    = 'Click On This Link to Reset Password '.$link.'';
                 if($mail->Send())
@@ -63,7 +68,7 @@
                 }
                 else
                 {
-                echo "Mail Error - >".$mail->ErrorInfo;
+                    echo "Mail Error - >".$mail->ErrorInfo;
                 }
             }
         } else{
