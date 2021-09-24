@@ -46,15 +46,15 @@
                 // enable SMTP authentication
                 $mail->SMTPAuth = true;                  
                 // GMAIL username
-                $mail->Username = "digitalcollectiveafrica@gmail.com";
+                $mail->Username = "****eneter your email****";
                 // GMAIL password
-                $mail->Password = "Digital_Collective_Africa_2021";
+                $mail->Password = "****eneter your passowrd****";
                 $mail->SMTPSecure = "ssl";  
                 // sets GMAIL as the SMTP server
                 $mail->Host = "smtp.gmail.com";
                 // set the SMTP port for the GMAIL server
                 $mail->Port = "465";
-                $mail->From='noreply@digitalcollective.africa';
+                $mail->From='****eneter your email****';
                 $mail->FromName='Digital Collective Afriva';
                 $mail->AddAddress($Email);
                 $mail->Subject  =  'Reset Password ';
