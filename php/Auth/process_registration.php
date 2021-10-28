@@ -2,6 +2,17 @@
     // CONNECT TO DATABASE
     include_once('../App/connect.php');
 
+    //Import PHPMailer classes into the global namespace
+    //These must be at the top of your script, not inside a function    
+    // We need to send an email alerting the admin that there is a new user who registered.
+    require('PHPMailer/Exception.php');    
+    require('PHPMailer/SMTP.php');    
+    require('PHPMailer/PHPMailer.php');
+    
+    use PHPMailer\PHPMailer;
+    use PHPMailer\SMTP;
+    use PHPMailer\Exception;
+
     if ( isset($_POST['register']))
     {
         $FirstName           = mysqli_real_escape_string($conn,$_POST['FirstName']);
@@ -78,6 +89,8 @@
                     </p>
                 </div>'
                 ;
+
+
                
             }else{
                 echo 'Oops! There was an error creating new contact'.mysqli_error($conn);

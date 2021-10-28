@@ -1,4 +1,21 @@
 <?php 
+    // ======================================
+    // STARTING A NEW SESSION FOR EACH USER
+    // ======================================
+    session_start();
+    // NOW WE SET A CONDITION TO PREVENT UNAUTHORISED USERS TO ACCESS THIS PAGE.
+    if( $_SESSION == []){
+        header('refresh:5; url = ../../index.php');
+        echo'
+            <p> 
+                Access denied. Only Admins can access this page. <br/>
+                <small>You are being redirected back to the home page.</small>
+            </p>
+        ';
+        exit;
+    }
+    
+    // CONNECT TO DATABASE
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $InvestorID =$_REQUEST['InvestorID'];
