@@ -30,12 +30,12 @@
     {
         // DEFINED VAR FOR THE SECOND TABLE
         // PORTFOLIO COMPANY TABLE
-        $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
+        $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = $_POST['Currency'];
-        $PortfolioCompanyWebsite = $_POST['Website'];
+        $PortfolioCompanyWebsite = mysqli_real_escape_string($conn, $_POST['Website']);
         $Industry                = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
-        $Details                 = $_POST['Details'];
+        $Details                 = mysqli_real_escape_string($conn, $_POST['Details']);
         $YearFounded             = $_POST['YearFounded'];
         $Headquarters            = $_POST['Headquarters'];
         $Logo                    = $_FILES['img']['name'];
@@ -46,10 +46,10 @@
 
         // PORTFOLIO COMPANY NOTE INSERT
         $sql = "INSERT INTO PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
-            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select country.CountryID FROM country where country.Country = '$Headquarters'), '$Logo')";
+            VALUES (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'), '$Logo')";
             $query = mysqli_query($conn, $sql);
 
-        // LINKING COMPANY WITH SECTORS AND INDUSTRY
+        // LINKING COMPANY WITH SectorS AND INDUSTRY
         if($query){
             // echo 'This is the value inside the $PortfolioCompanyName variable : '.$PortfolioCompanyName;
             foreach($Sector as $sects)  
@@ -57,13 +57,13 @@
                 $sql99 = "  INSERT INTO 
                                 PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)
                             VALUES 
-                                (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM sector S where S.Sector = '$sects'))";
+                                (uuid(), now(), now(), 0, NULL,(select P.PortfolioCompanyID FROM PortfolioCompany P where P.PortfolioCompanyName = '$PortfolioCompanyName'), (select S.SectorID FROM Sector S where S.Sector = '$sects'))";
                 $query99 = mysqli_query($conn, $sql99);
 
                 if($query99){
                     // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
                 } else {
-                    echo 'Oops! There was an error inserting the sector ID from the array'.mysqli_error($conn).'<br/>';
+                    echo 'Oops! There was an error inserting the Sector ID from the array'.mysqli_error($conn).'<br/>';
                 }
             }
         
@@ -101,8 +101,8 @@
         <title>VC Reportstream | Investor</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../../css/select2.min.css">
-        <link rel="stylesheet" href="../../../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../../../css/bootstrap.css">
+        <!-- <link rel="stylesheet" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../../css/bootstrap.css"> -->
         <link rel="stylesheet" href="../../../css/main.css">
     </head>
     <body class="pb-5">
@@ -190,12 +190,13 @@
                                 <option value="Unknown">Unknown</option>
                             </select>
                         </div>
-                        <!-- SECTOR DROPDOWN | Data being fed through JQuery -->
+                        <!-- Sector DROPDOWN | Data being fed through JQuery -->
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
                             <label for="Sector" class="form-label" >Sector </label>
                             <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true" required>
                                 <option>choose...</option>
                             </select>
+                            <br>
                             <small style="color:red;">First select an industry </small>
                         </div>
                         <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">

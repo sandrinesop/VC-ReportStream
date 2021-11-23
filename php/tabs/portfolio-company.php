@@ -260,7 +260,7 @@
                             <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="mt-1" style="display:none;">
                                 <form action="../Import/ImportPC.php" method="POST" enctype="multipart/form-data">
-                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file"><br>
+                                    <input type="file" accept=".csv" name="file"><br>
                                     <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
                                 </form>
                             </div>

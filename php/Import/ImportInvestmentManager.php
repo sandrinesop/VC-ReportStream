@@ -15,11 +15,11 @@
                 // DEFINE AN ARRAY OUTSIDE TEH LOOP AND THEN POPULATE IT WITH VALUES FROM THE WHILE LOOP WITH EVERY ITERATION AND THEN USE IT TO OUTOUT A LIST WITH NAMES OF INVESTMENT MANAGERS WWHICH ALREADY EXIST IN THE DB.
                 $msg = array();
                 while(($line = fgetcsv($csvFile))!== FALSE){
-                    $InvestorName               = $line[0];
-                    $InvestorWebsite            = $line[1];
-                    $FundName                   = $line[2];
-                    $PortfolioCompanyName       = $line[3];
-                    $InvestorNote               = $line[4];
+                    $InvestorName               = mysqli_real_escape_string($conn, $line[0]);
+                    $InvestorWebsite            = mysqli_real_escape_string($conn, $line[1]);
+                    $FundName                   = mysqli_real_escape_string($conn, $line[2]);
+                    $PortfolioCompanyName       = mysqli_real_escape_string($conn, $line[3]);
+                    $InvestorNote               = mysqli_real_escape_string($conn, $line[4]);
                     $Description                = $line[5];
                     $Currency                   = $line[6];  
                     $YearFounded                = $line[7]; 

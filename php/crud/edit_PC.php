@@ -380,15 +380,18 @@
         // print_r($updateContact);
         $updateContactString = implode($updateContact);
         // echo $updateContactString;
-
-        $updatelink = " UPDATE PortfolioCompanyUserDetail SET ModifiedDate = NOW(), $updateContactString WHERE PortfolioCompanyID = '".$PortfolioCompanyID."' ";
+        
+        $updatelink = " UPDATE PortfolioCompanyUserDetail SET ModifiedDate = NOW(), $updateContactString WHERE PortfolioCompanyID = '$PortfolioCompanyID' ";
         // echo $updatelink;
         $UpdateContactResult = mysqli_query($conn, $updatelink);
 
         if($UpdateContactResult){
         //    DO NOTHING IF SUCCESSFULL
         } else {
-            echo 'Oops! There was an error Updating link of Company to Contact. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+            echo 'There was an error Updating link of Company to Contact. Please report bug to support.'
+            .'<br/>'
+            .'<br/>'
+            .mysqli_error($conn);
         };
         
     }else {
@@ -406,12 +409,13 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../css/admin.css">
     </head>
     <body>
     <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 80px;" class="home-ico" src="../../resources/DCA_Icon.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>

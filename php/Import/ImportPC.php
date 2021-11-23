@@ -15,16 +15,16 @@
                 // DEFINE AN ARRAY OUTSIDE TEH LOOP AND THEN POPULATE IT WITH VALUES FROM THE WHILE LOOP WITH EVERY ITERATION AND THEN USE IT TO OUTOUT A LIST WITH NAMES OF THE COMPANIES WWHICH ALREADY EXIST IN THE DB.
                 $msg = array();
                 while(($line = fgetcsv($csvFile))!== FALSE){
-                    $PortfolioCompanyName              = $line[0];
+                    $PortfolioCompanyName              = mysqli_real_escape_string($conn, $line[0]);
                     $Currency                          = $line[1];
-                    $PortfolioCompanyWebsite           = $line[2];
+                    $PortfolioCompanyWebsite           = mysqli_real_escape_string($conn,$line[2]);
                     $Industries                        = $line[3];
-                    $Sectors                            = $line[4];
-                    $Details                           = $line[5];
+                    $Sectors                           = $line[4];
+                    $Details                           = mysqli_real_escape_string($conn,$line[5]);
                     $YearFounded                       = $line[6];  
                     $Headquarters                      = $line[7]; 
                     $UserFullName                      = $line[8];    
-                    // $Logo                              = $line[9];
+                    // $Logo                           = $line[9];
                     $InvestorName                      = $line[9];      
                     $FundName                          = $line[10];
 
@@ -89,10 +89,13 @@
                                 }
                             }
                         }else{
+                            echo mysqli_error($conn)
+                            .'</br>';
                             echo
                             '<div style="color:red; font-size:20px;">
-                                <p>There was an error, please make sure your file does not have duplicate data or errors and try again.<p/>
-                                <a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                                <p>There was an error, please make sure your file does not have duplicate data or errors and try again.<p/>'
+                                .'</br>'
+                                .'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                             </div>';
                             exit;
                         };
@@ -128,14 +131,16 @@
                 // CLOSE CSV FILE
                 fclose($csvFile);
             }else{
-                echo 'file not a uploaded';
+                echo 'file not uploaded';
             }
         }else{
             // die("Error: ");
             die(
                 '<div style="color:red; font-size:20px;">
-                    <p>Error: File type is not a csv or file not uploaded <p/>
-                    <a href="../tabs/portfolio-company.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                    <p>Error: File type not the right format or file not uploaded <p/>'
+                .mysqli_error($conn)
+                .'</br>'
+                .'<a href="../tabs/portfolio-company.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                 </div>'
             );
         }

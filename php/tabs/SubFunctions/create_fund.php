@@ -4,7 +4,7 @@
     if ( isset($_POST['submit']))
     {
         // Fund TABLE
-        $FundName               = $_POST['FundName'];
+        $FundName               = mysqli_real_escape_string($conn, $_POST['FundName']);
         // $InvestorName           = $_POST['InvestorName'];
         // $PortfolioCompanyName   = $_POST['PortfolioCompanyName'];
         $Currency               = $_POST['Currency'];
@@ -12,7 +12,7 @@
         $MinimumInvestment      = $_POST['MinimumInvestment'];
         $MaximumInvestment      = $_POST['MaximumInvestment'];
         $InvestmentStage        = $_POST['InvestmentStage'];
-        $FundNote               = $_POST['FundNote'];
+        $FundNote               = mysqli_real_escape_string($conn, $_POST['FundNote']);
         // FUND INSERTION QUERY
         $sql = "    INSERT INTO Fund(FundID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundName, CurrencyID, CommittedCapital, MinimumInvestment, MaximumInvestment) 
                     VALUES (UUID(), now(), now(),0,NULL, '$FundName',(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$CommittedCapital', '$MinimumInvestment', '$MaximumInvestment')";

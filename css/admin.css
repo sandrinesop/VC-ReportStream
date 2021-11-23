@@ -72,19 +72,19 @@ nav #navbarNavDropdown{
 }
 
 .Deals {
-    background-color: #e09345;
+    background-color: #e09245b6;
     transition: all .5s;
 }
 .Investors {
-    background-color: #b05802;
+    background-color: #b05902ea;
     transition: all .5s;
 }
 .Portfolio {
-    background-color: #b05802;
+    background-color: #b05902ea;
     transition: all .5s;
 }
 .Funds {
-    background-color: #e09345;
+    background-color: #e09245b6;
     transition: all .5s;
 }
 .centered-nav:hover {
@@ -126,7 +126,7 @@ nav #navbarNavDropdown{
 }
 
 .admin-main {
-    background-image: url(../resources/Admin_banner.png);
+    background-image: url(../resources/investorpanel.webp);
     background-size: cover;
 }
 
@@ -303,4 +303,8 @@ only screen and (max-width: 760px),
 .navbar-nav {
     padding-left: 10px;
     padding-bottom: 10px;
+}
+
+.allowedFileType {
+    color: #b05802;
 }

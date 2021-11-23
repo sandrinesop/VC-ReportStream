@@ -17,16 +17,16 @@
                 $msg = array();
                 while(($line = fgetcsv($csvFile))!== FALSE){
                     $NewsDate              = $line[0];
-                    $NewsURL               = $line[1];
-                    $PortfolioCompanyName  = $line[2];
-                    $InvestorName          = $line[3];
-                    $FundName              = $line[4];
+                    $NewsURL               = mysqli_real_escape_string($conn, $line[1]);
+                    $PortfolioCompanyName  = mysqli_real_escape_string($conn, $line[2]);
+                    $InvestorName          = mysqli_real_escape_string($conn, $line[3]);
+                    $FundName              = mysqli_real_escape_string($conn, $line[4]);
                     $InvestmentValue       = $line[5];
                     $Stake                 = $line[6];
                     $Industries            = $line[7];
                     $Sectors               = $line[8];
                     $StartUpContact        = $line[9]; //The contact person of the startup related the deal.
-                    $NewsNote              = $line[10]; 
+                    $NewsNote              = mysqli_real_escape_string($conn, $line[10]); 
 
                     // echo 'NewsDate is:'.$NewsDate.'<br/>'
                     // .'NewsURL is:'.$NewsURL.'<br/>'

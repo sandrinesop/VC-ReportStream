@@ -253,11 +253,11 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Email" class="form-label">Email</label>
-                                                        <input type="text" class="form-control" id="Email" name="Email" required>
+                                                        <input type="text" class="form-control" id="Email" name="Email" >
                                                     </div> 
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="ContactNumber1" class="form-label">ContactNumber1</label>
-                                                        <input type="tel" class="form-control" id="ContactNumber1" name="ContactNumber1" required>
+                                                        <input type="tel" class="form-control" id="ContactNumber1" name="ContactNumber1" >
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="ContactNumber2" class="form-label">ContactNumber2</label>

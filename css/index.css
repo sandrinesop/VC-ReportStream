@@ -25,19 +25,19 @@
 }
 
 .Deals {
-    background-color: #00c900;
+    background-color: #00c900c4;
     transition: all .5s;
 }
 .Investors {
-    background-color: #2f470c;
+    background-color: #2f470cc9;
     transition: all .5s;
 }
 .Portfolio {
-    background-color: #2f470c;
+    background-color: #2f470cc9;
     transition: all .5s;
 }
 .Funds {
-    background-color: #00c900;
+    background-color: #00c900c4;
     transition: all .5s;
 }
 .centered-nav:hover {
@@ -79,7 +79,7 @@
 }
 
 .index-main {
-    background-image: url(../resources/data.jpg);
+    background-image: url(../resources/investorpanel.webp);
     background-size: cover;
 }
 
