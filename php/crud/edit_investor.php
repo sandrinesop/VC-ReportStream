@@ -281,9 +281,9 @@
             };
         };
 
-        // ===================================================================================
+        // =======================================================================================
         // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN INVESTOR AND COMPANIES ALREADY EXISTS
-        // ===================================================================================
+        // =======================================================================================
         // $msg = array();
         if(!empty($Companies)){
             foreach($Companies AS $Company){
@@ -336,7 +336,7 @@
 
         // print_r($updateNote);
         $updateNoteString = implode( $updateNote);
-        // check if the deal has a note item linked to it, if yes, then update the note item and if not, then create a new note item.
+        // check if the investor has a note item linked to it, if yes, then update the note item and if not, then create a new note item.
         $prevQueryNote = "  SELECT 
                                     InvestorID 
                                 FROM 
@@ -347,7 +347,7 @@
         $prevResultNote = mysqli_query($conn,$prevQueryNote);
         if($prevResultNote->num_rows>0){
             // $msg[] =$sector;
-            // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+            // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INVESTOR AND THE NOTE ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
             $updateNote = "UPDATE Note SET ModifiedDate= NOW(), $updateNoteString WHERE NoteID= (SELECT InvestorNote.NoteID FROM InvestorNote WHERE InvestorNote.InvestorID='".$InvestorID."')";
             $resultNoteUpdate = mysqli_query($conn, $updateNote);
             if($resultNoteUpdate){
