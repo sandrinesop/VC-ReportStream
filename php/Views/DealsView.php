@@ -46,13 +46,13 @@
                 ON
                     InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
                 LEFT JOIN 
-                    PortfolioCompanyCountry
+                    PortfolioCompanyLocation
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
+                    PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
-                    Country.CountryID = PortfolioCompanyCountry.CountryID
+                    Country.CountryID = PortfolioCompanyLocation.CountryID
                 LEFT JOIN 
                     DealsIndustry
                 ON 
@@ -262,6 +262,7 @@
         <!-- <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css"> -->
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../css/index.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
         <!-- OVERWRITING THE STYLING OF THE PLUGIN -->

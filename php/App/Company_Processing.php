@@ -173,6 +173,7 @@
         $InvestorName           = $_POST['InvestorName'];
         $FundName               = $_POST['FundName'];
 
+        echo 'The country list is '.$Headquarters;
         // Company Logo Insert code
         if(isset($_FILES['img']['name'])){ 
             $logoName = $_FILES['img']['name'];
@@ -207,16 +208,35 @@
         }else{
             // PORTFOLIO COMPANY INSERT
             $sql = "INSERT INTO 
-                    PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters, Logo)
+                    PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Logo)
                 VALUES 
-                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'), '$Logo')
+                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', '$Logo')
             ";
             $query = mysqli_query($conn, $sql);
             // =========================================================================================
             // CODE BELOW: IF COMPANY IS CREATED SUCCESSFULLY THEN LINK THE COMPANY WITH OTHER ENTITIES.
             // =========================================================================================
             if($query){
+                // =============================================
+                // LOOP TO INSERT COUNTRIES ON P.COMPANY
+                // =============================================
+                foreach($Headquarters as $Country){  
+                    $sql = " INSERT INTO 
+                                    PortfolioCompanyLocation(PortfolioCompanyLocationID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
+                                VALUES 
+                                    (uuid(), now(), now(), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Country.CountryID FROM Country where Country.Country = '$Country'))
+                             ";
+                    $query = mysqli_query($conn, $sql);
+
+                    if($query){
+                        // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                    } else {
+                        echo 'Oops! There was an error saving the Country(ies) from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+                // ====================================
                 // LOOP TO INSERT SECTORS ON P.COMPANY
+                // ====================================
                 foreach($Sector as $sects){  
                     $sql99 = "  INSERT INTO 
                                     PortfolioCompanySector(PortfolioCompanySectorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyID, SectorID)

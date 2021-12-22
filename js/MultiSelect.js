@@ -47,4 +47,10 @@
         maximumSelectionLength: 8,
         placeholder: "Select Sector"
     })
+
+    $(".headquartersDropdowns").select2({
+        width: '220px', 
+        maximumSelectionLength: 5,
+        placeholder: "Select Country"
+    })
 });

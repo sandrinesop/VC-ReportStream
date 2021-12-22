@@ -174,8 +174,13 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Headquarters" class="form-label">Country</label>
-                                                        <select class="form-select" id="Headquarters" name="Headquarters" required>
+                                                        <!-- <select class="form-select" id="Headquarters" name="Headquarters" required>
                                                             <option> Select...</option>
+                                                            
+                                                        </select> -->
+
+                                                        <select id="Headquarters" name="Headquarters[]"  class="form-select headquartersDropdowns" multiple="true" required>
+                                                            <option>choose...</option>
                                                             <?php
                                                                 while ($row101 = mysqli_fetch_assoc($result101)) {
                                                                     # code...

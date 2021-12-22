@@ -5,7 +5,7 @@
     // echo 'You have viewed company with ID: '. $PortfolioCompanyID;
     // QUERY DATABASE FROM DATA
     $sql="  SELECT DISTINCT
-                PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo, UserDetail.UserFullName, Gender.Gender, Race.Race
+                PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, PortfolioCompany.Logo, UserDetail.UserFullName, Gender.Gender, Race.Race
             FROM 
                 PortfolioCompany 
             LEFT JOIN 
@@ -29,9 +29,13 @@
             ON 
                 Currency.CurrencyID = PortfolioCompany.CurrencyID 
             LEFT JOIN 
+                PortfolioCompanyLocation
+            ON
+                PortfolioCompanyLocation.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+            LEFT JOIN 
                 Country 
             ON 
-                Country.CountryID = PortfolioCompany.Headquarters 
+                Country.CountryID = PortfolioCompanyLocation.CountryID
             LEFT JOIN 
                 PortfolioCompanyIndustry 
             ON 
@@ -71,7 +75,7 @@
             WHERE 
                 PortfolioCompany.Deleted = 0 AND PortfolioCompany.PortfolioCompanyID = '$PortfolioCompanyID'
                 
-            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo
+            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, PortfolioCompany.Logo
     "; 
     $result = mysqli_query($conn, $sql);
     if($result){
@@ -91,6 +95,7 @@
         <title>VC ReportStream |View Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../../css/main.css">
+        <link rel="stylesheet" href="../../../css/index.css">
     </head>
     <body>
         <!-- NAVBAR -->

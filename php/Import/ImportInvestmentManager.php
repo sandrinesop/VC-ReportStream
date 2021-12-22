@@ -55,7 +55,7 @@
                         if ($queryNote ){
                         // Success
                         } else {
-                            echo 'Oops! There was an error saving Investment Manager Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                            echo 'Oops! There was an error inserting Investment Manager Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                         }
                         // INSERT INTO INVESTOR
                         $sql ="    INSERT INTO 

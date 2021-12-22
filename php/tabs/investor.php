@@ -18,7 +18,7 @@
 
     // CONNECT TO DATABASE
     include_once('../App/connect.php');
-    // QUERY DATABASE FROM DATA
+    // QUERY DATABASE FOR DATA WE'LL DISPLAY ON THE SCREEN
     $sql="  SELECT  
                 Investor.InvestorID, Investor.Deleted, Investor.DeletedDate, Investor.InvestorName, GROUP_CONCAT(DISTINCT Investor.Website) AS Website, GROUP_CONCAT(DISTINCT FundName) AS FundName, GROUP_CONCAT(DISTINCT PortfolioCompanyName) AS PortfolioCompanyName, Note.Note, Description.Description, Currency.Currency, Investor.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country, Investor.Logo 
             FROM 
@@ -60,9 +60,13 @@
             ON 
                 Description.DescriptionID=Investor.DescriptionID 
             LEFT JOIN 
+                InvestorLocation
+            ON
+                InvestorLocation.InvestorID = Investor.InvestorID
+            LEFT JOIN 
                 Country 
             ON 
-                Country.CountryID = Investor.Headquarters 
+                Country.CountryID = InvestorLocation.CountryID
             WHERE 
                 Investor.Deleted= 0 
             
@@ -234,9 +238,9 @@
             // MAIN INSERT QUERY INTO INVESTOR TABLE
             // ========================================================
             $sql3 ="    INSERT INTO 
-                            Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Headquarters, Logo) 
+                            Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID, YearFounded, Logo) 
                         VALUES 
-                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'),'$logo')
+                            (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', '$logo')
             ";
             $query3 = mysqli_query($conn, $sql3);
             if($query3){
@@ -257,7 +261,7 @@
                 if($query4){
                     // Do nothing
                 } else {
-                    echo 'Oops! There was an error linking Investor to Fund  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                    echo 'Oops! There was an error linking Investor to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                 }
             }
             // ============================================
@@ -275,6 +279,23 @@
                     // Do nothing
                 } else {
                     echo 'Oops! There was an error linking Investor to Company  . Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                }
+            }
+            // ============================================
+            // LOOP TO INSERT COUNTRIES TO INVESTMENT MANAGER
+            // ============================================
+
+            foreach ($Headquarters as $Country) {
+                $sql4 = "   INSERT INTO 
+                                InvestorLocation(InvestorLocationID, CreatedDate, ModifiedDate, InvestorID, CountryID)
+                            VALUES 
+                                (uuid(), now(), now(),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Country.CountryID FROM Country where Country.Country = '$Country'))
+                ";
+                $query4 = mysqli_query($conn, $sql4);
+                if($query4){
+                    // Do nothing
+                } else {
+                    echo 'Oops! There was an error linking Investor to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                 }
             }
             // ============================================
@@ -441,8 +462,12 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Headquarters" class="form-label">Country</label>
-                                                        <select class="form-select" id="Headquarters" name="Headquarters">
+                                                        <!-- <select class="form-select" id="Headquarters" name="Headquarters">
                                                             <option> Select...</option>
+                                                        </select> -->
+
+                                                        <select id="Headquarters" name="Headquarters[]"  class="form-select headquartersDropdowns" multiple="true" required>
+                                                            <option>choose...</option>
                                                             <?php
                                                                 while ($row104 = mysqli_fetch_assoc($result104)) {
                                                                     # code...

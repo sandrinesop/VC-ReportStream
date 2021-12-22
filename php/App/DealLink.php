@@ -268,13 +268,13 @@
                 ON
                     InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
                 LEFT JOIN 
-                    PortfolioCompanyCountry
+                    PortfolioCompanyLocation
                 ON
-                    PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
+                    PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
                 LEFT JOIN 
                     Country
                 ON 
-                    Country.CountryID = PortfolioCompanyCountry.CountryID
+                    Country.CountryID = PortfolioCompanyLocation.CountryID
                 LEFT JOIN 
                     DealsIndustry
                 ON 

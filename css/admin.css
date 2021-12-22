@@ -3,17 +3,18 @@
     NAVBAR STYLES ON ADMIN PAGE
     ===========================
 */
-
+nav.container {
+    background-image: linear-gradient(to left,#b05802,#b05802,#b05802,#b05802 #fff)
+}
 nav {
-    background-color: #b05802;
+    background-image: linear-gradient(to left,#b05802,#b05802,#b05802,#b05802, #fff);
+    /* background-color: #b05802; */
     height: 4.5rem;
     z-index: 1;
     color: #ffffff;
+    padding-left: 10px;
+    padding-right: 10px;
 }
-
-
-
-
 nav.container, main.container, footer.container {
     width:100%;
     max-width:none ;
@@ -35,7 +36,7 @@ nav.container, main.container, footer.container {
 }
 
 nav #navbarNavDropdown{
-	background-color: #b05802 !important;
+	/* background-color: #b05802 !important; */
 }
 
 
@@ -307,4 +308,10 @@ only screen and (max-width: 760px),
 
 .allowedFileType {
     color: #b05802;
+}
+
+
+header .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
 }

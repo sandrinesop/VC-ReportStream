@@ -8,14 +8,12 @@ body {
 }
 
 nav {
-    background-color: #2f470c;
+    /* background-image: linear-gradient(to left,#2f470c, #2f470c, #2f470c, #2f470c, #fff); */
     height: 4.5rem;
     z-index: 1;
     color: #ffffff;
-}
-
-#navbarNavDropdown{
-	background-color: #2f470c;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 nav.container, main.container, footer.container {
@@ -38,6 +36,10 @@ nav.container, main.container, footer.container {
     transform: scale(.98);
 }
 
+header .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 /* 
     STYLES FOR THE FOOTER
 */

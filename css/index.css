@@ -83,8 +83,10 @@
     background-size: cover;
 }
 
-#navbarNavDropdown{
-	background-color: #2f470c;
+nav{
+	background-image: linear-gradient(to left,#2f470c, #2f470c, #2f470c, #2f470c, #fff);    
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 
@@ -114,15 +116,23 @@
         REMOVING THE MARGINS FROM THE CONTAINER CLASS IN BOOTSTRAP 
     =====================================================================
  */
-.container {
-    max-width: 1350px;
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
-}
 
+
+header .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 .navbar-nav {
     padding-left: 10px;
     padding-bottom: 10px;
+}
+
+@media all and (max-width:980px){ 
+    .container {
+        max-width: 1350px;
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
 }

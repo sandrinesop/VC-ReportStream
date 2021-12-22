@@ -45,9 +45,13 @@
             ON 
                 Description.DescriptionID=Investor.DescriptionID 
             LEFT JOIN 
+                InvestorLocation
+            ON
+                InvestorLocation.InvestorID = Investor.InvestorID
+            LEFT JOIN 
                 Country 
             ON 
-                Country.CountryID = Investor.Headquarters 
+                Country.CountryID = InvestorLocation.CountryID
             WHERE 
                 Investor.Deleted= 0 AND Investor.InvestorID = '$InvestorID'
 
@@ -73,6 +77,7 @@
         <title>VC ReportStream |View Company</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../../css/main.css">
+        <link rel="stylesheet" href="../../../css/index.css">
     </head>
     <body>
         <!-- HEADER CONTENT -->
