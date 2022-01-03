@@ -22,7 +22,7 @@
                     $InvestorNote               = mysqli_real_escape_string($conn, $line[4]);
                     $Description                = $line[5];
                     $Currency                   = $line[6];  
-                    $YearFounded                = $line[7]; 
+                    $YearFounded                = mysqli_real_escape_string($conn, $line[7]); 
                     $Headquarters               = $line[8];
 
                     // =============================================
@@ -55,17 +55,35 @@
                         if ($queryNote ){
                         // Success
                         } else {
-                            echo 'Oops! There was an error inserting Investment Manager Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                            echo 'Oops! There was an error inserting Investor Notes.'.'<br/>'.mysqli_error($conn);
                         }
                         // INSERT INTO INVESTOR
                         $sql ="    INSERT INTO 
-                                        Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID,  YearFounded, Headquarters) 
+                                        Investor(InvestorID, CreatedDate, ModifiedDate, Deleted, DeletedDate, CurrencyID, InvestorName, Website, DescriptionID,  YearFounded) 
                                     VALUES 
-                                        (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'))
+                                        (uuid(), now(), now(),0,NULL,(select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ),'$InvestorName', '$InvestorWebsite',(select de.DescriptionID FROM Description de where de.Description = '$Description'), '$YearFounded')
                         ";
                         $query = mysqli_query($conn, $sql);
 
                         if($query){
+                            // =============================================
+                            // LOOP TO INSERT COUNTRIES ON INVESTORS
+                            // =============================================
+                            $CountryList = explode(",", $Headquarters);
+                            foreach($CountryList as $Country){  
+                                $sql4 = " INSERT INTO 
+                                            InvestorLocation(InvestorLocationID, CreatedDate, ModifiedDate, InvestorID, CountryID)
+                                          VALUES 
+                                            (uuid(), now(), now(),(select Investor.InvestorID FROM Investor where Investor.InvestorName = '$InvestorName'), (select Country.CountryID FROM Country where Country.Country = '$Country'))
+                                        ";
+                                $query4 = mysqli_query($conn, $sql4);
+                                if($query4){
+                                    // Do nothing
+                                } else {
+                                    echo 'Oops! There was an error adding Country to Investor linking. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                                }
+                            }
+                            
                             // =============================================
                             // LINK THE INVESTOR AND THE NOTE ITEM
                             // =============================================

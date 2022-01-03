@@ -66,7 +66,7 @@
             LEFT JOIN 
                 Country 
             ON 
-                Country.CountryID = InvestorLocation.CountryID
+                InvestorLocation.CountryID = Country.CountryID
             WHERE 
                 Investor.Deleted= 0 
             
@@ -295,7 +295,7 @@
                 if($query4){
                     // Do nothing
                 } else {
-                    echo 'Oops! There was an error linking Investor to Fund. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                    echo 'Oops! There was an error adding countries to Investor Link. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                 }
             }
             // ============================================

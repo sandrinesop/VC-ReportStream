@@ -1,238 +1,89 @@
 <?php 
     include_once('../App/connect.php');
-    include_once('../App/DealLink.php'); // WITHIN THIS SCRIPT IS WHERE I AM RUNNING ALL THE PROCESSESS OF CREATING NEW DEALS 
-    // QUERY DATABASE FROM DATA
-    $sqlAA="    SELECT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType, Note.Note
-                FROM 
-                    Deals 
-                -- Include investor table data through the linking table Dealsinvestor
-                LEFT JOIN
-                    DealsInvestor
-                ON 
-                    DealsInvestor.DealsID = Deals.DealsID
-                -- Include Investor table data
-                LEFT JOIN
-                    Investor
-                ON
-                    Investor.InvestorID = DealsInvestor.InvestorID
-                -- Include fund table data through the linking table Dealsfund
-                LEFT JOIN
-                    DealsFund
-                ON 
-                    DealsFund.DealsID = Deals.DealsID 
-                -- include Fund table data
-                LEFT JOIN
-                    Fund
-                ON
-                    Fund.FundID = DealsFund.FundID 
-                -- Include News table data 
-                LEFT JOIN 
-                    News 
-                ON
-                    News.NewsID = Deals.NewsID 
-                LEFT JOIN 
+    // QUERY DATABASE FOR DATA WE'LL DISPLAY ON THE SCREEN
+    $sql="  SELECT Deals.DealsID
+                ,News.NewsID
+                ,News.NewsURL
+                ,News.NewsDate
+                ,PortfolioCompany.PortfolioCompanyName
+                ,GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName
+                ,GROUP_CONCAT(DISTINCT FundName) AS FundName
+                ,FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue'
+                ,Deals.stake
+                ,GROUP_CONCAT(DISTINCT Industry) AS Industry
+                ,GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector
+                ,GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage
+                ,Country.Country
+                ,Note.Note
+            FROM Deals
+            -- Joining linking tables
+            LEFT JOIN DealsInvestor ON DealsInvestor.DealsID = Deals.DealsID
+            LEFT JOIN Investor ON Investor.InvestorID = DealsInvestor.InvestorID
+            LEFT JOIN DealsFund ON DealsFund.DealsID = Deals.DealsID
+            LEFT JOIN Fund ON Fund.FundID = DealsFund.FundID
+            -- Include News table data 
+            LEFT JOIN News ON News.NewsID = Deals.NewsID
+            LEFT JOIN
                 -- Include PortfoliCompany table data
-                    PortfolioCompany
-                ON
-                    PortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID
-                LEFT JOIN 
+                PortfolioCompany ON PortfolioCompany.PortfolioCompanyID = Deals.PortfolioCompanyID
+            LEFT JOIN
                 -- Link investment stage to fund
-                    FundInvestmentStage      
-                ON          
-                    FundInvestmentStage.FundID = Fund.FundID 
-                LEFT JOIN
-                    InvestmentStage
-                ON
-                    InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
-                LEFT JOIN 
-                    PortfolioCompanyLocation
-                ON
-                    PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
-                LEFT JOIN 
-                    Country
-                ON 
-                    Country.CountryID = PortfolioCompanyLocation.CountryID
-                LEFT JOIN 
-                    DealsIndustry
-                ON 
-                    DealsIndustry.DealsID = Deals.DealsID
-                LEFT JOIN 
-                    Industry
-                ON 
-                    Industry.IndustryID = DealsIndustry.IndustryID
-                LEFT JOIN 
-                    DealsSector
-                ON 
-                    DealsSector.DealsID = Deals.DealsID
-                LEFT JOIN 
-                    Sector
-                ON 
-                    Sector.SectorID = DealsSector.SectorID
-                LEFT JOIN 
-                    UserDetail
-                ON 
-                    UserDetail.UserDetailID = Deals.UserDetailID
-                LEFT JOIN 
-                    RoleType
-                ON 
-                    RoleType.RoleTypeID = UserDetail.RoleTypeID
-                LEFT JOIN 
-                    DealsNote
-                ON 
-                    DealsNote.DealsID = Deals.DealsID
-                LEFT JOIN 
-                    Note
-                ON 
-                    Note.NoteID =DealsNote.NoteID
-                WHERE 
-                    Deals.Deleted = 0
-                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType, Note
-                ORDER BY  News.NewsDate
-    ";
-
-    $resultAA = $conn->query($sqlAA);// or die($conn->error)
-    $rowAA = mysqli_fetch_assoc($resultAA);
+                FundInvestmentStage ON FundInvestmentStage.FundID = Fund.FundID
+            LEFT JOIN InvestmentStage ON InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID
+            LEFT JOIN PortfolioCompanyLocation ON PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
+            LEFT JOIN Country ON Country.CountryID = PortfolioCompanyLocation.CountryID
+            LEFT JOIN DealsIndustry ON DealsIndustry.DealsID = Deals.DealsID
+            LEFT JOIN Industry ON Industry.IndustryID = DealsIndustry.IndustryID
+            LEFT JOIN DealsSector ON DealsSector.DealsID = Deals.DealsID
+            LEFT JOIN Sector ON Sector.SectorID = DealsSector.SectorID
+            LEFT JOIN DealsNote ON DealsNote.DealsID = Deals.DealsID
+            LEFT JOIN Note ON Note.NoteID = DealsNote.NoteID
+            WHERE Deals.Deleted = 0
+            GROUP BY DealsID
+                ,NewsID
+                ,NewsURL
+                ,NewsDate
+                ,PortfolioCompanyName
+                ,InvestmentValue
+                ,stake
+                ,Note
+            ORDER BY News.NewsDate
+        "; 
+            
+    $result = $conn->query($sql); //or die($conn->error);
+    $row = mysqli_fetch_assoc($result);
 
     //==================================================== 
     // BELOW IS CODE DISPLAYING DATA ON deals SCREEN TABLE
     //====================================================
-    //========== | PORTFOLIO COMPANY TABLE | =============
-    //====================================================
-    // PORTFOLIO COMPANY DETAILS. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
-    $sql = " SELECT 
-                PortfolioCompanyName, Website, SUBSTRING(Details, 1, 55) AS Details FROM PortfolioCompany 
-            JOIN 
-                Country ON Country.CountryID = PortfolioCompany.Headquarters 
-            WHERE Website IS NOT NULL AND Details IS NOT NULL";
-            
-    $result = mysqli_query($conn, $sql);
-    $sql3 = "   SELECT DISTINCT 
-                    Country 
-                FROM 
-                    PortfolioCompany 
-                LEFT JOIN 
-                    Country ON Country.CountryID = PortfolioCompany.Headquarters 
-                WHERE Country IS NOT NULL";
-    $result3 = mysqli_query($conn, $sql3);
-    // Pulling Startup Data into the Currency dropdown
-    $sql4 = "   SELECT DISTINCT 
-                    Currency 
-                FROM 
-                    PortfolioCompany 
-                LEFT JOIN 
-                    Currency ON currency.CurrencyID = PortfolioCompany.CurrencyID 
-                WHERE Currency IS NOT NULL";
-    $result4 = mysqli_query($conn, $sql4);
-    //=================================================== 
-    //============== | USERDETAIL TABLE | ===============
-    //===================================================
-    $sql5 = "   SELECT DISTINCT 
-                    UserFullName
-                FROM 
-                    UserDetail 
-                WHERE 
-                    UserFullName IS NOT NULL ORDER BY UserFullName ASC";
-    $result5 = mysqli_query($conn, $sql5);
-    // Pulling UserDetail Data into the Email dropdown
-    $sql6 = "   SELECT DISTINCT 
-                    Email, ContactNumber1 
-                FROM 
-                    UserDetail 
-                WHERE Email IS NOT NULL";
-    $result6 = mysqli_query($conn, $sql6);
-    // Pulling UserDetail Data into the RoleType dropdown
-    $sql7 = "   SELECT DISTINCT 
-                    RoleType.RoleType
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    RoleType ON RoleType.RoleTypeID = UserDetail.RoleTypeID ";
-    $result7 = mysqli_query($conn, $sql7);
-    // Pulling UserDetail Data into the Gender dropdown
-    $sql8 = "   SELECT DISTINCT 
-                     Gender.Gender 
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    Gender ON Gender.GenderID = UserDetail.GenderID ";
-    $result8 = mysqli_query($conn, $sql8);
-    // Pulling UserDetail Data into the Race dropdown
-    $sql9 = "   SELECT DISTINCT 
-                     Race.Race 
-                FROM 
-                    UserDetail 
-                LEFT JOIN 
-                    Race ON Race.RaceID = UserDetail.RaceID ";
-    $result9 = mysqli_query($conn, $sql9);
-    //=================================================== 
-    //============== | INVESTOR TABLE | =================
-    //===================================================
-    $sqlA1 = "   SELECT DISTINCT 
-                InvestorName
-            FROM 
-                Investor 
-            WHERE 
-                InvestorName IS NOT NULL ORDER BY InvestorName ASC";
-            $resultA1 = mysqli_query($conn, $sqlA1);
 
-            $sqlA2 = "   SELECT DISTINCT 
-                Website
-            FROM 
-                Investor 
-            WHERE 
-                Website IS NOT NULL ORDER BY Website ASC";
-    $resultA2 = mysqli_query($conn, $sqlA2);
-    // INVETSOR NOTES. THIS OVERFLOWS IN THE <OPTION ELEMENT> AND THAT IS WHY I USED THE SUBSTRING METHOD TO TRUNCATE THE STRONG
-    // Pulling Investor Data into the Notes dropdown
-    $sqlA3 = "  SELECT DISTINCT
-                    SUBSTRING(Note, 1, 55) AS Note 
-                FROM 
-                    Note
-                WHERE 
-                    Note IS NOT NULL";
-    $resultA3 = mysqli_query($conn, $sqlA3);
-    // Pulling Investor Data into the impact tag dropdown
-    $sqlA4 = "  SELECT DISTINCT
-                    ImpactTag
-                FROM 
-                Investor
-                WHERE 
-                    ImpactTag IS NOT NULL";
-    $resultA4 = mysqli_query($conn, $sqlA4);
-    // Pulling Investor Data into the Investor Headquarters dropdown
-    $sqlA5 = "  SELECT DISTINCT
-                    Country
-                FROM 
-                    Investor
-                JOIN 
-                    Country ON country.CountryID = Investor.Headquarters";
-    $resultA5 = mysqli_query($conn, $sqlA5);
-    // Pulling Investor Data into the impact tag dropdown
-    $sqlA6 = "  SELECT DISTINCT
-                    Description
-                FROM 
-                    Investor
-                JOIN 
-                    Description ON Description.DescriptionID = Investor.DescriptionID";
-    $resultA6 = mysqli_query($conn, $sqlA6);
-    //=================================================== 
-    //================ | FUND TABLE | ===================
-    //===================================================
-    // Pulling Fund Data into the Fund Section dropdown
-    $sqlB = "  SELECT 
-                    FundName, CommittedCapital, MinimumInvestment, MaximumInvestment
-                FROM 
-                    Fund
-                WHERE FundName IS NOT NULL AND CommittedCapital IS NOT NULL AND MinimumInvestment IS NOT NULL AND MaximumInvestment IS NOT NULL ";
-    $resultB = mysqli_query($conn, $sqlB);
-    // Pulling Fund Data into the FundName dropdown
-    $sqlB1 = "  SELECT DISTINCT
-                    InvestmentStage
-                FROM 
-                    InvestmentStage
-                WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
-    $resultB1 = mysqli_query($conn, $sqlB1);
+    // POPULATING PORTFOLIO COMPANIES DROPDOWN
+    $sql1 ="SELECT DISTINCT PortfolioCompanyName
+            FROM PortfolioCompany 
+            WHERE PortfolioCompanyName IS NOT NULL ORDER BY PortfolioCompanyName ASC
+    ";
+    $result1 = mysqli_query($conn, $sql1);
+    
+    // POPULATING UserDetail DROPDOWN 
+    $sql2 ="SELECT DISTINCT UserFullName
+            FROM UserDetail 
+            WHERE UserFullName IS NOT NULL 
+            ORDER BY UserFullName ASC";
+    $result2 = mysqli_query($conn, $sql2);
+
+    // POPULATING IMPACT-TAG DROPDOWN
+    $sql3 ="SELECT DISTINCT InvestorName
+            FROM Investor 
+            WHERE InvestorName IS NOT NULL ORDER BY InvestorName ASC
+    ";
+    $result3 = mysqli_query($conn, $sql3);
+    // POPULATING COUNTRIES DROPDOWN
+    $sql4 ="SELECT DISTINCT FundName
+            FROM Fund
+            WHERE FundName IS NOT NULL
+            ORDER BY FundName ASC
+    ";
+    $result4 = mysqli_query($conn, $sql4);
 
     // QUERY DATABASE TO DISPLAY DATA INSIDE THE PieChart
     $chartQuery ="  SELECT
@@ -323,24 +174,24 @@
                                 </thead>
                                 <tbody>
                                     <?php
-                                        while(($rowAA = mysqli_fetch_assoc($resultAA)))
+                                        while(($row = mysqli_fetch_assoc($result)))
                                         {
                                     ?>
-                                    <tr data-href="../crud/edit_deals.php?DealsID=<?php echo $rowAA['DealsID'];?>">
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["NewsDate"];?> </small> </td>
-                                        <td class="text-truncate"> <a href="<?php echo $rowAA["NewsURL"];?>" target="_blank"><small > <?php echo $rowAA["NewsURL"];?></small></a></td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["PortfolioCompanyName"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["InvestorName"];?> </small> </td>
-                                        <!-- <td class="text-truncate"> <small ><?php echo $rowAA["FundName"];?> </small> </td> -->
-                                        <td class="text-truncate"> <small ><?php echo '$'.$rowAA["InvestmentValue"];?> </small> </td>
-                                        <!-- <td class="text-truncate"> <small ><?php echo $rowAA["stake"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["Industry"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["Sector"];?> </small> </td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["Country"];?> </small></td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["UserFullName"];?> </small></td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["RoleType"];?> </small></td>
-                                        <td class="text-truncate"> <small ><?php echo $rowAA["Note"];?> </small></td> -->
-                                        <td> <a href="./SingleView/ViewDeal.php?DealsID=<?php echo $rowAA['DealsID'];?>">View Deal</a></td>
+                                    <tr data-href="../crud/edit_deals.php?DealsID=<?php echo $row['DealsID'];?>">
+                                        <td class="text-truncate"> <small ><?php echo $row["NewsDate"];?> </small> </td>
+                                        <td class="text-truncate"> <a href="<?php echo $row["NewsURL"];?>" target="_blank"><small > <?php echo $row["NewsURL"];?></small></a></td>
+                                        <td class="text-truncate"> <small ><?php echo $row["PortfolioCompanyName"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $row["InvestorName"];?> </small> </td>
+                                        <!-- <td class="text-truncate"> <small ><?php echo $row["FundName"];?> </small> </td> -->
+                                        <td class="text-truncate"> <small ><?php echo '$'.$row["InvestmentValue"];?> </small> </td>
+                                        <!-- <td class="text-truncate"> <small ><?php echo $row["stake"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $row["Industry"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $row["Sector"];?> </small> </td>
+                                        <td class="text-truncate"> <small ><?php echo $row["Country"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $row["UserFullName"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $row["RoleType"];?> </small></td>
+                                        <td class="text-truncate"> <small ><?php echo $row["Note"];?> </small></td> -->
+                                        <td> <a href="./SingleView/ViewDeal.php?DealsID=<?php echo $row['DealsID'];?>">View Deal</a></td>
                                     </tr>
                                     <?php
                                         }

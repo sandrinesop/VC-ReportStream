@@ -1,8 +1,12 @@
 <?php 
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
     include_once('../App/connect.php');
     if(isset($_POST['ImportSubmit'])){
         // Allowed mime types
-        $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain');
+        $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv');
         // Validate whether selected file is a csv file or not
         if(!empty($_FILES['file']['name']) && in_array($_FILES['file']['type'], $csvMimes)){
             // Checkif file is uploaded
@@ -35,16 +39,16 @@
                     // .'FundName is:'.$FundName.'<br/>'
                     // .'InvestmentValue is:'.$InvestmentValue.'<br/>'
                     // .'Stake is:'.$Stake.'<br/>'
-                    // .'Industry is:'.$Industry.'<br/>'
-                    // .'Sector is:'.$Sector.'<br/>'
-                    // .'Contact is:'.$Contact.'<br/>'
+                    // .'Industry is:'.$Industries.'<br/>'
+                    // .'Sector is:'.$Sectors.'<br/>'
+                    // .'Contact is:'.$StartUpContact.'<br/>'
                     // .'NewsNote is:'.$NewsNote.'<br/>'.'<br/>';
 
                     // =============================================
                     // CHECK FOR DUPLICATES RECORDS BEFORE INSERTING
                     // =============================================
                     $prevQuery = "  SELECT 
-                                        NewsDate, NewsURL, InvestmentValue 
+                                        NewsDate, NewsURL 
                                     FROM 
                                         Deals
                                     -- Include News table data 
@@ -62,7 +66,7 @@
                     }else{
                         header( "refresh: 8; url= ../tabs/NewDeals.php" );
                         // insert and create a new deal then redirect back to the deals page(added header function first because if set below or after echos then it will not work.)
-                        // ==================================================================================================================================================================
+                        //==================================================================================================================================================================
                         // BEFORE IMPORTING THE DEAL, WE NEED TO MAK SURE THE News, COMPANIES, INVESTORS AND FUNDS ALREADY EXISTS IN THE LOOK UP TABLES SO WE'LL INSERT THOSE ENTITIES FIRST.
                         // ==================================================================================================================================================================
                         $sql = "    INSERT INTO 
@@ -78,24 +82,24 @@
                         }
                         
                         // INSERT NOTE
-                        $sqlNote = "   INSERT INTO 
-                                        Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
-                                    VALUES 
-                                        (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
+                        $sqlNote = "    INSERT INTO 
+                                            Note(NoteID, CreatedDate, ModifiedDate, Note, NoteTypeID )
+                                        VALUES 
+                                            (uuid(), now(), now(), '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
                         ";
                         $queryNote = mysqli_query($conn, $sqlNote);
 
                         if ($queryNote ){
                         // Success
                         } else {
-                        echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                            echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                         }
 
                         // INSERT INTO DEALS TABLE
                         $sqlDLS = "  INSERT INTO 
-                                        Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, UserDetailID)
+                                        Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake)
                                     VALUES 
-                                        (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))
+                                        (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake')
                         ";
                         $queryDLS = mysqli_query($conn, $sqlDLS);
 
@@ -186,14 +190,13 @@
                                 }
                             }
                         }else{
-                            echo
-                            '<div >
-                                <p style="color:red; font-size:20px;">Oops! There was an error:: '.mysqli_error($conn).
-                                '<br/>'
-                                .'Please make sure your file does not have duplicates or missing required data and try again.<p/>
-                                <a href="../tabs/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
-                            </div>';
-                            exit;
+                            // echo
+                            // '<div >
+                            //     <p style="color:red; font-size:20px;">Oops! There was an error: '.mysqli_error($conn).
+                            //     '<br/>'
+                            //     .'Please make sure your file does not have duplicates or missing required data and try again.<p/>
+                            //     <a href="../tabs/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                            // </div>';
                         };
                     }
                 }

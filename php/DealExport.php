@@ -9,7 +9,7 @@
         $output = fopen("php://output","w");
         fputcsv($output, array('NewsDate','News URL','Portfolio Company Name','Investment Manager(s)','Fund(s)', 'Total Investment Value','Stake','Industry','Sector','Investment Stage', 'Country','Company Contact','Role Type','Fund Note'));
             $query ="SELECT
-                         News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType, Note.Note
+                         News.NewsDate,News.NewsURL, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, GROUP_CONCAT(DISTINCT Country) AS Country, UserDetail.UserFullName, RoleType.RoleType, Note.Note
                     FROM 
                         Deals 
                     -- Include investor table data through the linking table Dealsinvestor
@@ -52,13 +52,13 @@
                     ON
                         InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
                     LEFT JOIN 
-                        PortfolioCompanyCountry
+                        PortfolioCompanyLocation
                     ON
-                        PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
+                        PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
                     LEFT JOIN 
                         Country
                     ON 
-                        Country.CountryID = PortfolioCompanyCountry.CountryID
+                        Country.CountryID = PortfolioCompanyLocation.CountryID
                     LEFT JOIN 
                         DealsIndustry
                     ON 
@@ -76,9 +76,13 @@
                     ON 
                         Sector.SectorID = DealsSector.SectorID
                     LEFT JOIN 
+                        PortfolioCompanyUserDetail
+                    ON 
+                        PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                    LEFT JOIN 
                         UserDetail
                     ON 
-                        UserDetail.UserDetailID = Deals.UserDetailID
+                        UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
                     LEFT JOIN 
                         RoleType
                     ON 

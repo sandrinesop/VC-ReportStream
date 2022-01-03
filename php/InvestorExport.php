@@ -49,9 +49,13 @@
                     ON 
                         Description.DescriptionID=Investor.DescriptionID 
                     LEFT JOIN 
+                        InvestorLocation
+                    ON
+                        InvestorLocation.InvestorID = Investor.InvestorID
+                    LEFT JOIN 
                         Country 
                     ON 
-                        Country.CountryID = Investor.Headquarters 
+                        Country.CountryID = InvestorLocation.CountryID
                     WHERE 
                         Investor.Deleted= 0 
                     

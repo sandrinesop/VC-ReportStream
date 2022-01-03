@@ -54,15 +54,18 @@
                 Currency 
             ON 
                 Currency.CurrencyID=Investor.CurrencyID
-                
             LEFT JOIN 
                 Description 
             ON 
                 Description.DescriptionID=Investor.DescriptionID 
             LEFT JOIN 
+                InvestorLocation
+            ON 
+                InvestorLocation.InvestorID = Investor.InvestorID
+            LEFT JOIN 
                 Country 
             ON 
-                Country.CountryID = Investor.Headquarters 
+                Country.CountryID = InvestorLocation.CountryID 
             WHERE 
                 Investor.Deleted= 0 AND Investor.InvestorID = '$InvestorID'
 
@@ -233,10 +236,6 @@
             $updates[] ="YearFounded='".$YearFounded."'";
         }
         
-        if(!empty($Headquarters)){
-            $updates[] ="Headquarters =(select Country.CountryID FROM Country where Country.Country = '$Headquarters')";
-        }
-
         if(!empty($logo)){
             $updates[] ='Logo="'.$logo.'"';
         };
@@ -246,6 +245,12 @@
         $updateInvestor = "UPDATE Investor SET ModifiedDate= NOW(), $updateString WHERE InvestorID='".$InvestorID."'";
         $resultUpdate = mysqli_query($conn, $updateInvestor) or die($conn->error);
 
+        // if($resultUpdate){
+        //     if(!empty($Headquarters)){
+        //         $updates[] ="Headquarters =(select Country.CountryID FROM Country where Country.Country = '$Headquarters')";
+        //     }
+    
+        // }
         // ===================================================================================
         // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN INVESTOR AND FUND ALREADY EXISTS
         // ===================================================================================
@@ -278,6 +283,39 @@
                         echo 'error: '.mysqli_error($conn);
                     }
                 }
+            };
+
+            // UPDATE LOCATION
+            
+            if(!empty($Headquarters)){
+                foreach($Headquarters AS $location){
+                    $prevQuery1 = "  SELECT 
+                                        CountryID 
+                                    FROM 
+                                        InvestorLocation
+                                    WHERE 
+                                        CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'
+                    ";
+                    $prevResult1 = mysqli_query($conn,$prevQuery1);
+                    if($prevResult1 !== false && $prevResult1-> num_rows>0){
+                        // $msg[] =$Fund;
+                        // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE FUND AND THE INVESTOR ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                        $deleteQuery1 = "DELETE FROM InvestorLocation WHERE CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'";
+                        mysqli_query($conn, $deleteQuery1);
+                    }else{
+                        // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
+                        $sql105 = "     INSERT INTO 
+                                            InvestorLocation(InvestorLocationID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, CountryID)
+                                        VALUES 
+                                            (uuid(), now(), now(), 0, NULL, '$InvestorID', (select Country.CountryID FROM Country where Country.Country = '$location'))";
+                        $query105 = mysqli_query($conn, $sql105);
+                        if($query105){
+                            // do nothing
+                        }else{
+                            echo 'error: '.mysqli_error($conn);
+                        }
+                    }
+                };
             };
         };
 

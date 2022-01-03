@@ -22,7 +22,7 @@
                     $CommittedCapital       = $line[4];
                     $MinimumInvestment      = $line[5];
                     $MaximumInvestment      = $line[6];  
-                    $InvestmentStage        = mysqli_real_escape_string($conn,$line[7]); 
+                    $InvestmentStages        = mysqli_real_escape_string($conn,$line[7]); 
                     $Note               = mysqli_real_escape_string($conn,$line[8]);    
 
                     // =============================================
@@ -83,7 +83,24 @@
                             } else {
                             echo 'Oops! There was an error on linking Fund and Note. Please report bug to support.'.'<br/>'.mysqli_error($conn);
                             }
-
+                            
+                            // =============================================
+                            // LINK THE FUND AND THE INVESTMENTSTAGE
+                            // =============================================
+                            $InvestmentStageList = explode(",", $InvestmentStages);
+                            foreach($InvestmentStageList as $InvestmentStage){  
+                                $sqlFundInvestmentStage= " INSERT INTO 
+                                                                FundInvestmentStage(FundInvestmentStageID, CreatedDate, ModifiedDate, Deleted, DeletedDate, FundID, InvestmentStageID)
+                                                            VALUES 
+                                                                (uuid(), now(), now(), 0, NULL, (SELECT Fund.FundID FROM Fund WHERE Fund.FundName = '$FundName'),(SELECT InvestmentStage.InvestmentStageID FROM InvestmentStage WHERE InvestmentStage.InvestmentStage = '$InvestmentStage'))
+                                ";
+                                $queryFundInvestmentStage= mysqli_query($conn, $sqlFundInvestmentStage);
+                                if($queryFundInvestmentStage){
+                                // Do nothing if success
+                                } else {
+                                echo 'Oops! There was an error on linking Fund and InvestmentStage. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                                }
+                            }
                         }else{
                             echo
                             '<div style="color:red; font-size:20px;">

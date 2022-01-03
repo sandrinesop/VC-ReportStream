@@ -50,13 +50,31 @@
                         header( "refresh: 5; url= ../tabs/portfolio-company.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
                         $sql = "INSERT INTO 
-                                    PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded, Headquarters)
+                                    PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded)
                                 VALUES 
-                                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded', (select Country.CountryID FROM Country where Country.Country = '$Headquarters'))
+                                    (uuid(), now(), now(), 0, NULL,'$PortfolioCompanyName', (select C.CurrencyID FROM Currency C where C.Currency = '$Currency' ), '$PortfolioCompanyWebsite', '$Details', '$YearFounded')
                         ";
                         $query = mysqli_query($conn, $sql);
 
                         if($query){
+                            // =============================================
+                            // LOOP TO INSERT COUNTRIES ON P.COMPANY
+                            // =============================================
+                            $CountryList = explode(",", $Headquarters);
+                            foreach($CountryList as $Country){  
+                                $sql = " INSERT INTO 
+                                    PortfolioCompanyLocation(PortfolioCompanyLocationID, CreatedDate, ModifiedDate, PortfolioCompanyID, CountryID)
+                                VALUES 
+                                    (uuid(), now(), now(), (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), (select Country.CountryID FROM Country where Country.Country = '$Country'))
+                                        ";
+                                $query = mysqli_query($conn, $sql);
+
+                                if($query){
+                                    // echo 'For each iteration the Sector ID for '.$sects. 'was inserted'.'<br/>';
+                                } else {
+                                    echo 'Oops! There was an error saving the Country(ies) from the array'.mysqli_error($conn).'<br/>';
+                                }
+                            }
                             // =============================================
                             // LOOP TO INSERT SectorS ON P.COMPANY
                             // =============================================

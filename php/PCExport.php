@@ -33,9 +33,13 @@
                     ON 
                         Currency.CurrencyID = PortfolioCompany.CurrencyID 
                     LEFT JOIN 
+                        PortfolioCompanyLocation
+                    ON
+                        PortfolioCompanyLocation.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                    LEFT JOIN 
                         Country 
                     ON 
-                        Country.CountryID = PortfolioCompany.Headquarters 
+                        Country.CountryID = PortfolioCompanyLocation.CountryID
                     LEFT JOIN 
                         PortfolioCompanyIndustry 
                     ON 
