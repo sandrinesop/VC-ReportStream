@@ -284,39 +284,45 @@
                     }
                 }
             };
+        };
 
-            // UPDATE LOCATION
+        // UPDATE LOCATION
+        if(!empty($Headquarters)){
+            // echo 'Country selected ==> '.$Headquarters.'<br/>'.'<br/>';
+
+            $HeadquartersList = explode(",", $Headquarters);
             
-            if(!empty($Headquarters)){
-                foreach($Headquarters AS $location){
-                    $prevQuery1 = "  SELECT 
-                                        CountryID 
-                                    FROM 
-                                        InvestorLocation
-                                    WHERE 
-                                        CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'
-                    ";
-                    $prevResult1 = mysqli_query($conn,$prevQuery1);
-                    if($prevResult1 !== false && $prevResult1-> num_rows>0){
-                        // $msg[] =$Fund;
-                        // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE FUND AND THE INVESTOR ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
-                        $deleteQuery1 = "DELETE FROM InvestorLocation WHERE CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'";
-                        mysqli_query($conn, $deleteQuery1);
+            foreach($HeadquartersList AS $location){
+                $prevQuery1 = "  SELECT 
+                                    CountryID 
+                                FROM 
+                                    InvestorLocation
+                                WHERE 
+                                    CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'
+                ";
+                $prevResult1 = mysqli_query($conn,$prevQuery1);
+                if($prevResult1 !== false && $prevResult1-> num_rows>0){
+                    // $msg[] =$Fund;
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE FUND AND THE INVESTOR ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery1 = "DELETE FROM InvestorLocation WHERE CountryID = (select Country.CountryID FROM Country where Country.Country = '$location') AND InvestorID='".$InvestorID."'";
+                    mysqli_query($conn, $deleteQuery1);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
+                    $sql105 = "     INSERT INTO 
+                                        InvestorLocation(InvestorLocationID, CreatedDate, ModifiedDate, InvestorID, CountryID)
+                                    VALUES 
+                                        (uuid(), now(), now(), '$InvestorID', (select Country.CountryID FROM Country where Country.Country = '$location'))";
+                    $query105 = mysqli_query($conn, $sql105);
+                    if($query105){
+                        // do nothing
                     }else{
-                        // IF NO LINKS ARE FOUND BETWEEN A COMPANY AND THE FUND, WE WILL THEN CREATE A NEW LINK BETWEEN THAT FUND AND THE COMPANY.
-                        $sql105 = "     INSERT INTO 
-                                            InvestorLocation(InvestorLocationID, CreatedDate, ModifiedDate, Deleted, DeletedDate,InvestorID, CountryID)
-                                        VALUES 
-                                            (uuid(), now(), now(), 0, NULL, '$InvestorID', (select Country.CountryID FROM Country where Country.Country = '$location'))";
-                        $query105 = mysqli_query($conn, $sql105);
-                        if($query105){
-                            // do nothing
-                        }else{
-                            echo 'error: '.mysqli_error($conn);
-                        }
+                        echo 'error: '.mysqli_error($conn);
                     }
-                };
+                }
             };
+        }
+        else{
+            // echo 'No Country selected'.mysqli_error($conn);
         };
 
         // =======================================================================================
@@ -538,7 +544,7 @@
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Headquarters" class="form-label">Country</label>
                         <select class="form-select" id="Headquarters" name="Headquarters">
-                            <option> Select...</option>
+                            <option > </option>
                             <?php
                                 while ($row104 = mysqli_fetch_assoc($result104)) {
                                     # code...

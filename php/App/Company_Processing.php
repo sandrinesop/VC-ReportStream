@@ -1,7 +1,7 @@
 <?php
     // QUERY DATABASE FROM DATA
     $sql=" SELECT DISTINCT
-                PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo, UserDetail.UserFullName, Gender.Gender, Race.Race
+                PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, Currency.Currency, PortfolioCompany.Website, GROUP_CONCAT(DISTINCT Industry) AS Industry, GROUP_CONCAT(DISTINCT Sector) AS Sector,  PortfolioCompany.Details, PortfolioCompany.YearFounded, GROUP_CONCAT(DISTINCT Country) AS Country , PortfolioCompany.Logo, GROUP_CONCAT(DISTINCT UserFullName) AS UserFullName, Gender.Gender, Race.Race 
             FROM 
                 PortfolioCompany 
             LEFT JOIN 
@@ -67,7 +67,7 @@
             WHERE 
                 PortfolioCompany.Deleted = 0
                 
-            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, Country.Country, PortfolioCompany.Logo
+            GROUP BY PortfolioCompany.PortfolioCompanyID,PortfolioCompany.Deleted, PortfolioCompany.DeletedDate, PortfolioCompany.PortfolioCompanyName, Currency.Currency, PortfolioCompany.Website, PortfolioCompany.Details, PortfolioCompany.YearFounded, PortfolioCompany.Logo
     "; 
     $result = $conn->query($sql) or die($conn->error);
     
