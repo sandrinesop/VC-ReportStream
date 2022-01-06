@@ -128,7 +128,7 @@
         $Industries              = $_POST['Industry'];
         $Sector                  = $_POST['Sector'];
         // USER DETAIL TABLE
-        $StartUpContact          = $_POST['UserFullName'];
+        $Contacts                 = $_POST['UserFullName'];
         // INVESTOR TABLE
         $InvestorName            = $_POST['InvestorName'];
         // FUND TABLE
@@ -142,7 +142,7 @@
 
         if($checkResult -> num_rows >0){
             $conn->close();
-            header( "refresh: 3;url= ../tabs/NewDeals.php" );
+            header( "refresh: 3;url= ../AuthViews/NewDeals.php" );
             echo 
                 '<div style="background-color:#f8d7da; color: #842029; margin:0;">
                     <H3>Heads Up!</H3>
@@ -150,6 +150,15 @@
                 </div>'
             ;
         }else{
+            
+            
+            // ===========================================================
+            // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
+            // ===========================================================
+            // ===========================================================
+            header("Refresh:8; url=../AuthViews/NewDeals.php");
+            echo '<h4>Thank you for your contibution</h4>';
+
             // ===================================================================================
             // BELOW ARE THE INSERT STATEMENTS TO THE NEWS AND NOTE TABLE. 
             // THESE ARE THE ONLY  TWO TABLES THAT WILL COLLECT NEW DATA UPON ENTERING A NEW DEAL.
@@ -215,9 +224,9 @@
             // =====================================================================
     
             $sqlDLS = "  INSERT INTO 
-                            Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake, UserDetailID)
+                            Deals(DealsID, CreatedDate, ModifiedDate,Deleted, DeletedDate, NewsID, PortfolioCompanyID, InvestmentValue, stake)
                         VALUES 
-                            (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake', (select distinct UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact'))
+                            (uuid(), now(), now(),0,NULL, (select distinct News.NewsID FROM News where News.NewsURL = '$NewsURL'), (select distinct PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName'), '$InvestmentValue', '$Stake')
             ";
             $queryDLS = mysqli_query($conn, $sqlDLS);
             // DLS
@@ -255,6 +264,25 @@
                         echo 'Oops! There was an error inserting the Sector IDs from the array'.mysqli_error($conn).'<br/>';
                     }
                 }
+
+                
+                // ======================================================
+                // LOOP TO INSERT CONTACT TO THE LINKING TABLE ON DEALS
+                // ======================================================
+                foreach($Contacts as $Contact){  
+                    $sql= "  INSERT INTO 
+                                            DealsUserDetail(DealsUserDetailID, CreatedDate, ModifiedDate, DealsID, UserDetailID)
+                                        VALUES 
+                                            (uuid(), now(), now(), (SELECT Deals.DealsID FROM Deals WHERE Deals.NewsID = (SELECT News.NewsID FROM News WHERE News.NewsURL = '$NewsURL')), (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact'))
+                    ";
+                    $query = mysqli_query($conn, $sql);
+                    if($query){
+                        // Do nothing
+                    } else {
+                        echo 'Oops! There was an error inserting the contact IDs from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+
                 // =================================================================
                 // LOOP TO INSERT INVESTMENT MANAGERS TO THE LINKING TABLE ON DEALS
                 // =================================================================
@@ -315,15 +343,7 @@
             } else {
                 echo 'Oops! There was an error on Deals Capture Table. Please report bug to support.'.'<br/>'.mysqli_error($conn);
             }
-            
-            // ===========================================================
-            // REFRESH PAGE TO SHOW NEW ENTRIES IF INSERTION WAS A SUCCESS
-            // ===========================================================
-            header("Refresh:5; url=../tabs/NewDeals.php");
-            // ===========================================================
-            echo '<H3>Thank you for your contibution</H3> '
-            .'<br/>'
-            .'<small>You will be redirected shortly...</small>';
+         
         }
     };
 ?>
@@ -361,8 +381,32 @@
         </style>
     </head>
     <body class="pb-5">
-        <!-- HEADER CONTENT -->
-        <?php include('../Views/navBar/nav.php');?>
+        <!-- HEADER CONTENT -->        <header class="mb-5">
+            <nav class=" navbar navbar-expand-lg align-middle navbar-dark fixed-top" style="z-index: 1;">
+                <div class="container px-0">
+                    <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> <small>VC ReportStream</small> </a>
+                    <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" ><small>Digital Collective Africa</small> </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><small>Contact</small> </a>
+                            </li>
+                            <li class="nav-item">
+                                <form action="../Auth/logout.php" method="POST"  class="profile">
+                                    <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div style="height: 20px;"></div>
         <!-- BODY CONTENT -->
         <main class="container ">
             <!-- ==== LIST OF INVESTORS ==== -->
@@ -436,11 +480,11 @@
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="Stake" class="form-label">Stake</label>
-                                                        <input type="number" class="form-control" id="Stake" name="Stake"  min="0.01" max="1" step="any">
+                                                        <input type="number" class="form-control" id="Stake" name="Stake"  min="0" max="1" step="any">
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                                                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                                                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" min="1" max="1000000000000" step="any">
+                                                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" min="0" max="1000000000000" step="any">
                                                     </div>
                                                     <!-- 
                                                         /////////////////////
@@ -508,14 +552,14 @@
                                                     -->
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 " id="ArtificialIntelligenceDrop">
                                                         <label for="Sector" class="form-label" >Sector </label>
-                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true">
+                                                        <select id="Sector" name="Sector[]"  class="form-select sectorDropdowns" multiple="true" required>
                                                             <option>choose...</option>
                                                         </select>
                                                         <small style="color:red;">First select an industry </small>
                                                     </div>
                                                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                                                         <label for="UserFullName" class="form-label">Contact Person</label>
-                                                        <select class="form-select" id="UserFullName" name="UserFullName" required>
+                                                        <select class="form-select UserDetail" id="UserFullName" name="UserFullName[]" required multiple="true">
                                                             <option> Select Contact Person...</option>
                                                             <?php
                                                                 while ($row2 = mysqli_fetch_assoc($result2)) {
@@ -600,7 +644,7 @@
                         </span>
                         <!-- EXPORT CSV FILE -->
                         <span class="col-3"> 
-                            <form action="../DealExport.php" method="POST">
+                            <form action="../ExportCSV/DealExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
                             </form>
                         </span>

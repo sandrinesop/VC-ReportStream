@@ -1,22 +1,4 @@
 <?php 
-    
-    // ======================================
-    // STARTING A NEW SESSION FOR EACH USER
-    // ======================================
-    session_start();
-    // NOW WE SET A CONDITION TO PREVENT UNAUTHORISED USERS TO ACCESS THIS PAGE.
-    if( $_SESSION == []){
-        header('refresh:5; url = ../../index.php');
-        echo'
-            <p> 
-                Access denied. Only Admins can access this page. <br/>
-                <small>You are being redirected back to the home page.</small>
-            </p>
-        ';
-        exit;
-    }
-    
-    // CONNECT TO DATABASE
     include_once('../App/connect.php');
     // QUERY DATABASE FROM DATA
     $sql=" SELECT 
@@ -269,7 +251,8 @@
         <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
-        <link rel="stylesheet" href="../../css/admin.css">
+        <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../css/index.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
         <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
@@ -292,133 +275,16 @@
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
-        <?php include('../Views/navBar/nav.php');?> 
+        <?php include('./navBar/UnAuth_navBar.php');?> 
         <!-- BODY CONTENT -->
         <main class="container ">
             <!-- ==== LIST OF PORTFOLIO COMPANIES ==== -->
             <div class=" my-5">
                 <div class="my-2">
                     <div class="row">
-                        <!-- CREATE NEW FUND MODAL -->
-                        <span class="col-4">
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                Fund <img src="../../resources/icons/New.svg" alt="">
-                            </button>
-                            <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-xl">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Create New Fund</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form class="container" method="POST" enctype="multipart/form-data">
-                                                <div class="row">
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="FundName" class="form-label">Fund Name</label>
-                                                        <input type="FundName" class="form-control" id="FundName" aria-describedby="FundName" name="FundName" required>
-                                                    </div>
-                                                    <!-- investors dropdown - populated from the database -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="InvestorName" class="form-label">Investment Manager(s)</label>
-                                                        <select class="form-select InvestorName" id="InvestorName" name="InvestorName[]" multiple="true" required>
-                                                            <option> Select...</option>
-                                                            <?php
-                                                                while ($row102 = mysqli_fetch_assoc($result102)) {
-                                                                    # code...
-                                                                    echo "<option>".$row102['InvestorName']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                        <button onclick="openWin1()" target="_blank" class="btn btn-outline-success btn-sm">
-                                                            Add new Investment Manager
-                                                        </button>
-                                                    </div>
-                                                    <!-- Portfolio Company dropdown - populated from the database -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="PortfolioCompanyName" class="form-label">Portfolio Company </label>
-                                                        <select class="form-select PortfolioCompanyName" id="PortfolioCompanyName" name="PortfolioCompanyName[]" multiple="true" required>
-                                                            <option> Select...</option>
-                                                            <?php
-                                                                while ($row103 = mysqli_fetch_assoc($result103)) {
-                                                                    # code...
-                                                                    echo "<option>".$row103['PortfolioCompanyName']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                        <button onclick="openWin2()" target="_blank" class="btn btn-outline-success btn-sm">
-                                                            Add new Portfolio Company
-                                                        </button>
-                                                    </div>
-                                                    <!-- Actual Currencies as in the DB --> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="Currency" class="form-label">Currency</label>
-                                                        <select class="form-select" id="Currency" name="Currency" required>
-                                                            <option> Select...</option>
-                                                            <?php
-                                                                while ($row100 = mysqli_fetch_assoc($result100)) {
-                                                                    # code...
-                                                                    echo "<option>".$row100['Currency']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="CommittedCapital" class="form-label"> Committed Capital</label>
-                                                        <input type="number" class="form-control" id="CommittedCapital" name="CommittedCapital" required>
-                                                    </div>  
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="MinimumInvestment" class="form-label"> Minimum Investment</label>
-                                                        <input type="number" class="form-control" id="MinimumInvestment" name="MinimumInvestment" required>
-                                                    </div> 
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                                        <label for="MaximumInvestment" class="form-label"> Maximum Investment</label>
-                                                        <input type="number" class="form-control" id="MaximumInvestment" name="MaximumInvestment" required>
-                                                    </div>
-                                                    <!-- Investment Stage -->
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="InvestmentStage" class="form-label">Investment Stage </label>
-                                                        <select class="form-select InvestmentStage" id="InvestmentStage" name="InvestmentStage[]" multiple="true" required>
-                                                            <option> Select Investment Stage...</option>
-                                                            <?php
-                                                                while ($row104 = mysqli_fetch_assoc($result104)) {
-                                                                    # code...
-                                                                    echo "<option>".$row104['InvestmentStage']."</option>";
-                                                                }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
-                                                        <label for="FundNote" class="form-label">Fund Note</label>
-                                                        <textarea class="form-control FundNote" aria-label="With textarea" id=" FundNote" name="FundNote"></textarea>
-                                                    </div>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary" name="submit" value="submit">Submit</button>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </span>
-                        <!-- IMPORT CSV FILE -->
-                        <span class="col-4"> 
-                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
-                            <div id="ImportFrm" class="mt-1" style="display:none;">
-                                <form action="../Import/ImportFund.php" method="POST" enctype="multipart/form-data">
-                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file"> <br>
-                                    <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
-                                </form>
-                            </div>
-                        </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-3"> 
-                            <form action="../FundExport.php" method="POST">
+                        <span class="col-2"> 
+                            <form action="../ExportCSV/FundExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>
@@ -426,7 +292,7 @@
                 </div>
                 <!-- TABLE OF ALL PORTFOLIO COMPANIES --> 
                 <div class="card">
-                    <div class="card-body" >
+                    <div class="card-body" style="background-color:#5d8f18;">
                         <div class="table-responsive" style="overflow-x:auto;">
                             <table class=" table table-hover table-striped table-success table-bordered" style="line-height: 18px;" id="table_Fund">
                                 <thead>
@@ -439,9 +305,7 @@
                                     <!-- <th scope="col">Maximum Investment</th> -->
                                     <th scope="col">Investment Stage</th>
                                     <!-- <th scope="col">Fund Note</th> -->
-                                    <th scope="col">View More </th>
-                                    <th scope="col">Edit </th>
-                                    <th scope="col">Delete </th>
+                                    <th scope="col">View More </th> 
                                 </thead>
                                 <tbody>
                                     <?php
@@ -459,8 +323,6 @@
                                         <td class="text-truncate"> <small><?php echo $rows['InvestmentStage'] ?> </small></td>
                                         <!-- <td class="text-truncate"> <small><?php echo $rows['Note'] ?> </small></td> -->
                                         <td> <a href="./SingleView/ViewFund.php?FundID=<?php echo $rows['FundID'];?>">View More</a></td>
-                                        <td class="text-truncate"> <small><a href="../crud/edit_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Edit</a> </small></td>
-                                        <td class="text-truncate"> <small><a href="../crud/delete_fund.php?FundID=<?php echo $rows['FundID']; ?> ">Delete</a> </small></td>
                                     </tr>
                                     <?php 
                                         }
@@ -482,39 +344,10 @@
         <script src="../../DataTables/datatables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script>
-            var createWindow1;
-            // open window
-            function openWin1() {
-                createWindow1 = window.open("./SubFunctions/create_investor.php", "_blank", "width=920, height=500");
-            }
-            var createWindow2;
-            // open window
-            function openWin2() {
-                createWindow2 = window.open("./SubFunctions/create_portfoliocompany.php", "_blank", "width=920, height=500");
-            }
-
-        </script>
-        <script>
             $(document).ready( function () {
                 // Initializing the datatable plugin
                 $('#table_Fund').DataTable();
-                
-                // Trigger the double tap to edit function
-                $(document.body).on("dblclick", "tr[data-href]", function (){
-                    window.location.href = this.dataset.href;
-                });
             });
-        </script>
-        <!-- Display and Hide the import form with a button click -->
-        <script>
-            function formToggle(ID){
-                 var ImportFormReview = document.getElementById(ID);
-                 if(ImportFormReview.style.display === "none"){
-                    ImportFormReview.style.display ="block";
-                 }else{
-                    ImportFormReview.style.display ="none";
-                 }
-            };
         </script>
     </body>
 </html>

@@ -145,7 +145,7 @@
                     <div class="row w-50">
                         <!-- EXPORT CSV FILE -->
                         <span class="col"> 
-                            <form action="../DealExport.php" method="POST">
+                            <form action="../ExportCSV/DealExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
                             </form>
                         </span>

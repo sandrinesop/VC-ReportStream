@@ -453,11 +453,11 @@
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="MinimumInvestment" class="form-label">Minimum Investment</label>
-                        <input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>"/>
+                        <input class="form-control col" type="text" name="MinimumInvestment" placeholder="Enter MinimumInvestment"  value="<?php echo $row['MinimumInvestment'];?>" min="0" max="1000000000000" step="any"/>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="MaximumInvestment" class="form-label">Maximum Investment</label>
-                        <input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>"/>
+                        <input class="form-control col" type="text" name="MaximumInvestment" placeholder="Enter MaximumInvestment"  value="<?php echo $row['MaximumInvestment'];?>" min="0" max="1000000000000" step="any"/>
                     </p>
                     <p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12">
                         <label for="InvestmentStage" class="form-label">Investment Stage</label>

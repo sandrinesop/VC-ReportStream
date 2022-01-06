@@ -47,7 +47,7 @@
                         // .'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                         $msg[] =$PortfolioCompanyName;
                     }else{
-                        header( "refresh: 5; url= ../tabs/portfolio-company.php" );
+                        header( "refresh: 5; url= ../AuthViews/portfolio-company.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
                         $sql = "INSERT INTO 
                                     PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded)
@@ -113,7 +113,7 @@
                             '<div style="color:red; font-size:20px;">
                                 <p>There was an error, please make sure your file does not have duplicate data or errors and try again.<p/>'
                                 .'</br>'
-                                .'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                                .'<a href="../AuthViews/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                             </div>';
                             exit;
                         };
@@ -138,12 +138,12 @@
                         // Used the HTML elements and inlise CSS to format the output in a desirable way by making the font red. concatenated the varible $i which we initialzed if the for loop, added one to it and then appended that next to the value of the array to create an ordered-numbered list. Added an empty string to add space between.
                         echo '<p style="color:red;">'.$i+'+1'.'. '.$msg[$i].'<p/>';
                     }
-                    echo '<br>'.'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
+                    echo '<br>'.'<a href="../AuthViews/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                 }else{
                     echo
                     '<div style="color:green; font-size:20px;">
                         <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
-                        <a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                        <a href="../AuthViews/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                     </div>';
                 }
                 // CLOSE CSV FILE
@@ -158,7 +158,7 @@
                     <p>Error: File type not the right format or file not uploaded <p/>'
                 .mysqli_error($conn)
                 .'</br>'
-                .'<a href="../tabs/portfolio-company.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                .'<a href="../AuthViews/portfolio-company.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                 </div>'
             );
         }

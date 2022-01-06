@@ -4,7 +4,7 @@
     $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
     $sqlA1="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, GROUP_CONCAT(DISTINCT UserFullName) AS UserFullName, RoleType.RoleType
                 FROM 
                     Deals 
                 -- Include investor table data through the linking table Dealsinvestor
@@ -71,20 +71,20 @@
                 ON 
                     Sector.SectorID = DealsSector.SectorID
                 LEFT JOIN 
-                    PortfolioCompanyUserDetail
+                    DealsUserDetail
                 ON 
-                    PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                    DealsUserDetail.DealsID = Deals.DealsID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+                    UserDetail.UserDetailID = DealsUserDetail.UserDetailID
                 LEFT JOIN 
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
                 WHERE 
                     Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
-                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, RoleType
                 ORDER BY  News.NewsDate
     ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);

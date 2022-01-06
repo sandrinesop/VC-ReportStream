@@ -53,4 +53,9 @@
         maximumSelectionLength: 5,
         placeholder: "Select Country"
     })
+    $(".UserDetail").select2({
+        width: '220px', 
+        maximumSelectionLength: 5,
+        placeholder: "Select Contact"
+    })
 });

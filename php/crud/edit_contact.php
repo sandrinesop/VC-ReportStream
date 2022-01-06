@@ -44,9 +44,9 @@
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/contacts.php'>View Updated Record</a>";
+        <a href='../AuthViews/contacts.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 5;url= ../tabs/contacts.php" );
+        header( "refresh: 5;url= ../AuthViews/contacts.php" );
         
         // CHECK IF VARIABLES ARE SET OR NOT BEFORE WORKING WITH THEM IN THE UPDATE QUERY
         // ALSO USE STRING ESCAPE TO ESCAPE OUT ALL SPECIAL CHARACTERS AND AVOID SQL INJECTION
@@ -179,9 +179,6 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>

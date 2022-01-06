@@ -75,7 +75,6 @@
     $result = mysqli_query($conn, $sql) or die($conn->error);
     $row = mysqli_fetch_assoc($result);
 
-
     // POPULATING FUND DROPDOWN 
     $sql100 = "  SELECT DISTINCT 
                     FundName

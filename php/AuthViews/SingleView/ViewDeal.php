@@ -4,7 +4,7 @@
     $DealsID =$_GET['DealsID'];
     // QUERY DATABASE FROM DATA
     $sqlA1="    SELECT DISTINCT
-                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, RoleType.RoleType
+                    Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, GROUP_CONCAT(DISTINCT UserFullName) AS UserFullName, RoleType.RoleType
                 FROM 
                     Deals 
                 -- Include investor table data through the linking table Dealsinvestor
@@ -71,20 +71,20 @@
                 ON 
                     Sector.SectorID = DealsSector.SectorID
                 LEFT JOIN 
-                    PortfolioCompanyUserDetail
+                    DealsUserDetail
                 ON 
-                    PortfolioCompanyUserDetail.PortfolioCompanyID = PortfolioCompany.PortfolioCompanyID
+                    DealsUserDetail.DealsID = Deals.DealsID
                 LEFT JOIN 
                     UserDetail
                 ON 
-                    UserDetail.UserDetailID = PortfolioCompanyUserDetail.UserDetailID
+                    UserDetail.UserDetailID = DealsUserDetail.UserDetailID
                 LEFT JOIN 
                     RoleType
                 ON 
                     RoleType.RoleTypeID = UserDetail.RoleTypeID
                 WHERE 
                     Deals.Deleted = 0 AND Deals.DealsID = '$DealsID'
-                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, UserFullName, RoleType
+                GROUP BY DealsID, NewsID, NewsURL, NewsDate, PortfolioCompanyName, InvestmentValue, stake, Country, RoleType
                 ORDER BY  News.NewsDate
     ";
     $resultA1 = $conn->query($sqlA1) or die($conn->error);
@@ -103,10 +103,32 @@
     </head>
     <body>
     <!-- HEADER CONTENT -->
-        <?php 
-            include_once('../../Views/navBar/AuthSingleView.php');
-        ?>
-        <main  class="my-5 ">
+        <nav class="  navbar navbar-expand-lg align-middle text-light navbar-dark" style="z-index: 1; font-size: 1rem !important;">
+            <div class="container-fluid px-0">
+                <a style="color:#ffffff;" class="navbar-brand" href="../../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../../resources/DCA_Admin.png" alt="Digital collective africa logo"> <small>VC ReportStream</small>  </a>
+                <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="../../Auth/logout.php" method="POST"  class="profile">
+                                <input class="logout_btn" type="submit" name="logout"  value="logout" formmethod="POST">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div style="height: 10px;"></div>
+        <!-- main -->
+        <main  class="py-5 ">
             <form name="form"  class="form container"> 
                 <div class="row">
                     <p class="col-lg-6">
@@ -159,7 +181,8 @@
                     </p>
 
                 </div>
-                <button><a href="../NewDeals.php"> Close</a></button>
+                <button type="button" class="btn btn-danger"><a href="../NewDeals.php"> Close</a></button>
+                <button type="button" class="btn btn-warning"><a href="../../crud/edit_deals.php?DealsID=<?php echo $rowA1['DealsID']; ?>">Edit</a></button>
             </form>
         </main>
         <!-- Scripts -->

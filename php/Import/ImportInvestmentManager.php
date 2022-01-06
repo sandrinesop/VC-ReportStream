@@ -42,7 +42,7 @@
                         // ===========================================
                         // $msg[] =$InvestorName;
                     }else{
-                        header( "refresh: 5; url= ../tabs/investor.php" );
+                        header( "refresh: 5; url= ../AuthViews/investor.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
                         // INSERT NOTE
                         $sqlNote = "   INSERT INTO 
@@ -122,12 +122,12 @@
                         // Used the HTML elements and inlise CSS to format the output in a desirable way by making the font red. concatenated the varible $i which we initialzed if the for loop, added one to it and then appended that next to the value of the array to create an ordered-numbered list. Added an empty string to add space between.
                         echo '<p style="color:red;">'.$i+'+1'.'. '.$msg[$i].'<p/>';
                     }
-                    echo '<br>'.'<a href="../tabs/investor.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
+                    echo '<br>'.'<a href="../AuthViews/investor.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                 }else{
                     echo
                     '<div style="color:green; font-size:20px;">
                         <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
-                        <a href="../tabs/investor.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                        <a href="../AuthViews/investor.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                     </div>';
                 }
                 // CLOSE CSV FILE
@@ -140,7 +140,7 @@
             die(
                 '<div style="color:red; font-size:20px;">
                     <p>Error: File type is not a csv or file not uploaded <p/>
-                    <a href="../tabs/investor.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                    <a href="../AuthViews/investor.php" style="margin-top:5px; padding:5px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                 </div>'
             );
         }

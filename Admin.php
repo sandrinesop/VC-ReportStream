@@ -63,7 +63,7 @@
         <main class="container text-center admin-main">
             <div class="wrapper ">
                 <div>
-                    <a href="./php/tabs/NewDeals.php">
+                    <a href="./php/AuthViews/NewDeals.php">
                         <div class=" Deals centered-nav">
                             <h1>Deals</h1>
                             <div>
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/tabs/investor.php">
+                    <a href="./php/AuthViews/investor.php">
                         <div class=" Investors centered-nav">
                             <h1>Investment Managers</h1>
                             <div>
@@ -82,7 +82,7 @@
                 </div>
                 <div>
                     
-                    <a href="./php/tabs/fund.php">
+                    <a href="./php/AuthViews/fund.php">
                         <div class=" Funds centered-nav">
                             <h1>Funds</h1>
                             <div>
@@ -92,7 +92,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="./php/tabs/portfolio-company.php">
+                    <a href="./php/AuthViews/portfolio-company.php">
                         <div class=" Portfolio centered-nav">
                             <h1>Portfolio Companies</h1>
                             <div>
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="./php/tabs/contacts.php">
+                    <a href="./php/AuthViews/contacts.php">
                         <div class=" Funds centered-nav">
                             <h1>Contacts</h1>
                             <div>

@@ -20,7 +20,7 @@
     // QUERY DATABASE FROM DATA
     $DealsID =$_REQUEST['DealsID'];
     $sql=" SELECT DISTINCT
-                Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName,Note.Note, RoleType.RoleType
+                Deals.DealsID, News.NewsID, News.NewsURL, News.NewsDate, PortfolioCompany.PortfolioCompanyName, GROUP_CONCAT(DISTINCT InvestorName) AS InvestorName, GROUP_CONCAT(DISTINCT FundName) AS FundName, FORMAT(Deals.InvestmentValue, 'c', 'en-US') AS 'InvestmentValue', Deals.stake, GROUP_CONCAT(DISTINCT Industry) AS Industry , GROUP_CONCAT(DISTINCT Sector.Sector) AS Sector, GROUP_CONCAT(DISTINCT InvestmentStage) AS InvestmentStage, Country.Country, UserDetail.UserFullName, Note.Note, RoleType.RoleType
             FROM 
                 Deals 
             -- Include investor table data through the linking table Dealsinvestor
@@ -63,13 +63,13 @@
             ON
                 InvestmentStage.InvestmentStageID = FundInvestmentStage.InvestmentStageID 
             LEFT JOIN 
-                PortfolioCompanyCountry
+                PortfolioCompanyLocation
             ON
-                PortfolioCompanyCountry.PortfolioCompanyID = Deals.PortfolioCompanyID
+                PortfolioCompanyLocation.PortfolioCompanyID = Deals.PortfolioCompanyID
             LEFT JOIN 
                 Country
             ON 
-                Country.CountryID = PortfolioCompanyCountry.CountryID
+                Country.CountryID = PortfolioCompanyLocation.CountryID
             LEFT JOIN 
                 DealsIndustry
             ON 
@@ -87,9 +87,13 @@
             ON 
                 Sector.SectorID = DealsSector.SectorID
             LEFT JOIN 
+                DealsUserDetail
+            ON 
+                DealsUserDetail.DealsID = Deals.DealsID
+            LEFT JOIN 
                 UserDetail
             ON 
-                UserDetail.UserDetailID = Deals.UserDetailID
+                UserDetail.UserDetailID = DealsUserDetail.UserDetailID
             LEFT JOIN 
                 DealsNote
             ON 
@@ -250,20 +254,27 @@
                     InvestmentStage
                 WHERE InvestmentStage IS NOT NULL ORDER BY InvestmentStage ASC";
     $resultB1 = mysqli_query($conn, $sqlB1);
-    // THE CODE SKELETON FOR EDITING AND UPDATING Deals
+
+    // ================================================
+    // ================================================
+    // ================================================
+    // THE CODE FOR EDITING AND UPDATING DEALS
+    // ================================================
+    // ================================================
+    // ================================================
     if(isset($_POST['new']) && $_POST['new']==1)
     {
         // HEADERS ARE SENT BEFORE ANYTHING ELSE OTHERWISE THEY WON'T WORK
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/NewDeals.php'>View Updated Record</a>";
+        <a href='../AuthViews/NewDeals.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 5;url= ../tabs/NewDeals.php" );
+        header( "refresh: 5;url= ../AuthViews/NewDeals.php" );
 
-        /*
-            // -------------------------------------------------------------------------//
-            //                           UPDATE THE News TABLE                          //
-            // -------------------------------------------------------------------------//
-        */ 
+        // -------------------------------------------------------------------------//
+        //                           UPDATE THE News TABLE                          //
+        // -------------------------------------------------------------------------//
+        // First check if the input fields have been changed yet or not, if yes then set variables
+         
         if(isset($_POST['NewsDate'])){ 
             $NewsDate       = date('Y-m-d', strtotime($_POST['NewsDate']));
         }else {
@@ -277,9 +288,8 @@
         }
         
         // ===========================================================
-        // ===========================================================
         // BUILDING A DYNAMIC QUERY TO UPDATE THE News TABLE
-        // ===========================================================
+        // Create an empty array and check if variables are empty or not. if empty then don't do anything, if they have been updated then add that field to the array and build parts of update sql query
         // ===========================================================
         $updateNews = array();
 
@@ -290,7 +300,7 @@
         if(!empty($NewsURL)){
             $updateNews[] ='NewsURL="'.$NewsURL.'"';
         }
-        // CONVERT THE News ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
+        // CONVERT THE NEWS ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
         $updateNewsString = implode(', ', $updateNews);
         // THE News UPDATE QUERY
         $updateNewsQuery = "UPDATE News SET ModifiedDate= NOW(), $updateNewsString WHERE NewsID=(select distinct Deals.NewsID FROM Deals where Deals.DealsID = '$DealsID')";
@@ -301,11 +311,10 @@
         }else{
             echo 'Error Updating the Deal Date or Link: '.mysqli_error($conn);
         }
-        /*
-            // ==========================================================================//
-            //                            UPDATE THE Deals TABLE                         //
-            // ==========================================================================//
-        */
+        // ==========================================================================//
+        //                            UPDATE THE Deals TABLE                         //
+        // ==========================================================================//
+        
         if(isset($_POST['PortfolioCompanyName'])){ 
             $PortfolioCompanyName    = $_POST['PortfolioCompanyName'];
         }else {
@@ -336,9 +345,7 @@
         }
 
         // ===========================================================
-        // ===========================================================
         // BUILDING A DYNAMIC QUERY TO UPDATE THE COMPANIES TABLE
-        // ===========================================================
         // ===========================================================
         $updateDeal = array();
 
@@ -346,18 +353,13 @@
             $updateDeal[] ="PortfolioCompanyID= (select PortfolioCompany.PortfolioCompanyID FROM PortfolioCompany where PortfolioCompany.PortfolioCompanyName = '$PortfolioCompanyName')";
         }
 
-        if(!empty($Stake)){
+        if(!empty($Stake) || $Stake == 0){
             $updateDeal[] ='stake="'.$Stake.'"';
         }
 
-        if(!empty($InvestmentValue)){
+        if(!empty($InvestmentValue) || $InvestmentValue == 0){
             $updateDeal[] ='InvestmentValue="'.$InvestmentValue.'"';
         }
-        
-        if(!empty($StartUpContact)){
-            $updateDeal[] ="UserDetailID= (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$StartUpContact')";
-        }
-        // print_r($updateDeal);
         // CONVERT THE News ARRAY WITH THE DYNAMIC PARAMS INTO A STRING USING THE IMPLODE METHOD
         $updateDealstring = implode(', ', $updateDeal);
         // THE News UPDATE QUERY
@@ -396,7 +398,7 @@
         }
         /*  
             ==============================================================================
-                UPDATE LINKINGS BETWEEN Deals AND INSETORS, FUNDS, INDUSTRY AND SECTOR
+                UPDATE LINKINGS BETWEEN DEALS AND IBVESTORS, FUNDS, INDUSTRY AND SECTOR
             ==============================================================================
         */
         if(!empty($Investors)){
@@ -460,7 +462,7 @@
             };
         };
         // ===================================================================================
-        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEAL AND SECTOR ALREADY EXISTS
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEALS AND SECTOR ALREADY EXISTS
         // ===================================================================================
         // $msg = array();
         // $SectorList = explode(",", $Sectors);
@@ -492,8 +494,6 @@
         // =======================================================================================
         // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEAL AND INDUSTRIES ALREADY EXISTS
         // =======================================================================================
-        // CREATE AN EMPTY ARRAY TO STORE INDUSTRIES 
-        // $msg = array();
         if(!empty($Industries)){
             $IndustryList = explode(",", $Industries);
             foreach($IndustryList AS $Industry){ 
@@ -526,66 +526,104 @@
                 }
             };
         };
+
+        // =======================================================================================
+        // A CONDITIONAL STATEMENT TO CHECK IF LINKS BETWEEN DEAL AND CONTACT ALREADY EXISTS
+        // =======================================================================================
+        if(!empty($StartUpContact)){
+            $ContactList = explode(",", $StartUpContact);
+            foreach($ContactList AS $Contact){ 
+                // CHECK IF SELECTED CONTACT ALREADY EXISTS IN THE DB OR NOT 
+                $prevQuery = "  SELECT 
+                                    UserDetailID 
+                                FROM 
+                                    DealsUserDetail
+                                WHERE 
+                                    DealsID = '$DealsID' AND UserDetailID = (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact')
+                        ";
+                $prevResult = mysqli_query($conn,$prevQuery);
+                if($prevResult->num_rows>0){
+                    // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE INDUSTRY AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                    $deleteQuery = "DELETE FROM DealsUserDetail WHERE DealsID = '$DealsID'  AND UserDetailID = (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact')";
+                    mysqli_query($conn, $deleteQuery);
+                }else{
+                    // IF NO LINKS ARE FOUND BETWEEN A DEAL AND THE INDUSTRY, WE WILL THEN CREATE A NEW LINK BETWEEN THAT INDUSTRY AND THE DEAL.
+                    $sql98 = "   INSERT INTO 
+                                    DealsUserDetail(DealsUserDetailID, CreatedDate, ModifiedDate, DealsID, UserDetailID)
+                                VALUES 
+                                    (uuid(), now(), now(), '$DealsID', (select UserDetail.UserDetailID FROM UserDetail where UserDetail.UserFullName = '$Contact'))";
+                    $query98 = mysqli_query($conn, $sql98);
+                    if($query98){
+                        // Do nothing
+                    } else {
+                        echo 'Oops! There was an error inserting the Contact IDs from the array'.mysqli_error($conn).'<br/>';
+                    }
+                }
+            };
+        };
+
         // ===================================================================================
         // A CODE BLOCK TO UPDATE THE News/Deal NOTE
         // ===================================================================================
         // $msg = array();
-        $updateNote = array();
-        if(!empty($NewsNote)){
-            $updateNote[] ="Note='".$NewsNote."'";
-        };
-
-        // print_r($updateNote);
-        $updateNoteString = implode( $updateNote);
         // check if the deal has a note item linked to it, if yes, then update the note item and if not, then create a new note item.
-        $prevQueryNote = "  SELECT 
-                                    DealsID 
-                                FROM 
-                                    DealsNote
-                                WHERE 
-                                    DealsID = '$DealsID' 
-        ";
-        $prevResultNote = mysqli_query($conn,$prevQueryNote);
-        if($prevResultNote->num_rows>0){
-            // $msg[] =$sector;
-            // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE SECTOR AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
-            $updateNoteQuery = "UPDATE Note SET ModifiedDate= NOW(), $updateNoteString  WHERE NoteID= (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID='".$DealsID."')";
-            // echo $updateNote;
-            $resultNoteUpdate = mysqli_query($conn, $updateNoteQuery);
-            if($resultNoteUpdate){
-                // do nothing
-                // echo 'Note Updated!';
+        if(!empty($NewsNote) && $NewsNote !=="" ){
+            $updateNote = array();
+            $updateNote[] ="Note='".$NewsNote."'";
+
+            $updateNoteString = implode( $updateNote);
+            $prevQueryNote = "  SELECT 
+                                        DealsID 
+                                    FROM 
+                                        DealsNote
+                                    WHERE 
+                                        DealsID = '$DealsID' 
+            ";
+            $prevResultNote = mysqli_query($conn,$prevQueryNote);
+            if($prevResultNote->num_rows>0){
+                // $msg[] =$sector;
+                // IF THIS CONDITION RETURNS TRUE, THAT MEANS A LINK BETWEEN THE NOTE AND THE DEAL ALREADY EXISTS IN THE DATABASE. IN THAT CASE, WE WILL DELETE THE RECORD AND THEN CREATE UPDATED LINKS IN THE NEXT QUERY.
+                $updateNoteQuery = "UPDATE Note SET ModifiedDate= NOW(), $updateNoteString  WHERE NoteID= (SELECT DealsNote.NoteID FROM DealsNote WHERE DealsNote.DealsID='".$DealsID."')";
+                // echo $updateNote;
+                $resultNoteUpdate = mysqli_query($conn, $updateNoteQuery);
+                if($resultNoteUpdate){
+                    // do nothing
+                    // echo 'Note Updated!';
+                }else{
+                    echo 'Error Notes not Updated: '.mysqli_error($conn); 
+                }
             }else{
-                echo 'Error Notes not Updated: '.mysqli_error($conn); 
+                // INSERT INTO THE NOTE TABLE
+                $sqlInsertNote= "   INSERT INTO 
+                                        Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
+                                    VALUES 
+                                        (uuid(), now(), now(), 0, NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
+                ";
+                $queryInsertNote= mysqli_query($conn, $sqlInsertNote);
+    
+                if ($queryInsertNote){
+                        // Success
+                } else {
+                    echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
+                }
+    
+                // LINKING THE NOTE TO THE DEAL IN THE LINKING/MAPPING TABLE
+                $sqlDealsNote = "   INSERT INTO 
+                                        DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
+                                    VALUES 
+                                        (uuid(), now(), now(),0,NULL, '$DealsID', (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
+                ";
+                $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
+                if ($queryDealsNote ){
+                // Success
+                } else {
+                echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
+                }
             }
-        }else{
-            // INSERT INTO THE NOTE TABLE
-            $sqlInsertNote= "   INSERT INTO 
-                                    Note(NoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, Note, NoteTypeID )
-                                VALUES 
-                                    (uuid(), now(), now(), 0, NULL, '$NewsNote','fb44ee75-7056-11eb-a66b-96000010b114')
-            ";
-            $queryInsertNote= mysqli_query($conn, $sqlInsertNote);
-
-            if ($queryInsertNote){
-                    // Success
-            } else {
-                echo 'Oops! There was an error saving Deal Note item. Please report bug to support.'.'<br/>'.mysqli_error($conn);
-            }
-
-            // LINKING THE NOTE TO THE DEAL IN THE LINKING/MAPPING TABLE
-            $sqlDealsNote = "   INSERT INTO 
-                                    DealsNote(DealsNoteID, CreatedDate, ModifiedDate,Deleted, DeletedDate, DealsID, NoteID)
-                                VALUES 
-                                    (uuid(), now(), now(),0,NULL, '$DealsID', (select Note.NoteID FROM Note where Note.Note = '$NewsNote'))
-            ";
-            $queryDealsNote = mysqli_query($conn, $sqlDealsNote);
-            if ($queryDealsNote ){
-            // Success
-            } else {
-            echo 'Oops! There was an error on linking Deal and Note. Please report bug to support.'.'<br/>'.'<br/>'.mysqli_error($conn);
-            }
+        }else {
+            // do nothing
         }
+      
         
     }else {
 ?>
@@ -656,7 +694,7 @@
                 -->
                 <div class="row">  
                     <h5>
-                        Company Details
+                        Company Details 
                     </h5>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="PortfolioCompanyName" class="form-label"> Portfolio Company Name</label>
@@ -672,12 +710,12 @@
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="Stake" class="form-label">Stake</label>
-                        <input type="number" class="form-control" id="Stake" name="Stake"  value="<?php echo $row['stake'];?>"  min="0.01" max="1" step="any">
+                        <input type="number" class="form-control" id="Stake" name="Stake"  value="<?php echo $row['stake'];?>"  min="0" max="1" step="any">
                         <small style="color:red;">Place a zero if stake not disclosed </small>
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 ">
                         <label for="InvestmentValue" class="form-label">Total Investment Value</label>
-                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" value="<?php echo $row['InvestmentValue']?>" min="1" max="1000000000000" step="any">
+                        <input type="number" class="form-control" id="InvestmentValue" name="InvestmentValue" value="<?php echo $row['InvestmentValue']?>" min="0" max="1000000000000" step="any">
                     </div>
                     <div class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12 "> 
                         <label for="UserFullName" class="form-label">Contact Person</label>
@@ -828,7 +866,7 @@
                 </div> -->
                 <p>
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
-                    <a href="../tabs/NewDeals.php" class="btn btn-danger" >Close</a>
+                    <a href="../AuthViews/NewDeals.php" class="btn btn-danger" >Close</a>
                 </p>
             </form>
             <?php } ?>

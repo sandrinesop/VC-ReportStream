@@ -334,7 +334,7 @@
                     <div class="row">
                         <!-- EXPORT CSV FILE -->
                         <span class="col-6 col-md-4 col-lg-2"> 
-                            <form action="../InvestorExport.php" method="POST">
+                            <form action="../ExportCSV/InvestorExport.php" method="POST">
                                 <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
                             </form>
                         </span>

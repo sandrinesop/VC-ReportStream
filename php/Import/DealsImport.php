@@ -64,7 +64,7 @@
                         // means deal is already in the database so simply ignore
                         $msg[] =$NewsURL;
                     }else{
-                        header( "refresh: 8; url= ../tabs/NewDeals.php" );
+                        header( "refresh: 8; url= ../AuthViews/NewDeals.php" );
                         // insert and create a new deal then redirect back to the deals page(added header function first because if set below or after echos then it will not work.)
                         //==================================================================================================================================================================
                         // BEFORE IMPORTING THE DEAL, WE NEED TO MAK SURE THE News, COMPANIES, INVESTORS AND FUNDS ALREADY EXISTS IN THE LOOK UP TABLES SO WE'LL INSERT THOSE ENTITIES FIRST.
@@ -195,7 +195,7 @@
                             //     <p style="color:red; font-size:20px;">Oops! There was an error: '.mysqli_error($conn).
                             //     '<br/>'
                             //     .'Please make sure your file does not have duplicates or missing required data and try again.<p/>
-                            //     <a href="../tabs/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                            //     <a href="../AuthViews/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                             // </div>';
                         };
                     }
@@ -219,12 +219,12 @@
                         // Used the HTML elements and inlise CSS to format the output in a desirable way by making the font red. concatenated the varible $i which we initialzed if the for loop, added one to it and then appended that next to the value of the array to create an ordered-numbered list. Added an empty string to add space between.
                         echo '<p style="color:red;">'.$i+'+1'.'. '.$msg[$i].'<p/>';
                     }
-                    echo '<br>'.'<a href="../tabs/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
+                    echo '<br>'.'<a href="../AuthViews/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                 }else{
                     echo
                     '<div style="color:green; font-size:20px;">
                         <p>All records imported successfully! You will be redirected back in 5 sec... <p/>
-                        <a href="../tabs/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
+                        <a href="../AuthViews/NewDeals.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>
                     </div>';
                 };
 
