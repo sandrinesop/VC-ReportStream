@@ -418,8 +418,8 @@
                         <span class="col-4">
                             <!-- Button trigger modal -->
                             <small>
-                                <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    <small>New Deal</small> <img src="../../resources/icons/New.svg" alt="">
+                                <button type="button" class="btn btn_new " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <small>Add New</small> <img src="../../resources/icons/New.svg" alt="">
                                 </button>
                             </small>
                             <!-- Modal -->
@@ -634,7 +634,7 @@
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-4"> 
-                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <a href="javascript:void(0);" class="btn btn_import" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="my-1" style="display:none;">
                                 <form action="../Import/DealsImport.php" method="POST" enctype="multipart/form-data">
                                     <input type="file" name="file"> <br>
@@ -645,7 +645,7 @@
                         <!-- EXPORT CSV FILE -->
                         <span class="col-3"> 
                             <form action="../ExportCSV/DealExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
+                                <button class="btn btn_export" type="submit" name="export" formmethod="POST"> <small>Export</small></button>
                             </form>
                         </span>
                     </div>
@@ -771,8 +771,6 @@
                     <div class="row">
                         <div id="pieChart"  style=" height:270px;" class="col-6 col">
                         </div>
-                        <div id="BarChart"  style=" height:270px;" class="col-6 col">
-                        </div> 
                     </div>  
                 </div>
             </div>

@@ -7,39 +7,7 @@ body {
     font-weight: 500;
 }
 
-nav {
-    /* background-image: linear-gradient(to left,#2f470c, #2f470c, #2f470c, #2f470c, #fff); */
-    height: 4.5rem;
-    z-index: 1;
-    color: #ffffff;
-    padding-left: 20px;
-    padding-right: 20px;
-}
 
-nav.container, main.container, footer.container {
-    width:100%;
-    max-width:none ;
-    padding: 0 auto;
-}
-
-.navbar-brand,
-.nav-link {
-    color: #ffffff;
-    font-size: 1rem;
-    transition: all .3s;
-} 
-
-.navbar-brand:hover ,.nav-link:hover{
-    text-decoration: none;
-    cursor: pointer;
-    color: #a8a8a8;
-    transform: scale(.98);
-}
-
-header .navbar {
-    padding-left: 10px;
-    padding-right: 10px;
-}
 /* 
     STYLES FOR THE FOOTER
 */
@@ -160,6 +128,7 @@ LOGIN FORM STYLES
     background-image: linear-gradient(to right, #b30600 ,#db10099e,  #ffffff,#ffffff);
     transform: scale(.95);
 }
+
 /* 
     =========================
     SINGLE ENTITY VIEW STYLES
@@ -265,10 +234,4 @@ only screen and (max-width: 760px),
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-}
-
-
-.navbar-nav {
-    padding-left: 10px;
-    padding-bottom: 10px;
 }

@@ -88,8 +88,8 @@
                     <div class="row">
                         <span class="col-4">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#companiesModal">
-                                Portfolio Company <img src="../../resources/icons/New.svg" alt="">
+                            <button type="button" class="btn btn_new " data-bs-toggle="modal" data-bs-target="#companiesModal">
+                                Add New <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="companiesModal" tabindex="-1" aria-labelledby="companiesModalLabel" aria-hidden="true">
@@ -286,7 +286,7 @@
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-4"> 
-                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <a href="javascript:void(0);" class="btn btn_import" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="mt-1" style="display:none;">
                                 <form action="../Import/ImportPC.php" method="POST" enctype="multipart/form-data">
                                     <input type="file" accept=".csv" name="file"><br>
@@ -297,7 +297,7 @@
                         <!-- EXPORT CSV FILE -->
                         <span class="col-3"> 
                             <form action="../ExportCSV/PCExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export</button>
+                                <button class="btn btn_export" type="submit" name="export" formmethod="POST"> Export</button>
                             </form>
                         </span>
                     </div>

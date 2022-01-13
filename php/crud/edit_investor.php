@@ -459,9 +459,6 @@
                             <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" >Digital Collective Africa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../WebInterface.php">New Deal</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
                         </li>
                     </ul>
@@ -559,7 +556,7 @@
                 </div>
                 <p>
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
-                    <a href="../tabs/investor.php" class="btn btn-danger" >Close</a>
+                    <a href="../AuthViews/investor.php" class="btn btn-danger" >Close</a>
                 </p>
             </form>
             <?php } ?>

@@ -110,12 +110,10 @@
         <title>VC Reportstream | deals </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../css/select2.min.css">
-        <!-- <link rel="stylesheet" href="../../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../../css/bootstrap.css"> -->
         <link rel="stylesheet" href="../../css/main.css">
-        <link rel="stylesheet" href="../../css/index.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="../../css/navbar.css">
         <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
         <style>
             .dataTables_wrapper,
@@ -136,9 +134,9 @@
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
-        <?php include('./navBar/UnAuth_navBar.php');?> 
+        <?php include('./navBar/nav.php');?> 
         <!-- BODY CONTENT -->
-        <main class="container ">
+        <main class="container Main_View">
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class=" my-5">
                 <div class="my-2">
@@ -268,8 +266,6 @@
                     <div class="row">
                         <div id="pieChart"  style=" height:270px;" class="col-6 col">
                         </div>
-                        <div id="BarChart"  style=" height:270px;" class="col-6 col">
-                        </div> 
                     </div>  
                 </div>
             </div>

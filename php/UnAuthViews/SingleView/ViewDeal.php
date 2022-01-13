@@ -100,7 +100,7 @@
         <title> VC Reportstream | Deal View </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../../css/main.css">
-        <link rel="stylesheet" href="../../../css/index.css">
+        <link rel="stylesheet" href="../../../css/navbar.css">
     </head>
     <body>
         <!-- HEADER CONTENT -->

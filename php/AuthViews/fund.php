@@ -291,8 +291,8 @@
         </style>
     </head>
     <body class="pb-5">
-        <!-- HEADER CONTENT -->
-        <!-- <?php include('./navBar/nav.php');?>  -->        <header class="mb-5">
+        <!-- HEADER CONTENT -->     
+        <header class="mb-5">
             <nav class=" navbar navbar-expand-lg align-middle navbar-dark fixed-top" style="z-index: 1;">
                 <div class="container px-0">
                     <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> <small>VC ReportStream</small> </a>
@@ -327,8 +327,8 @@
                         <!-- CREATE NEW FUND MODAL -->
                         <span class="col-4">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                Fund <img src="../../resources/icons/New.svg" alt="">
+                            <button type="button" class="btn btn_new " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Add New <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -433,7 +433,7 @@
                         </span>
                         <!-- IMPORT CSV FILE -->
                         <span class="col-4"> 
-                            <a href="javascript:void(0);" class="btn btn-outline-success" onclick="formToggle('ImportFrm');">Import</a>
+                            <a href="javascript:void(0);" class="btn btn_import" onclick="formToggle('ImportFrm');">Import</a>
                             <div id="ImportFrm" class="mt-1" style="display:none;">
                                 <form action="../Import/ImportFund.php" method="POST" enctype="multipart/form-data">
                                     <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file"> <br>
@@ -444,7 +444,7 @@
                         <!-- EXPORT CSV FILE -->
                         <span class="col-3"> 
                             <form action="../ExportCSV/FundExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                                <button class="btn btn_export" type="submit" name="export" formmethod="POST"> Export</button>
                             </form>
                         </span>
                     </div>

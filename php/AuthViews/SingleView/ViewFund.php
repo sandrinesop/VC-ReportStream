@@ -86,7 +86,7 @@
     <body>
         <!-- NAVBAR -->
         <nav class="  navbar navbar-expand-lg align-middle text-light navbar-dark" style="z-index: 1; font-size: 1rem !important;">
-            <div class="container-fluid px-0">
+            <div class="container px-0">
                 <a style="color:#ffffff;" class="navbar-brand" href="../../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../../resources/DCA_Admin.png" alt="Digital collective africa logo"> <small>VC ReportStream</small>  </a>
                 <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -168,7 +168,12 @@
                             </p>
                         </div>
                     </div>
-                    <button><a href="../fund.php"> Close</a></button>
+                    <button type="button" class="btn btn_close">
+                        <a href="../fund.php"> Close</a>
+                    </button>
+                    <button type="button" class="btn btn_edit">
+                        <a href="../../crud/edit_fund.php?FundID=<?php echo $row['FundID']; ?>">Edit</a>
+                    </button>
                 </div>
             </div>
         </main>  

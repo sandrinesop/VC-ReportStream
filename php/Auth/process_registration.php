@@ -5,9 +5,9 @@
     //Import PHPMailer classes into the global namespace
     //These must be at the top of your script, not inside a function    
     // We need to send an email alerting the admin that there is a new user who registered.
-    require('PHPMailer/Exception.php');    
-    require('PHPMailer/SMTP.php');    
-    require('PHPMailer/PHPMailer.php');
+    require('PasswordReset/PHPMailer/Exception.php');    
+    require('PasswordReset/PHPMailer/SMTP.php');    
+    require('PasswordReset/PHPMailer/PHPMailer.php');
     
     use PHPMailer\PHPMailer;
     use PHPMailer\SMTP;

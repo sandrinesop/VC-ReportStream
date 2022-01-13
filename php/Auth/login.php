@@ -252,7 +252,7 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" href="../../css/bootstrap.css">
         <link rel="stylesheet" href="../../css/main.css">
-        <link rel="stylesheet" href="../../css/index.css">
+        <link rel="stylesheet" href="../../css/navbar.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
         <!-- OVERWRITING THE STYLING OF THE PLUGIN -->
@@ -275,7 +275,7 @@
     </head>
     <body class="pb-5">
         <!-- HEADER CONTENT -->
-        <?php include('../UnAuthViews/navBar/UnAuth_navBar.php');?> 
+        <?php include('../UnAuthViews/navBar/loginNav.php');?> 
         <!-- BODY CONTENT -->
         <main class="container my-5 px-1 login-main" >
             <div class="card container p-0">

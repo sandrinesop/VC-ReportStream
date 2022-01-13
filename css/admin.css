@@ -3,18 +3,15 @@
     NAVBAR STYLES ON ADMIN PAGE
     ===========================
 */
-nav.container {
+/* nav.container {
     background-image: linear-gradient(to left,#b05802,#b05802,#b05802,#b05802 #fff)
-}
-nav {
-    background-image: linear-gradient(to left,#b05802,#b05802,#b05802,#b05802, #fff);
-    /* background-color: #b05802; */
-    height: 4.5rem;
+} */
+
+nav.navbar.navbar-expand-lg {
+    background-color: #b05802;
     z-index: 1;
-    color: #ffffff;
-    padding-left: 10px;
-    padding-right: 10px;
 }
+
 nav.container, main.container, footer.container {
     width:100%;
     max-width:none ;
@@ -33,10 +30,6 @@ nav.container, main.container, footer.container {
     cursor: pointer;
     color: #a8a8a8;
     transform: scale(.98);
-}
-
-nav #navbarNavDropdown{
-	/* background-color: #b05802 !important; */
 }
 
 
@@ -155,12 +148,39 @@ nav #navbarNavDropdown{
     color: #6b0111;
 }
 
-/* BUTTON STYLES */
-.new-button {
-    border: 1px solid #2f470c;
+/* 
+    ====================
+    OTHER BUTTON STYLES 
+    ==================== 
+*/
+main div div span button.btn_new,
+main div div span a.btn_import,
+main div div span a.btn_contributors,
+main div div span button.btn_export {
+    border: 1px solid #b05802 !important;
     border-radius: 5px;
     padding: 5px 10px;
+    font-size: 12px;
 }
+
+main div div span a.btn_contributors{
+    text-decoration: none;
+    color: black;
+}
+
+button.btn_close {
+    background-color: rgb(184, 24, 24);
+}
+button.btn_edit {
+    background-color: #d66d04;
+}
+
+button.btn_close a,
+button.btn_edit a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
 
 
 main div .card .card-body{

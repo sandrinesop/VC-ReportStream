@@ -238,8 +238,8 @@
                         <!-- CREATE NEW INVESTOR MODAL -->
                         <span class="col-4">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn new-button " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                New Contact <img src="../../resources/icons/New.svg" alt="">
+                            <button type="button" class="btn btn_new " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Add New <img src="../../resources/icons/New.svg" alt="">
                             </button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -339,8 +339,11 @@
                         <!-- EXPORT CSV FILE -->
                         <span class="col-4"> 
                             <form action="../ExportCSV/ContactExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> Export CSV</button>
+                                <button class="btn btn_export" type="submit" name="export" formmethod="POST"> Export</button>
                             </form>
+                        </span>
+                        <span class="col-4">
+                            <a href="./Contributors.php" class="btn btn_contributors">Contributors</a>
                         </span>
                     </div>
                 </div>
@@ -353,12 +356,6 @@
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Company</th>
-                                    <!-- <th scope="col">Contact Number 1</th>
-                                    <th scope="col">Contact Number 2 </th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">RoleType</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Race  </th> -->
                                     <th scope="col">View More </th>
                                     <th scope="col">Edit  </th>
                                     <th scope="col">Delete </th>

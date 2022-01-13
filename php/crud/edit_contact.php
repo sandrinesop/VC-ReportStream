@@ -17,7 +17,7 @@
 
     // CONNECT TO DATABASE
     include_once('../App/connect.php');
-    // QUERY DATABASE FROM DATA
+    // QUERY DATABASE FROM DATA 
     $UserDetailID =$_REQUEST['UserDetailID'];
     $sql=" SELECT *  FROM UserDetail where UserDetailID = '$UserDetailID'"; 
     $result = mysqli_query($conn, $sql) or die($conn->error);
@@ -171,7 +171,7 @@
     <!-- HEADER CONTENT -->
         <nav class="container navbar navbar-expand-lg align-middle" style="z-index: 1;">
             <div class="container-fluid">
-                <a style="color:#ffffff;" class="navbar-brand" href="../../index.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream  </a>
+                <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> VC Reportstream  </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -251,7 +251,7 @@
                 </div>
                 <p >
                     <Button name="Update" type="submit" value="Update" class="btn btn-primary" formmethod="POST">Update</Button>
-                    <a href="../tabs/contacts.php" class="btn btn-danger" >Close</a>
+                    <a href="../AuthViews/contacts.php" class="btn btn-danger" >Close</a>
                 </p>
             </form>
             <?php } ?>
