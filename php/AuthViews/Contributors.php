@@ -22,7 +22,9 @@
     $sql="  SELECT 
                 PlatformContributorsID, CreatedDate, Verified, FirstName, LastName, Email
             FROM
-            PlatformContributors
+                PlatformContributors
+            WHERE 
+                PlatformContributors.Verified = 1
      ";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
@@ -104,8 +106,8 @@
         <main class="container ">
             <!-- ==== LIST OF INVESTORS ==== -->
             <div class=" my-5">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card" style="max-width:1020px; margin:0 auto;">
+                    <div class="card-body" >
                         <div class="table-responsive" style="overflow-x:auto;">
                             <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="line-height: 18px;"id="table_Contacts">
                                 <thead>
@@ -114,7 +116,6 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Verification Status</th>
                                     <th scope="col">Edit  </th>
-                                    <th scope="col">Delete </th>
                                 </thead>
                                 <tbody>
                                     <?php
@@ -129,7 +130,6 @@
                                                 <?php echo $row['Verified'] ?>
                                             </td>
                                             <td class="text-truncate"> <a href="../crud/edit_Admin.php?PlatformContributorsID=<?php echo $row['PlatformContributorsID']; ?>">Edit</a></td>
-                                            <td class="text-truncate"> <a href="../crud/delete_Admin.php?PlatformContributorsID=<?php echo $row['PlatformContributorsID']; ?>">Delete</a></td>
                                         </tr>
                                     <?php 
                                         }
@@ -162,70 +162,3 @@
         </script>
     </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>VC ReportStream | Admins</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-            <link rel="stylesheet" href="../../css/select2.min.css">
-            <link rel="stylesheet" href="../../css/bootstrap.min.css">
-            <link rel="stylesheet" href="../../css/bootstrap.css">
-            <link rel="stylesheet" href="../../css/admin.css">
-            <link rel="stylesheet" href="../../DataTables/datatables.css">
-            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    </head>
-    <body>
-        <div class="container">
-            <h1>
-                Platform Contributors 
-            </h1>
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive" style="overflow-x:auto;">
-                        <table class=" table table-hover table-striped table-success table-bordered table-responsive" style="line-height: 18px;"id="table_Contacts">
-                            <thead>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Verification Status</th>
-                                <th scope="col">Email</th>
-                            </thead>
-                            <tbody>
-                                <?php
-                                    while($row = mysqli_fetch_assoc($result))
-                                    {
-                                ?>
-                                    <tr >
-                                        <td class="text-truncate"> <small><?php echo $row['FirstName'] ?></small></td>
-                                        <td class="text-truncate"> <small><?php echo $row['LastName'] ?></small></td>
-                                        <td class="text-truncate"> 
-                                            <form action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>"  method = "POST" enctype="multipart/form-data">
-                                                <select class="form-select" id="Status" name="Status" >
-                                                    <option value="" selected ><?php echo $row['Verified'] ?></option>
-                                                    <option value="0">0</option>
-                                                    <option value="1">1</option>
-                                                </select>
-                                                <input name="submit" type="submit" />
-                                            </form>
-                                        </td>
-                                        <td class="text-truncate"> <small><?php echo $row['Email'] ?></small></td>
-                                    </tr>
-                                <?php 
-                                    }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            function handleClick (){
-                console.log('User Status Updated');
-            }
-        </script>
-    </body>
-</html> -->
