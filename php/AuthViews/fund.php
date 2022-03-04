@@ -529,9 +529,8 @@
                     window.location.href = this.dataset.href;
                 });
             });
-        </script>
-        <!-- Display and Hide the import form with a button click -->
-        <script>
+
+        // Display and Hide the import form with a button click 
             function formToggle(ID){
                  var ImportFormReview = document.getElementById(ID);
                  if(ImportFormReview.style.display === "none"){

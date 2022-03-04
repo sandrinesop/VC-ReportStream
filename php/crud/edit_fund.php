@@ -127,9 +127,9 @@
     {
         // mysqli_query($conn, $update) or die($conn->error);
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/fund.php'>View Updated Record</a>";
+        <a href='../AuthViews/fund.php'>View Updated Record</a>";
         echo '<p class="mb-3 col-lg-3 col-md-4 col-sm-12 col-xs-12" style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 3;url= ../tabs/fund.php" );
+        header( "refresh: 3;url= ../AuthViews/fund.php" );
 
         // DECLARE VARIABLES
         $FundName                   = mysqli_real_escape_string($conn, $_REQUEST['FundName']);

@@ -236,7 +236,7 @@
                 <div class="my-2">
                     <div class="row">
                         <!-- CREATE NEW INVESTOR MODAL -->
-                        <span class="col-4">
+                        <span class="col-2">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn_new " data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Add New <img src="../../resources/icons/New.svg" alt="">
@@ -336,13 +336,23 @@
                                 </div>
                             </div>
                         </span>
+                        <!-- IMPORT CSV FILE -->
+                        <span class="col-2"> 
+                            <a href="javascript:void(0);" class="btn btn_import" onclick="formToggle('ImportFrm');">Import</a>
+                            <div id="ImportFrm" class="mt-1" style="display:none;">
+                                <form action="../Import/ImportContact.php" method="POST" enctype="multipart/form-data">
+                                    <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file"> <br>
+                                    <input type="submit" class="btn btn-outline-primary" name="ImportSubmit" value="IMPORT" >
+                                </form>
+                            </div>
+                        </span>
                         <!-- EXPORT CSV FILE -->
-                        <span class="col-4"> 
+                        <span class="col-2"> 
                             <form action="../ExportCSV/ContactExport.php" method="POST">
                                 <button class="btn btn_export" type="submit" name="export" formmethod="POST"> Export</button>
                             </form>
                         </span>
-                        <span class="col-4">
+                        <span class="col-2">
                             <a href="./Contributors.php" class="btn btn_contributors">Contributors</a>
                         </span>
                     </div>
@@ -408,6 +418,16 @@
                     window.location.href = this.dataset.href;
                 })
             });
+
+            // Function to toggle import csv form drop
+            function formToggle(ID){
+                 var ImportFormReview = document.getElementById(ID);
+                 if(ImportFormReview.style.display === "none"){
+                    ImportFormReview.style.display ="block";
+                 }else{
+                    ImportFormReview.style.display ="none";
+                 }
+            };
         </script>
     </body>
 </html>

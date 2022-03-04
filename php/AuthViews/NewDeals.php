@@ -64,7 +64,7 @@
                 ,InvestmentValue
                 ,stake
                 ,Note
-            ORDER BY News.NewsDate
+            -- ORDER BY News.NewsDate DESC
         "; 
             
     $result = $conn->query($sql); //or die($conn->error);
@@ -708,8 +708,8 @@
 
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
             <script type="text/javascript">
-                // Loading the Visualization API and the corechart package.
-                google.charts.load('current', {'packages':['corechart']});
+                // Loading the Visualization API and the corechart package and controls
+                google.charts.load('current', {'packages':['corechart', 'controls']});
 
                 // Set a callback to run when the Google Visualization API is loaded.
                 google.charts.setOnLoadCallback(drawChart);
@@ -813,7 +813,11 @@
         <script>
             $(document).ready( function () {    
                 // Initializing the datatable plugin
-                $('#table_Deals').DataTable();
+                $('#table_Deals').DataTable( 
+                    {
+                        "order": [[ 0, "desc" ]]
+                    } 
+                );    
 
                 // Trigger the double tap to edit function
                 $(document.body).on("dblclick", "tr[data-href]", function (){

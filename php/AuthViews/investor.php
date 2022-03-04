@@ -548,8 +548,8 @@
                                     <th scope="col">Currency</th>
                                     <!-- <th scope="col">Year Founded</th>
                                     <th scope="col">Country</th> -->
-                                    <th scope="col">View More</th>
                                     <th scope="col">Logo</th>
+                                    <th scope="col">View More</th>
                                     <th scope="col">Edit </th>
                                     <th scope="col">Delete </th>
                                 </thead>

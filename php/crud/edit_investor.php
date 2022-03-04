@@ -139,9 +139,9 @@
     {
         // HEADERS ARE SENT BEFORE ANYTHING ELSE OTHERWISE THEY WON'T WORK
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/investor.php'>View Updated Record</a>";
+        <a href='../AuthViews/investor.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 5;url= ../tabs/investor.php" );
+        header( "refresh: 5;url= ../AuthViews/investor.php" );
 
         // SET THE VARIABLES AFTER CHECKING IF THE CORRESPONDING FORM FIELDS ARE SET OR NOT.
         if(isset($_REQUEST['InvestorName'])){ 

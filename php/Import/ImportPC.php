@@ -47,7 +47,7 @@
                         // .'<a href="../tabs/portfolio-company.php" style="padding:3px; border:1px solid red;font-size:18px; text-decoration:none;"> Go Back </a>';
                         $msg[] =$PortfolioCompanyName;
                     }else{
-                        header( "refresh: 5; url= ../AuthViews/portfolio-company.php" );
+                        header( "refresh: 10; url= ../AuthViews/portfolio-company.php" );
                         // insert and create a new company then redirect back to the portfolio company page(added header function first because if set below or after echos then it will not work.)
                         $sql = "INSERT INTO 
                                     PortfolioCompany( PortfolioCompanyID, CreatedDate, ModifiedDate, Deleted, DeletedDate, PortfolioCompanyName, CurrencyID, Website, Details, YearFounded)

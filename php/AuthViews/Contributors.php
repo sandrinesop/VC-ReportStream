@@ -20,12 +20,10 @@
 
     // QUERY DATABASE FROM DATA
     $sql="  SELECT 
-                PlatformContributorsID, CreatedDate, Verified, FirstName, LastName, Email
+                *
             FROM
                 PlatformContributors
-            WHERE 
-                PlatformContributors.Verified = 1
-     ";
+    ";
     // $result = mysqli_query($conn, $sql);
     // $sql=" SELECT * FROM investor where id='".$InvestorID."'"; 
     $result = $conn->query($sql) or die($conn->error);

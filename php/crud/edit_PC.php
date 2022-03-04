@@ -143,9 +143,9 @@
     {
         // HEADERS ARE SENT BEFORE ANYTHING ELSE OTHERWISE THEY WON'T WORK
         $status = "Record Updated Successfully. </br></br>
-        <a href='../tabs/portfolio-company.php'>View Updated Record</a>";
+        <a href='../AuthViews/portfolio-company.php'>View Updated Record</a>";
         echo '<p style="color:#FF0000;">'.$status.'</p>';
-        header( "refresh: 5;url= ../tabs/portfolio-company.php" );
+        header( "refresh: 5;url= ../AuthViews/portfolio-company.php" );
 
         $PortfolioCompanyName    = mysqli_real_escape_string($conn, $_POST['PortfolioCompanyName']);
         $Currency                = mysqli_real_escape_string($conn, $_POST['Currency']);
