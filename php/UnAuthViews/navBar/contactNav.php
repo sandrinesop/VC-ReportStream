@@ -21,7 +21,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="../../php/Auth/login.php">
                             <img src="../../php/img/User_Profile_White.png" alt="" style=" width: 30px;" >
-                            <span>login</span>
+                            <span>login</span> 
                         </a>
                     </li>
                 </ul>
