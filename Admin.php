@@ -12,7 +12,7 @@
                 <small>You are being redirected back to the home page.</small>
             </p>
         ';
-        exit;
+        exit; 
     }
 ?>
 
@@ -46,7 +46,7 @@
                                     <a class="nav-link active" aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" ><small>Digital Collective Africa</small> </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#"><small>Contact</small> </a>
+                                    <a class="nav-link" href="./php/AuthViews/contact_us.php"><small>Contact</small> </a>
                                 </li>
                                 <li class="nav-item">
                                     <form action="./php/Auth/logout.php" method="POST"  class="profile">
@@ -111,6 +111,10 @@
                 </div>
             </div>
         </main>
+
+        <footer class="footer">   
+                <p class="copyright"> © 2022 VC ReportStream. All rights reserved.</p>
+        </footer>
        <!-- JavaScript Scripts -->
        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     </body>

@@ -308,6 +308,7 @@
         <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/main.css">
         <link rel="stylesheet" href="../../css/navbar.css">
+        <link rel="stylesheet" href="../../css/index.css">
         <!-- <link rel="stylesheet" href="../../css/index.css"> -->
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
@@ -402,6 +403,9 @@
                 </div>
             </div>
         </main>
+        <footer class="footer">   
+                <p class="copyright"> © 2022 VC ReportStream. All rights reserved.</p>
+        </footer>
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>

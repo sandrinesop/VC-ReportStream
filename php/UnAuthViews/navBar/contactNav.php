@@ -16,7 +16,7 @@
                         <a class="nav-link " aria-current="page" href="https://www.digitalcollective.africa/ " target="_blank" ><span>Digital Collective Africa</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="../../php/UnAuthViews/contact_us.php" ><span>Contact</span></a>
+                        <a class="nav-link " aria-current="page" href="./../UnAuthViews/contact_us.php" ><span>Contact</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../../php/Auth/login.php">

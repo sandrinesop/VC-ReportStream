@@ -108,9 +108,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="../../resources/DCA_Icon.png" type="image/x-icon">
         <title>VC Reportstream | deals </title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="../../css/select2.min.css">
         <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="../../css/index.css">
         <link rel="stylesheet" href="../../DataTables/datatables.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="../../css/navbar.css">
@@ -118,7 +120,7 @@
         <style>
             .dataTables_wrapper,
             .dataTables_length,
-            .dataTables_wrapper,
+            .dataTables_wrapper, 
             .dataTables_filter,
             .dataTables_wrapper,
             .dataTables_info,
@@ -133,7 +135,7 @@
         </style>
     </head>
     <body class="pb-5">
-        <!-- HEADER CONTENT -->
+        <!-- HEADER CONTENT --> 
         <?php include('./navBar/nav.php');?> 
         <!-- BODY CONTENT -->
         <main class="container Main_View">
@@ -142,9 +144,13 @@
                 <div class="my-2">
                     <div class="row w-50">
                         <!-- EXPORT CSV FILE -->
+
                         <span class="col"> 
                             <form action="../ExportCSV/DealExport.php" method="POST">
-                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> <small>Export CSV</small></button>
+                                <button class="btn new-button" type="submit" name="export" formmethod="POST"> 
+                                <i class="fa-solid fa-download"></i>
+                                    <small>Export CSV</small>
+                                </button>
                             </form>
                         </span>
                     </div>
@@ -270,6 +276,10 @@
                 </div>
             </div>
         </main>
+
+        <footer class="footer">   
+                <p class="copyright"> © 2022 VC ReportStream. All rights reserved.</p>
+        </footer>
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>

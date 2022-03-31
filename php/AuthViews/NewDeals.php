@@ -381,7 +381,8 @@
         </style>
     </head>
     <body class="pb-5">
-        <!-- HEADER CONTENT -->        <header class="mb-5">
+        <!-- HEADER CONTENT -->       
+         <header class="mb-5">
             <nav class=" navbar navbar-expand-lg align-middle navbar-dark fixed-top" style="z-index: 1;">
                 <div class="container px-0">
                     <a style="color:#ffffff;" class="navbar-brand" href="../../Admin.php"><img style=" width: 48px;" class="home-ico" src="../../resources/DCA_Admin.png" alt="Digital collective africa logo"> <small>VC ReportStream</small> </a>
@@ -775,6 +776,10 @@
                 </div>
             </div>
         </main>
+
+        <footer class="footer">   
+                <p class="copyright"> © 2022 VC ReportStream. All rights reserved.</p>
+        </footer>
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>

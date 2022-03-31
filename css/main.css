@@ -42,12 +42,13 @@ footer .footer-lower{
     table-layout:fixed;
 }
 
-/* BUTTON STYLES */
+/* BUTTON STYLES ///////////////////////////////*/ 
 
 .new-button {
     border: 1px solid #2f470c;
     border-radius: 15px;
     padding: 5px 10px;
+
 }
 
 /* 
@@ -106,7 +107,7 @@ LOGIN FORM STYLES
     transform: scale(.95);
 }
 /* 
-    ======================
+    ====================== 
     REGISTER BUTTON STYLES
     ======================
  */

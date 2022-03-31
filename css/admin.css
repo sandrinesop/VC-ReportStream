@@ -10,7 +10,7 @@
 nav.navbar.navbar-expand-lg {
     background-color: #b05802;
     z-index: 1;
-}
+} 
 
 nav.container, main.container, footer.container {
     width:100%;
@@ -207,7 +207,7 @@ main.single_View div div div div p{
 /* 
     STYLES FOR THE FOOTER
 */
-footer  h3{
+/* footer  h3{
     color: #ffffff;
 }
 
@@ -231,7 +231,19 @@ footer .footer-lower{
 .footer_nav div .footer_nav_a:hover {
     text-decoration: none;
     color: #e09345;
+} */
+.footer{
+    padding: 10px;
+    background-color: #b05802;
 }
+.footer .copyright {
+    margin-top:5px;
+    text-align:center;
+    font-size:15px;
+    color:rgb(0, 0, 0);
+    margin-bottom:0; 
+ }
+
 
 
 @media 
